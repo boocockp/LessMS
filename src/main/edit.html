@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit file</title>
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="import" href="../../custom_components/file-editor.html">
+</head>
+<body>
+    <div class="container">
+        <file-editor></file-editor>
+    </div>
+
+    <script>
+        var fileUrl = location.search.split('=')[1]
+        console.log("fileUrl", fileUrl);
+        if (fileUrl) {
+            $('file-editor').attr('fileUrl', fileUrl);
+//            document.getElementsByName('file-editor')
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+Aims
+====
+
+- Provide a browser front-end for a CMS
+- Wrap in a web component that can be included in any page
+- Uses REST API for all loading, saving, file lists
+- UX familiar to users of file finders and word processors
+- Can manage all types of files - HTML, CSS, image, FreeSheet
+- Edit HTML in WYSIWYG
+- Make viewing/previewing easy as well as editing
+- Support preview/publish
+- Support file permissions - editable or not
+- Easy to navigate file tree
+- Multiple files open simultaneously
+
+HTML specific
+-------------
+- Can use web components as easily as any other element
+- Can use non-UI web components
+- Can configure web components easily
+- Can connect web components to build an app in the page
+
+
+
+
+Nice to have
+------------
+- Sub-components eg file list, editor could be used separately
+- Sub-components could be replaced eg interface to REST API, editor

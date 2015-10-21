@@ -1,0 +1,31 @@
+Overview
+========
+
+Components
+----------
+
+- File browser
+-   Data list view
+-   REST Data source
+- HTML editor
+- Code editor
+- Image editor?
+- Image uploader
+- Tab Manager
+- Coordinator
+
+
+UI
+--
+- Tabbed windows
+- Fixed tab with file browser
+- Tab for each file opened
+- Popup for file uploader
+- New button on file browser
+- Later: see file tree without details at left alongside editor tabs, open from there
+
+UX
+--
+- Separate edit and display mode ok - people used to that with word and powerpoint
+- Edit in place can only work with HTML
+- Need a way to get to your admin/editing area easily

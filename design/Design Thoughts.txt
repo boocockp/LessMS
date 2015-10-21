@@ -1,0 +1,4 @@
+Design Thoughts
+===============
+
+- Non-UI web components should still have a debugging interface to show what going on, can be turned on and off

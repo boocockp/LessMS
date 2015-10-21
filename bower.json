@@ -1,0 +1,27 @@
+{
+  "name": "nomess",
+  "version": "0.1.0",
+  "authors": [
+    "paulb <paulb@ashridgetech.com>"
+  ],
+  "description": "Browser CMS client",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "CMS"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.6"
+  }
+}

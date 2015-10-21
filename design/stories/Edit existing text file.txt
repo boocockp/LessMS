@@ -1,0 +1,58 @@
+Edit existing text file
+=======================
+
+Aim
+---
+
+- User can easily edit one of own files and save it
+- Later - preview and separate publish step
+
+Assume
+------
+- A file exists
+- The user exists
+
+Requirements
+------------
+- Can go to editing page with target page path attached to URL
+- If not signed in, see warning
+- If signed in but not one of own files, see warning
+- Edit view allows changes
+- When Save, new version seen on web immediately
+- When Save, stays in edit mode
+- When Close, goes back to view mode
+
+Nice to have
+------------
+- See actual page if go to edit for page you cannot edit
+- Can sign in and start editing
+
+Technical
+---------
+- Needs to work for HTML files and plain text and image
+- Edit directly from view not strictly necessary - use bookmarklet
+- Plain URL must serve up HTML and JS/CSS and image and JSON exactly as used in browser
+- Edit page is a standalone page with editing and saving JS and CSS
+- Gets file name from its own URL
+- Gets text of file by Ajax
+- Displays text in editor
+- Editor component that could be reused in multiple page editing environment
+- HTML editor responsible for reconstructing whole page if editing only allowed on part of it
+- File name needs to include user identifier - prob prefix
+- Need a call to check signed in and get user details
+- Need to get user details (so can see whether the file belongs to this user)
+- Sign in needs to show on page
+- Need a signIn and a signOut event
+- Server side needs to verify Google token and look up user with the id
+- Hold user details as JSON in S3 docs in private bucket
+- On save, call getSignedUrl and PUT file directly
+- On finish editing, send browser to the file URL (finish event from editor component handled outside)
+
+
+Ideas
+-----
+- Could go to different URL if that is useful
+- Good to do all in browser
+- Separate URL could be browser history
+- Useful to be able to go direct to edit mode from a link
+- Bookmarklet to go to edit area with current page preloaded

@@ -1,0 +1,61 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="file-editor">
+    <template>
+        <iron-ajax auto url="{{fileurl}}" last-response="{{fileData}}" handle-as="text"></iron-ajax>
+        <h3>{{fileName}}</h3>
+        <textarea id="editarea" cols="150" rows="30">{{fileData}}</textarea>
+        <div>
+            <button on-click="save">Save</button>
+            <button on-click="close">Close</button>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'file-editor',
+
+        properties: {
+            fileurl: {
+                type: String
+            },
+
+            fileName: {
+                type: String,
+                computed: 'computeFileName(fileurl)'
+            }
+        } ,
+
+        ready: function() {
+            this._listenToEvents();
+        },
+
+        _listenToEvents: function() {
+            var self = this;
+            this.addEventListener('#save', function(e){
+                self.save();
+            });
+            this.addEventListener('#close', function(e){
+                self.close();
+            });
+        },
+
+        computeFileName: function(url) {
+            var parser = document.createElement('a');
+            parser.href = url;
+            return parser.pathname;
+        },
+
+        save: function() {
+            console.log('Save');
+        },
+
+        close: function() {
+            console.log('Close');
+
+        }
+    });
+</script>
