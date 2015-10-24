@@ -1,0 +1,43 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="location-file-chooser">
+    <template>
+        <h3>{{filePath}}</h3>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'location-file-chooser',
+
+        properties: {
+            filePath: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+
+            fileUrl: {
+                type: String,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        ready: function() {
+            this._setFilePath(this.computeFilePath());
+            this._setFileUrl(this.computeFileUrl());
+        },
+
+        computeFilePath: function() {
+            var parser = document.createElement('a');
+            parser.href = location.search.split('=')[1];
+            return parser.pathname;
+        },
+
+        computeFileUrl: function() {
+            var parser = document.createElement('a');
+            return location.search.split('=')[1];
+        }
+    });
+</script>

@@ -4,7 +4,7 @@
 
 <dom-module id="file-editor">
     <template>
-        <iron-ajax auto url="{{fileurl}}" last-response="{{fileData}}" handle-as="text"></iron-ajax>
+        <iron-ajax auto url="{{fileUrl}}" last-response="{{fileData}}" handle-as="text"></iron-ajax>
         <h3>{{fileName}}</h3>
         <textarea id="editarea" cols="150" rows="30">{{fileData}}</textarea>
         <div>
@@ -19,13 +19,13 @@
         is: 'file-editor',
 
         properties: {
-            fileurl: {
+            fileUrl: {
                 type: String
             },
 
             fileName: {
                 type: String,
-                computed: 'computeFileName(fileurl)'
+                computed: 'computeFileName(fileUrl)'
             }
         } ,
 

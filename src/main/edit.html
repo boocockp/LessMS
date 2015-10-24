@@ -9,24 +9,16 @@
     <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <link rel="import" href="../../custom_components/file-editor.html">
     <link rel="import" href="../../custom_components/user-signin-google.html">
+    <link rel="import" href="../../custom_components/location-file-chooser.html">
 </head>
 <body>
     <div class="container">
-        <user-signin-google client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"></user-signin-google>
-        <file-editor></file-editor>
+        <template is="dom-bind">
+            <user-signin-google client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"></user-signin-google>
+            <location-file-chooser file-url="{{chosenUrl}}"></location-file-chooser>
+            <file-editor file-url="{{chosenUrl}}"></file-editor>
+        </template>
     </div>
-
-    <script>
-        var fileUrl = location.search.split('=')[1]
-        console.log("fileUrl", fileUrl);
-        if (fileUrl) {
-            $('file-editor').attr('fileUrl', fileUrl);
-//            document.getElementsByName('file-editor')
-        }
-//        gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token
-
-    </script>
-
 
 </body>
 </html>
