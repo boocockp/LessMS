@@ -10,12 +10,14 @@
     <link rel="import" href="../../custom_components/file-editor.html">
     <link rel="import" href="../../custom_components/user-signin-google.html">
     <link rel="import" href="../../custom_components/location-file-chooser.html">
+    <link rel="import" href="../../custom_components/url-file-loader.html">
 </head>
 <body>
     <div class="container">
         <template is="dom-bind">
             <user-signin-google client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"></user-signin-google>
             <location-file-chooser file-url="{{chosenUrl}}"></location-file-chooser>
+            <url-file-loader file-url="{{chosenUrl}}"></url-file-loader>
             <file-editor file-url="{{chosenUrl}}"></file-editor>
         </template>
     </div>

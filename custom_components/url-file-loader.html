@@ -1,0 +1,41 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="url-file-loader">
+    <template>
+        <style>
+            p {
+                font-size: 0.6em;
+                color: #dddddd;
+            }
+        </style>
+        <iron-ajax auto url="{{fileUrl}}" on-last-response-changed="onResponse"  handle-as="text"></iron-ajax>
+
+        <p>{{fileUrl}}</p>
+        <p>{{fileData}}</p>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'url-file-loader',
+
+        properties: {
+            fileUrl: {
+                type: String
+            },
+
+            fileData: {
+                type: String,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        onResponse: function(e) {
+            console.log("onResponse", e);
+            this._setFileData(e.detail.value);
+        }
+
+    });
+</script>
