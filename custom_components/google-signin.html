@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<dom-module id="google-signin">
+    <template>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'google-signin',
+
+        properties: {
+            clientId: {
+                type: String
+            },
+            name: {
+                type: String,
+                readOnly: true
+            },
+
+           idToken: {
+                type: String,
+                readOnly: true
+            },
+
+            profile: {
+                type: Object,
+                readOnly: true
+            }
+        } ,
+
+        onSignIn:  function(googleUser) {
+            this.profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+            this.name = this.profile.getName()
+            this.idToken = googleUser.getAuthResponse().id_token;
+            console.log('Id token', id_token);
+            this.fire('signin');
+            console.log('google-signin: signin');
+        },
+
+        signOut: function() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                this.fire('signout');
+                console.log('google-signin: signout');
+            });
+        }
+
+    });
+</script>

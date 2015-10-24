@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/google-signin/google-signin.html">
+
+<dom-module id="user-signin-google">
+    <style>
+        img {
+            margin-left: 10px;
+            border-radius: 50%;
+        }
+        span.name {
+            margin-left: 10px;
+        }
+        span.email {
+            margin-left: 10px;
+            font-size: 0.8em;
+            color: #aaaaaa;
+        }
+    </style>
+    <template>
+        <google-signin client-id="{{clientId}}"
+                       on-google-signed-out="onSignOut"
+                       on-google-signin-success="onSignIn"></google-signin>
+        <img src="{{profile.imageUrl}}" alt=""/>
+        <span class="name">{{profile.name}}</span>
+        <span class="email">{{profile.email}}</span>
+    </template>
+</dom-module>
+
+<script>
+    var PROFILE_IMAGE_WIDTH = 32;
+    Polymer({
+        is: 'user-signin-google',
+
+        properties: {
+            clientId: {
+                type: String
+            },
+            idToken: {
+                type: String,
+                readOnly: true
+            },
+
+            profile: {
+                type: Object,
+                readOnly: true
+            }
+        },
+
+        ready: function () {
+        },
+
+        onSignIn: function (e) {
+            var googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+            var profile = googleUser.getBasicProfile();
+            this._setProfile({
+                id: profile.getId(),
+                name: profile.getName(),
+                imageUrl: profile.getImageUrl() + "?sz=" + PROFILE_IMAGE_WIDTH,
+                email: profile.getEmail()
+            });
+            console.log('Profile: ', this.profile);
+            this._setIdToken(googleUser.getAuthResponse().id_token);
+            console.log('Id token', this.idToken);
+            this.fire('signin');
+            console.log('user-signin: signin');
+        },
+
+        onSignOut: function (e) {
+            this._setProfile({imageUrl: ""});
+            this._setIdToken(null);
+        }
+
+    });
+</script>

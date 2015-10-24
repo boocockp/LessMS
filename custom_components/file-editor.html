@@ -51,6 +51,8 @@
 
         save: function() {
             console.log('Save');
+            var idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+            console.log('idToken', idToken);
         },
 
         close: function() {

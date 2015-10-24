@@ -2,3 +2,7 @@ Design Thoughts
 ===============
 
 - Non-UI web components should still have a debugging interface to show what going on, can be turned on and off
+- Web components can have a standard prop setting interface, usable in CKEditor or elsewhere, that sets properties - and reflect in attribute
+- Background web components should be visible in editing view, and show their settings
+- When setting property to refer to another component by id, just click on it
+- Linking components - by id or nesting or in content?

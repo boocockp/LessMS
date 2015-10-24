@@ -20,12 +20,14 @@ Requirements
 - Edit view allows changes
 - When Save, new version seen on web immediately
 - When Save, stays in edit mode
-- When Close, goes back to view mode
+- When Close, goes to viewing the edited file
 
 Nice to have
 ------------
 - See actual page if go to edit for page you cannot edit
 - Can sign in and start editing
+- Save does nothing if no changes
+- Save button disabled if no changes
 
 Technical
 ---------
@@ -47,6 +49,7 @@ Technical
 - Hold user details as JSON in S3 docs in private bucket
 - On save, call getSignedUrl and PUT file directly
 - On finish editing, send browser to the file URL (finish event from editor component handled outside)
+- Editor is a component, combined with loader and saver to be file-loader-editor
 
 
 Ideas
@@ -56,3 +59,14 @@ Ideas
 - Separate URL could be browser history
 - Useful to be able to go direct to edit mode from a link
 - Bookmarklet to go to edit area with current page preloaded
+- Separate authoriser component
+- Separate storage component
+- Separate concerns into different components
+- Data flow:
+    - page or chooser -> s3-loader.filePath
+    - s3-loader.fileData -> file-editor.fileData
+    - file-editor.fileData -> s3-saver.fileData
+- Can you define a dom-module inline in the page? Is that useful?
+- Saver needs to be attached to authoriser:
+  saver.fileData -> s3-google-authoriser.fileData
+  s3-google-authoriser.saveUrl -> saver.saveUrl
