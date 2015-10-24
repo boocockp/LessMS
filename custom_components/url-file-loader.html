@@ -9,7 +9,7 @@
                 color: #dddddd;
             }
         </style>
-        <iron-ajax auto url="{{fileUrl}}" on-last-response-changed="onResponse"  handle-as="text"></iron-ajax>
+        <iron-ajax auto url="{{fileUrl}}" on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
 
         <p>{{fileUrl}}</p>
         <p>{{fileData}}</p>
@@ -33,7 +33,6 @@
         },
 
         onResponse: function(e) {
-            console.log("onResponse", e);
             this._setFileData(e.detail.value);
         }
 
