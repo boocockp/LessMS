@@ -16,22 +16,17 @@
 
         properties: {
             fileData: {
-                type: String
+                type: String,
+            },
+
+            savedFileData: {
+                type: String,
+                readOnly: true,
+                notify: true
             }
         } ,
 
         ready: function() {
-            this._listenToEvents();
-        },
-
-        _listenToEvents: function() {
-            var self = this;
-            this.addEventListener('#save', function(e){
-                self.save();
-            });
-            this.addEventListener('#close', function(e){
-                self.close();
-            });
         },
 
         computeFileName: function(url) {
@@ -42,8 +37,7 @@
 
         save: function() {
             console.log('Save');
-            var idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
-            console.log('idToken', idToken);
+            this._setSavedFileData(this.$.editarea.value);
         },
 
         close: function() {

@@ -1,0 +1,41 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="s3-file-saver">
+    <template>
+        <style>
+            p {
+                display: block;
+                color: #aaaaaa;
+            }
+        </style>
+        <iron-ajax id="putUrlGetter" url="{{putUrlServiceUrl}}" last-response={{putUrl}} on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
+        <iron-ajax url="{{putUrl}}" id="fileSaver" on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
+
+        <p>{{idToken}}</p>
+        <p>{{filePath}}</p>
+        <p>{{putUrlServiceUrl}}</p>
+        <p>{{fileData}}</p>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 's3-file-saver',
+
+        properties: {
+            filePath: String,
+            idToken: String,
+            putUrlServiceUrl: String,
+            fileData: {
+                type: String,
+                observer: '_fileDataChanged'
+            }
+        },
+
+        _fileDataChanged: function (data) {
+            console.log("_fileDataChanged");
+        }
+
+    });
+</script>
