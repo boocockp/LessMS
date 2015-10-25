@@ -9,13 +9,28 @@
                 color: #aaaaaa;
             }
         </style>
-        <iron-ajax id="putUrlGetter" url="{{putUrlServiceUrl}}" last-response={{putUrl}} on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
-        <iron-ajax url="{{putUrl}}" id="fileSaver" on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
+        <iron-ajax id="putUrlGetter"
+                   url="{{putUrlServiceUrl}}"
+                   method="POST"
+                   last-response={{putInfo}}
+                   content-type="application/json"
+                   handle-as="json"
+                   on-response="_putUrlReceived"></iron-ajax>
+        <iron-ajax id="fileSaver"
+                   url="{{putInfo.signedPutUrl}}"
+                   method="PUT"
+                   content-type="{{contentType}}"
+                   body="{{fileData}}"
+                   handle-as="text"
+                   on-response="_fileSaved"></iron-ajax>
 
         <p>{{idToken}}</p>
         <p>{{filePath}}</p>
+        <p>{{contentType}}</p>
         <p>{{putUrlServiceUrl}}</p>
         <p>{{fileData}}</p>
+        <p>{{putInfo.signedPutUrl}}</p>
+        <p>{{putInfo.getUrl}}</p>
     </template>
 </dom-module>
 
@@ -25,6 +40,10 @@
 
         properties: {
             filePath: String,
+            contentType: {
+                type: String,
+                default: 'text/html'
+            },
             idToken: String,
             putUrlServiceUrl: String,
             fileData: {
@@ -35,6 +54,22 @@
 
         _fileDataChanged: function (data) {
             console.log("_fileDataChanged");
+            this.$.putUrlGetter.body = {
+                idToken: this.idToken,
+                filePath: this.filePath,
+                contentType: this.contentType
+            };
+            this.$.putUrlGetter.generateRequest();
+        },
+
+        _putUrlReceived: function(e) {
+            console.log('Put url received');
+            this.$.fileSaver.body;
+            this.$.fileSaver.generateRequest();
+        },
+
+        _fileSaved: function(e) {
+            console.log('File saved');
         }
 
     });

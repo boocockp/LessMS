@@ -31,12 +31,11 @@
 
         computeFilePath: function() {
             var parser = document.createElement('a');
-            parser.href = location.search.split('=')[1];
-            return parser.pathname;
+            parser.href = this.computeFileUrl();
+            return parser.pathname.substring(1);
         },
 
         computeFileUrl: function() {
-            var parser = document.createElement('a');
             return location.search.split('=')[1];
         }
     });
