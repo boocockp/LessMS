@@ -1,0 +1,37 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="component-container">
+    <template>
+        <content></content>
+    </template>
+</dom-module>
+
+<script>
+    function isWebComponent(el){ return el.tagName.indexOf('-') != -1; }
+
+    Polymer({
+        is: 'component-container',
+
+        properties: {
+        },
+
+        ready: function() {
+            console.log('component-container ready');
+            var childElements = this.children;
+            for (var i = 0; i < childElements.length; i++) {
+                var c = childElements[i];
+                if (isWebComponent(c)) {
+                    if (typeof this[c.tagName] === 'undefined') {
+                        this[c.tagName] = c;
+                    }
+                    if (c.id && typeof this[c.id] === 'undefined') {
+                        this[c.id] = c;
+                    }
+
+                }
+            }
+
+        }
+
+    });
+</script>

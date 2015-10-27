@@ -7,6 +7,7 @@
     <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!--<link rel="import" href="../../custom_components/component-container.html">-->
     <link rel="import" href="../../custom_components/file-editor.html">
     <link rel="import" href="../../custom_components/user-signin-google.html">
     <link rel="import" href="../../custom_components/location-file-chooser.html">
@@ -16,12 +17,16 @@
 <body>
     <div class="container">
         <template id="t1" is="dom-bind">
-            <user-signin-google id="usg" client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com" id-token="{{idToken}}"></user-signin-google>
+
+            <user-signin-google id="usg"
+                                client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"
+                                id-token="{{idToken}}"></user-signin-google>
             <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}"></location-file-chooser>
             <url-file-loader id="ufl" file-url="{{fileUrl}}" file-data="{{fileData}}"></url-file-loader>
             <file-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></file-editor>
             <pre>{{savedData}}</pre>
-            <s3-file-saver file-path="{{filePath}}" id-token="{{idToken}}" put-url-service-url="http://localhost:3000/signed"
+            <s3-file-saver file-path="{{filePath}}" id-token="{{idToken}}"
+                           put-url-service-url="http://localhost:3000/signed"
                            content-type="text/html" file-data="{{savedData}}"></s3-file-saver>
 
          </template>
