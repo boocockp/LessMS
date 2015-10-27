@@ -1,36 +1,21 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<script src="../bower_components/aws-sdk/dist/aws-sdk.js"></script>
 
 <dom-module id="s3-file-saver">
     <template>
         <style>
             p {
-                display: block;
+                display: none;
                 color: #aaaaaa;
             }
         </style>
-        <iron-ajax id="putUrlGetter"
-                   url="{{putUrlServiceUrl}}"
-                   method="POST"
-                   last-response={{putInfo}}
-                   content-type="application/json"
-                   handle-as="json"
-                   on-response="_putUrlReceived"></iron-ajax>
-        <iron-ajax id="fileSaver"
-                   url="{{putInfo.signedPutUrl}}"
-                   method="PUT"
-                   content-type="{{contentType}}"
-                   body="{{fileData}}"
-                   handle-as="text"
-                   on-response="_fileSaved"></iron-ajax>
 
-        <p>{{idToken}}</p>
+        <p>{{identityPoolId}}</p>
+        <p>{{googleIdToken}}</p>
         <p>{{filePath}}</p>
         <p>{{contentType}}</p>
-        <p>{{putUrlServiceUrl}}</p>
         <p>{{fileData}}</p>
-        <p>{{putInfo.signedPutUrl}}</p>
-        <p>{{putInfo.getUrl}}</p>
     </template>
 </dom-module>
 
@@ -39,13 +24,13 @@
         is: 's3-file-saver',
 
         properties: {
+            identityPoolId: String,
             filePath: String,
             contentType: {
                 type: String,
                 default: 'text/html'
             },
-            idToken: String,
-            putUrlServiceUrl: String,
+            googleIdToken: String,
             fileData: {
                 type: String,
                 observer: '_fileDataChanged'
@@ -55,12 +40,11 @@
         _fileDataChanged: function (fileContents) {
             console.log("_fileDataChanged");
 
-            // Initialize the Amazon Cognito credentials provider
-            AWS.config.region = 'eu-west-1'; // Region
+            AWS.config.region = this.identityPoolId.split(":")[0];
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                IdentityPoolId: 'eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050',
-                Logins: { // optional tokens, used for authenticated login
-                    'accounts.google.com': this.idToken
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
                 }
             });
 
@@ -72,22 +56,12 @@
                 Body: fileContents
             }, function(error, data) {
                 if (error) {
-                    console.log('Error', error); // an error occurred
+                    console.log('Error saving file', error);
                 } else {
-                    console.log('Success', data); // request succeeded
+                    console.log('Saved file', data);
                 }
             });
 
-        },
-
-        _putUrlReceived: function(e) {
-            console.log('Put url received');
-            this.$.fileSaver.body;
-            this.$.fileSaver.generateRequest();
-        },
-
-        _fileSaved: function(e) {
-            console.log('File saved');
         }
 
     });

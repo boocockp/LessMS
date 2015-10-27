@@ -5,7 +5,6 @@
     <title>Edit file</title>
     <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../../bower_components/aws-sdk/dist/aws-sdk.js"></script>
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <!--<link rel="import" href="../../custom_components/component-container.html">-->
@@ -25,14 +24,11 @@
             <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}"></location-file-chooser>
             <url-file-loader id="ufl" file-url="{{fileUrl}}" file-data="{{fileData}}"></url-file-loader>
             <file-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></file-editor>
-            <pre>{{savedData}}</pre>
-            <s3-file-saver file-path="{{filePath}}" id-token="{{idToken}}"
-                           put-url-service-url="http://localhost:3000/signed"
+            <s3-file-saver file-path="{{filePath}}" google-id-token="{{idToken}}"
+                           identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
                            content-type="text/html" file-data="{{savedData}}"></s3-file-saver>
 
          </template>
     </div>
-
-
 </body>
 </html>
