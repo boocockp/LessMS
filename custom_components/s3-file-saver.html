@@ -52,14 +52,32 @@
             }
         },
 
-        _fileDataChanged: function (data) {
+        _fileDataChanged: function (fileContents) {
             console.log("_fileDataChanged");
-            this.$.putUrlGetter.body = {
-                idToken: this.idToken,
-                filePath: this.filePath,
-                contentType: this.contentType
-            };
-            this.$.putUrlGetter.generateRequest();
+
+            // Initialize the Amazon Cognito credentials provider
+            AWS.config.region = 'eu-west-1'; // Region
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: 'eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050',
+                Logins: { // optional tokens, used for authenticated login
+                    'accounts.google.com': this.idToken
+                }
+            });
+
+            var s3bucket = new AWS.S3({ params: {Bucket: 'ashridgetech.cmstest'} });
+            s3bucket.putObject({
+                Key: this.filePath,
+                ContentType: this.contentType,
+                ACL: 'public-read',
+                Body: fileContents
+            }, function(error, data) {
+                if (error) {
+                    console.log('Error', error); // an error occurred
+                } else {
+                    console.log('Success', data); // request succeeded
+                }
+            });
+
         },
 
         _putUrlReceived: function(e) {
