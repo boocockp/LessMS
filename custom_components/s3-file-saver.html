@@ -6,7 +6,7 @@
     <template>
         <style>
             p {
-                display: none;
+                display: block;
                 color: #aaaaaa;
             }
         </style>
@@ -49,18 +49,36 @@
             });
 
             var s3bucket = new AWS.S3({ params: {Bucket: 'ashridgetech.cmstest'} });
-            s3bucket.putObject({
-                Key: this.filePath,
-                ContentType: this.contentType,
-                ACL: 'public-read',
-                Body: fileContents
-            }, function(error, data) {
-                if (error) {
-                    console.log('Error saving file', error);
-                } else {
-                    console.log('Saved file', data);
+
+            var cognitoidentity = new AWS.CognitoIdentity();
+            var params = {
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            };
+
+            self = this;
+            cognitoidentity.getId(params, function(err, identity) {
+                if (err) console.log('Failed to get id', err, err.stack);
+                else {
+                    console.log('Got id', identity);
+                    var folder = identity.IdentityId.split(':')[1];
+                    s3bucket.putObject({
+                        Key: folder + '/' + self.filePath,
+                        ContentType: self.contentType,
+                        ACL: 'public-read',
+                        Body: fileContents
+                    }, function(error, data) {
+                        if (error) {
+                            console.log('Error saving file', error);
+                        } else {
+                            console.log('Saved file', data);
+                        }
+                    });
                 }
             });
+
 
         }
 

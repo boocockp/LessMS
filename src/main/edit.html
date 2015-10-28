@@ -21,7 +21,7 @@
             <user-signin-google id="usg"
                                 client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"
                                 id-token="{{idToken}}"></user-signin-google>
-            <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}"></location-file-chooser>
+            <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}" bucket-name="ashridgetech.cmstest"></location-file-chooser>
             <url-file-loader id="ufl" file-url="{{fileUrl}}" file-data="{{fileData}}"></url-file-loader>
             <file-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></file-editor>
             <s3-file-saver file-path="{{filePath}}" google-id-token="{{idToken}}"

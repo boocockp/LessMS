@@ -7,6 +7,8 @@
 </dom-module>
 
 <script>
+    var UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+
     Polymer({
         is: 'location-file-chooser',
 
@@ -21,6 +23,10 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+
+            bucketName: {
+                type: String
             }
         },
 
@@ -32,7 +38,10 @@
         computeFilePath: function() {
             var parser = document.createElement('a');
             parser.href = this.computeFileUrl();
-            return parser.pathname.substring(1);
+            var path = parser.pathname.substring(1);
+            path = path.replace(new RegExp(this.bucketName + '/'), '');
+            path = path.replace(new RegExp(UUID_REGEX + '/'), '');
+            return path;
         },
 
         computeFileUrl: function() {
