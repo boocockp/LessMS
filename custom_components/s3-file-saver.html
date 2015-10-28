@@ -63,7 +63,7 @@
                 if (err) console.log('Failed to get id', err, err.stack);
                 else {
                     console.log('Got id', identity);
-                    var folder = identity.IdentityId.split(':')[1];
+                    var folder = identity.IdentityId;
                     s3bucket.putObject({
                         Key: folder + '/' + self.filePath,
                         ContentType: self.contentType,

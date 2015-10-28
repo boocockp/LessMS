@@ -8,6 +8,8 @@
 
 <script>
     var UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+    var REGION_REGEX = '[a-z]{2}-[a-z]+-\\d';
+    var ID_REGEX = REGION_REGEX + ':' + UUID_REGEX;
 
     Polymer({
         is: 'location-file-chooser',
@@ -40,12 +42,12 @@
             parser.href = this.computeFileUrl();
             var path = parser.pathname.substring(1);
             path = path.replace(new RegExp(this.bucketName + '/'), '');
-            path = path.replace(new RegExp(UUID_REGEX + '/'), '');
+            path = path.replace(new RegExp(ID_REGEX + '/'), '');
             return path;
         },
 
         computeFileUrl: function() {
-            return location.search.split('=')[1];
+            return decodeURIComponent(location.search.split('=')[1]);
         }
     });
 </script>
