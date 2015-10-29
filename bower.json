@@ -24,6 +24,7 @@
     "jquery": "~2.1.4",
     "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
     "google-signin": "GoogleWebComponents/google-signin#~1.2.0",
-    "aws-sdk": "aws-sdk-js#~2.2.12"
+    "aws-sdk": "aws-sdk-js#~2.2.12",
+    "ag-grid": "~2.3.4"
   }
 }

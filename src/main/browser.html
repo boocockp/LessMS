@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse files</title>
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <link rel="import" href="../../custom_components/s3-file-tree.html">
+    <link rel="import" href="../../custom_components/file-browser.html">
+</head>
+<body>
+    <div class="container">
+        <template id="t1" is="dom-bind">
+
+            <s3-file-tree id="ft" file-tree="{{fileTree}}"></s3-file-tree>
+            <file-browser id="fb" file-tree="{{fileTree}}"></file-browser>
+
+        </template>
+    </div>
+
+</body>
+</html>
