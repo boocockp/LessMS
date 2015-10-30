@@ -1,7 +1,50 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<link href="../bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/ag-grid.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/theme-fresh.css" rel="stylesheet">
+<style>
+
+    .ag-file-browser .ag-root {
+        border: 1px solid grey;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .ag-file-browser .ag-cell {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    .ag-file-browser .ag-header-container {
+        background: -webkit-linear-gradient(white, lightgrey); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(white, lightgrey); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(white, lightgrey); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(white, lightgrey); /* Standard syntax */
+        border-bottom: 1px solid grey;
+    }
+
+    .ag-file-browser .ag-header-cell {
+        border-right: 1px solid grey;
+    }
+
+    .ag-file-browser .ag-header-cell-label {
+        padding: 4px;
+    }
+
+    .ag-file-browser .ag-row:hover {
+        background-color: aliceblue;
+    }
+
+    .ag-file-browser .ag-body {
+        background-color: #ffffff;
+    }
+
+    .ag-file-browser .ag-body-viewport {
+        background-color: #ffffff;
+    }
+
+</style>
+
 <script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
 
 
@@ -13,21 +56,62 @@
 </dom-module>
 
 <script>
+    // fileTree must be the root object of the file tree
+    function gridDataFromFileTree(fileTree) {
+        var result = fileTree ? fileTree.children.map(gridDataFromNode) : [];
+        result = result.map(function(r) {r.expanded = true; return r;});
+//        console.log('gridDataFromFileTree', result);
+//        console.log('result data', JSON.stringify(result));
+        return result;
+    }
+
+    function gridDataFromNode(node) {
+        if (node.children && node.children.length) {
+            return {
+                group: true,
+//                expanded: true,
+                data: {
+                    name: node.name,
+                    size: '',
+                    type: 'Folder',
+                    dateModified: node.dateModified
+                },
+                children: node.children.map(gridDataFromNode)
+            }
+        } else {
+            return {
+                group: false,
+                data: {
+                    name: node.name,
+                    size: node.size,
+                    type: node.type,
+                    dateModified: node.dateModified
+                }
+            }
+        }
+    }
+
+
     Polymer({
         is: 'file-browser',
 
         properties: {
             fileTree: {
                 type: Array,
+                value: function () {
+                    return {children: []};
+                },
                 observer: '_fileTreeChanged'
             }
         },
 
         _fileTreeChanged: function (fileTree) {
-            this.$.grid.api.setRowData(fileTree)
+            if (this.$.grid.api) {
+                this.$.grid.api.setRowData(gridDataFromFileTree(fileTree));
+            }
         },
 
-        ready: function() {
+        ready: function () {
             console.log('file-browser ready');
 
             function innerCellRenderer(params) {
@@ -37,8 +121,10 @@
                 } else {
                     image = 'file';
                 }
+
+                //TODO use class with background image so path relative to CSS
                 var imageFullUrl = '../../bower_components/ag-grid/dist/' + image + '.png';
-                return '<img src="'+imageFullUrl+'" style="padding-left: 4px;" /> ' + params.data.name;
+                return '<img src="' + imageFullUrl + '" style="padding-left: 4px;" /> ' + params.data.name;
             }
 
             function sizeCellStyle() {
@@ -46,19 +132,21 @@
             }
 
             var columnDefs = [
-                {headerName: "Name", field: "name", width: 250,
+                {
+                    headerName: "Name", field: "name", width: 250,
                     cellRenderer: {
                         renderer: 'group',
                         innerRenderer: innerCellRenderer
-                    }},
-                {headerName: "Size", field: "size", width: 70, cellStyle: sizeCellStyle},
+                    }
+                },
+                {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle},
                 {headerName: "Type", field: "type", width: 150},
-                {headerName: "Date Modified", field: "dateModified", width: 150}
+                {headerName: "Date Modified", field: "dateModified", width: 175}
             ];
 
             var gridOptions = {
                 columnDefs: columnDefs,
-                rowData: this.fileTree,
+                rowData: gridDataFromFileTree(this.fileTree),
                 rowSelection: 'multiple',
                 rowsAlreadyGrouped: true,
                 enableColResize: true,
@@ -75,7 +163,7 @@
 
         }
 
-    });
 
+    });
 
 </script>
