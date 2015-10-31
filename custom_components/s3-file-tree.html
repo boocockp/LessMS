@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/aws-sdk/dist/aws-sdk.js"></script>
+<script src="../bower_components/lodash/lodash.js"></script>
 
 <dom-module id="s3-file-tree">
     <template>
@@ -14,6 +16,54 @@
 </dom-module>
 
 <script>
+    function fileTreeFromS3(s3Items, folder) {
+        return {
+            name: "/",
+            children: extractItemsInFolder(s3Items, folder)
+        }
+    }
+
+    function typeFromExtension(name) {
+        if (!_.includes(name, '.')) {
+            return "";
+        } else {
+            var ext = _.last(name.split('.'));
+            return _.capitalize(ext);
+        }
+
+    }
+
+    function extractItemsInFolder(items, folder) {
+        var prefix = folder + '/';
+        var nameStart = prefix.length;
+        var itemsWithPrefix = items.filter( function(it) { return it.Key.indexOf(prefix) === 0;});
+        var leafItems = itemsWithPrefix.filter( function(it) { return it.Key.indexOf('/', nameStart) === -1;});
+        var subFolderItems = itemsWithPrefix.filter( function(it) { return it.Key.indexOf('/', nameStart) !== -1;});
+        var subFolderNamesWithDups = subFolderItems.map( function(it) {
+            var folderNameEnd = it.Key.indexOf('/', nameStart);
+            return it.Key.substring(nameStart, folderNameEnd);
+        });
+        var subFolderNames = _.uniq(subFolderNamesWithDups, true);
+        var leafResults = leafItems.map(function(it) {
+            var name = it.Key.substring(nameStart);
+            return {
+                name: name,
+                size: it.Size,
+                type: typeFromExtension(name),
+                dateModified: it.LastModified}
+            });
+
+        var subFolderResults = subFolderNames.map(function(subName) {
+            return {
+                name: subName,
+                children: extractItemsInFolder(subFolderItems, prefix + subName)
+            }
+        });
+
+        return _.sortBy(subFolderResults.concat(leafResults), 'name');
+
+    }
+
     Polymer({
         is: 's3-file-tree',
 
@@ -22,344 +72,69 @@
                 type: String
             },
 
-            folderPrefix: {
-                type: String
-            },
+//            folderPrefix: {
+//                type: String
+//            },
 
+            identityPoolId: String,
+            googleIdToken: String,
             fileTree: {
-                type: Array,
+                type: Object,
                 readOnly: true,
                 notify: true
             }
+        },
+        observers: [
+            '_updateFileTree(googleIdToken)'
+        ],
+
+        _updateFileTree: function (googleIdToken) {
+            console.log("_updateFileTree", "googleIdToken", googleIdToken);
+            if (!googleIdToken) return;
+
+            AWS.config.region = this.identityPoolId.split(":")[0];
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            });
+
+            var s3bucket = new AWS.S3({ params: {Bucket: this.bucketName} });
+
+            var cognitoidentity = new AWS.CognitoIdentity();
+            var params = {
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            };
+
+            var self = this;
+            cognitoidentity.getId(params, function(err, identity) {
+                if (err) console.log('Failed to get id', err, err.stack);
+                else {
+                    console.log('Got id', identity);
+                    var folder = identity.IdentityId;
+                    s3bucket.listObjects({Prefix: folder}, function (error, data) {
+                        if (error) {
+                            console.log('Error listing objects', error);
+                        } else {
+                            console.log('listObjects', data);
+                            var treeFromS3 = fileTreeFromS3(data.Contents, folder);
+                            console.log('fileTree', treeFromS3);
+                            self._setFileTree(treeFromS3);
+                        }
+                    });
+                }
+            });
 
         },
 
+
         ready: function () {
-            this._setFileTree(testData());
         }
 
     });
-
-    function testData() {
-        return {
-            name: 'root', dateModified: '2014-02-27T04:12:06Z', children: [
-                {
-
-
-                    name: 'C:',
-                    children: [
-                        {
-                            name: 'Windows', dateModified: '2014-02-27T04:12:06Z',
-                            children: [
-                                {
-                                    name: 'bfsve.exe',
-                                    size: '56897',
-                                    type: 'Application',
-                                    dateModified: '2014-03-13T10:14:06Z'
-                                },
-                                {
-                                    name: 'csup.txt',
-                                    size: '1897',
-                                    type: 'Text Document',
-                                    dateModified: '2012-11-27T04:12:06Z'
-                                },
-                                {
-                                    name: 'diagwrn.xml',
-                                    size: '21897',
-                                    type: 'XML File',
-                                    dateModified: '2014-03-18T00:56:06Z'
-                                }
-                            ]
-                        },
-                        {
-                            name: 'Program Files', dateModified: '2013-09-11T02:11:06Z',
-
-                            children: [
-                                {
-                                    name: 'ASUS', dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Classic Shell', dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Common Files', dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'DisplayLink Core Software',
-
-
-                                    dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Intel', dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Internet Explorer',
-
-
-                                    dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Intel Corporation',
-
-
-                                    dateModified: '2014-03-13T10:14:06Z',
-                                    children: [
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                },
-                                {
-                                    name: 'Java', dateModified: '2014-03-13T10:14:06Z',
-
-                                    children: [
-                                        {
-                                            name: 'jdk1.8.0',
-
-
-                                            dateModified: '2014-03-13T10:14:06Z',
-                                            children: [
-                                                {
-                                                    name: 'java.exe',
-                                                    size: '56897',
-                                                    type: 'Application',
-                                                    dateModified: '2014-03-13T10:14:06Z'
-                                                },
-                                                {
-                                                    name: 'javac.exe',
-                                                    size: '1897',
-                                                    type: 'Application',
-                                                    dateModified: '2012-11-27T04:12:06Z'
-                                                },
-                                                {
-                                                    name: 'weblaunch.exe',
-                                                    size: '21897',
-                                                    type: 'Application',
-                                                    dateModified: '2014-03-18T00:56:06Z'
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            name: 'jre1.8.0_31',
-
-
-                                            dateModified: '2014-03-13T10:14:06Z',
-                                            children: [
-                                                {
-                                                    name: 'java.exe',
-                                                    size: '56897',
-                                                    type: 'Application',
-                                                    dateModified: '2014-03-13T10:14:06Z'
-                                                },
-                                                {
-                                                    name: 'javac.exe',
-                                                    size: '1897',
-                                                    type: 'Application',
-                                                    dateModified: '2012-11-27T04:12:06Z'
-                                                },
-                                                {
-                                                    name: 'weblaunch.exe',
-                                                    size: '21897',
-                                                    type: 'Application',
-                                                    dateModified: '2014-03-18T00:56:06Z'
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            name: 'bfsve.exe',
-                                            size: '56897',
-                                            type: 'Application',
-                                            dateModified: '2014-03-13T10:14:06Z'
-                                        },
-                                        {
-                                            name: 'csup.txt',
-                                            size: '1897',
-                                            type: 'Text Document',
-                                            dateModified: '2012-11-27T04:12:06Z'
-                                        },
-                                        {
-                                            name: 'diagwrn.xml',
-                                            size: '21897',
-                                            type: 'XML File',
-                                            dateModified: '2014-03-18T00:56:06Z'
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {name: 'boot.ini', size: '16897', type: 'Boot File', dateModified: '2012-11-27T04:12:06Z'},
-                        {name: 'system.cfg', size: '13897', type: 'System File', dateModified: '2014-03-18T00:56:06Z'}
-                    ]
-                },
-                {
-
-                    name: 'D:',
-                    children: [
-                        {
-                            name: 'Game of Thrones s05e01.avi',
-                            size: '1034234567',
-                            type: 'Movie',
-                            dateModified: '2014-03-13T10:14:06Z'
-                        },
-                        {
-                            name: 'The Knick s01e01',
-                            size: '523234567',
-                            type: 'Text Document',
-                            dateModified: '2012-11-27T04:12:06Z'
-                        },
-                        {
-                            name: 'musicbackup1.zip',
-                            size: '25234567',
-                            type: 'Compressed Zip File',
-                            dateModified: '2014-03-18T00:56:06Z'
-                        },
-                        {
-                            name: 'musicbackup2.zip',
-                            size: '25234567',
-                            type: 'Compressed Zip File',
-                            dateModified: '2014-03-18T00:56:06Z'
-                        }
-                    ]
-                }
-            ]
-        }
-    }
-    ;
 
 </script>

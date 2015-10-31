@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <script src="../bower_components/aws-sdk/dist/aws-sdk.js"></script>
 
 <dom-module id="s3-file-saver">
@@ -58,7 +57,7 @@
                 }
             };
 
-            self = this;
+            var self = this;
             cognitoidentity.getId(params, function(err, identity) {
                 if (err) console.log('Failed to get id', err, err.stack);
                 else {

@@ -6,3 +6,16 @@ Design Thoughts
 - Background web components should be visible in editing view, and show their settings
 - When setting property to refer to another component by id, just click on it
 - Linking components - by id or nesting or in content?
+- Ways to edit structured data JSON files and store in CMS
+
+Components
+----------
+
+- Data - JSON inline in host doc
+- Data - references another file
+- JSON Editor from JSON Schema, with undo by saving version each time it changes
+
+Component editing
+-----------------
+
+- Use JSON editor with JSON Schema generated from property defs

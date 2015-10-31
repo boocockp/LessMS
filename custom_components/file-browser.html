@@ -51,7 +51,9 @@
 <dom-module id="file-browser">
     <template>
         <h1>File browser</h1>
-        <ag-grid id="grid" class="ag-file-browser"></ag-grid>
+        <div style="height: 500px;">
+            <ag-grid id="grid" class="ag-file-browser"></ag-grid>
+        </div>
     </template>
 </dom-module>
 
@@ -59,7 +61,7 @@
     // fileTree must be the root object of the file tree
     function gridDataFromFileTree(fileTree) {
         var result = fileTree ? fileTree.children.map(gridDataFromNode) : [];
-        result = result.map(function(r) {r.expanded = true; return r;});
+        result = result.map(function(r) {if (r.group) r.expanded = true; return r;});
 //        console.log('gridDataFromFileTree', result);
 //        console.log('result data', JSON.stringify(result));
         return result;
@@ -112,8 +114,6 @@
         },
 
         ready: function () {
-            console.log('file-browser ready');
-
             function innerCellRenderer(params) {
                 var image;
                 if (params.node.group) {
@@ -155,7 +155,8 @@
                 icons: {
                     groupExpanded: '<i class="fa fa-minus-square-o"/>',
                     groupContracted: '<i class="fa fa-plus-square-o"/>'
-                }
+                },
+                overlayNoRowsTemplate: '<span style="padding: 10px; border: 2px solid #444;">Loading file list...</span>'
 //                onRowClicked: rowClicked
             };
 
