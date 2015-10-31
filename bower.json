@@ -25,6 +25,9 @@
     "iron-ajax": "PolymerElements/iron-ajax#~1.0.6",
     "google-signin": "GoogleWebComponents/google-signin#~1.2.0",
     "aws-sdk": "aws-sdk-js#~2.2.12",
-    "ag-grid": "~2.3.4"
+    "ag-grid": "~2.3.4",
+    "font-awesome": "~4.4.0",
+    "lodash": "~3.10.1",
+    "xdate": "~0.8.1"
   }
 }
