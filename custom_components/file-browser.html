@@ -107,7 +107,8 @@
                 },
                 observer: '_fileTreeChanged'
             },
-            bucketName: String
+            bucketName: String,
+            editUrlBase: String
         },
 
         _fileTreeChanged: function (fileTree) {
@@ -122,11 +123,20 @@
                 return "http://" + self.bucketName + ".s3.amazonaws.com/" + path;
             }
 
+            function editUrl(path)  {
+                return self.editUrlBase + "?fileUrl=" + viewUrl(path);
+            }
+
             function viewLink(path, name) {
                 return '<a href="' + viewUrl(path) + '" target="' + name + '">' + name + '</a>'
             }
 
-            function innerCellRenderer(params) {
+            function editLink(path, name) {
+                return '<a href="' + editUrl(path) + '" target="' + 'edit_' + name + '">' +
+                        '<i class="fa fa-pencil-square-o" style="padding-left: 14px; font-size: 1.3em;"></i>' + '</a>'
+            }
+
+            function nameCellRenderer(params) {
                 var image;
                 if (params.node.group) {
                     image = params.node.level === 0 ? 'disk' : 'folder';
@@ -140,6 +150,10 @@
                 return '<img src="' + imageFullUrl + '" style="padding-left: 4px;" /> ' + cellContent;
             }
 
+            function editCellRenderer(params) {
+                return params.node.group ? '' : editLink(params.data.path, params.data.name);
+            }
+
             function sizeCellStyle() {
                 return {'text-align': 'right'};
             }
@@ -149,8 +163,12 @@
                     headerName: "Name", field: "name", width: 250,
                     cellRenderer: {
                         renderer: 'group',
-                        innerRenderer: innerCellRenderer
+                        innerRenderer: nameCellRenderer
                     }
+                },
+                {
+                    headerName: "Edit", field: "name", width: 50,
+                    cellRenderer: editCellRenderer
                 },
                 {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle},
                 {headerName: "Type", field: "type", width: 150},
