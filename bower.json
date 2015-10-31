@@ -28,6 +28,7 @@
     "ag-grid": "~2.3.4",
     "font-awesome": "~4.4.0",
     "lodash": "~3.10.1",
-    "xdate": "~0.8.1"
+    "xdate": "~0.8.1",
+    "filesize": "~3.1.3"
   }
 }

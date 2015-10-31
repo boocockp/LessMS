@@ -47,6 +47,7 @@
 
 <script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
 <script src="../bower_components/xdate/src/xdate.js"></script>
+<script src="../bower_components/filesize/lib/filesize.min.js"></script>
 
 
 <dom-module id="file-browser">
@@ -155,6 +156,10 @@
                 return params.node.group ? '' : editLink(params.data.path, params.data.name);
             }
 
+           function sizeCellRenderer(params) {
+                return params.node.group ? '' : filesize(params.data.size);
+            }
+
             function dateCellRenderer(params) {
                 var date = params.data.dateModified;
                 return date ? new XDate(params.data.dateModified).toString("dd MMM yyyy hh:mm") : '';
@@ -173,7 +178,7 @@
                     }
                 },
                 { headerName: "Edit", width: 50, cellRenderer: editCellRenderer},
-                {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle},
+                {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle, cellRenderer: sizeCellRenderer},
                 {headerName: "Type", field: "type", width: 150},
                 {headerName: "Date Modified", field: "dateModified", width: 175, cellRenderer: dateCellRenderer}
             ];
