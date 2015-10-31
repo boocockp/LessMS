@@ -74,6 +74,7 @@
 //                expanded: true,
                 data: {
                     name: node.name,
+                    path: node.path,
                     size: '',
                     type: 'Folder',
                     dateModified: node.dateModified
@@ -85,6 +86,7 @@
                 group: false,
                 data: {
                     name: node.name,
+                    path: node.path,
                     size: node.size,
                     type: node.type,
                     dateModified: node.dateModified
@@ -104,7 +106,8 @@
                     return {children: []};
                 },
                 observer: '_fileTreeChanged'
-            }
+            },
+            bucketName: String
         },
 
         _fileTreeChanged: function (fileTree) {
@@ -114,6 +117,15 @@
         },
 
         ready: function () {
+            var self = this;
+            function viewUrl(path)  {
+                return "http://" + self.bucketName + ".s3.amazonaws.com/" + path;
+            }
+
+            function viewLink(path, name) {
+                return '<a href="' + viewUrl(path) + '" target="' + name + '">' + name + '</a>'
+            }
+
             function innerCellRenderer(params) {
                 var image;
                 if (params.node.group) {
@@ -124,7 +136,8 @@
 
                 //TODO use class with background image so path relative to CSS
                 var imageFullUrl = '../../bower_components/ag-grid/dist/' + image + '.png';
-                return '<img src="' + imageFullUrl + '" style="padding-left: 4px;" /> ' + params.data.name;
+                var cellContent = params.node.group ? params.data.name : viewLink(params.data.path, params.data.name);
+                return '<img src="' + imageFullUrl + '" style="padding-left: 4px;" /> ' + cellContent;
             }
 
             function sizeCellStyle() {

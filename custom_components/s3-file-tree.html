@@ -48,6 +48,7 @@
             var name = it.Key.substring(nameStart);
             return {
                 name: name,
+                path: it.Key,
                 size: it.Size,
                 type: typeFromExtension(name),
                 dateModified: it.LastModified}

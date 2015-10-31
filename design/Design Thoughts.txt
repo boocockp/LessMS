@@ -1,6 +1,15 @@
 Design Thoughts
 ===============
 
+Separation of concerns
+----------------------
+- Nomess is just a CMS - can use web components in it or not
+- Any web components used in content could be used in any other site
+- Web components used in its implementation, but doesn't mean have to use them in content
+- SO - put user web components elsewhere
+
+Components
+----------
 - Non-UI web components should still have a debugging interface to show what going on, can be turned on and off
 - Web components can have a standard prop setting interface, usable in CKEditor or elsewhere, that sets properties - and reflect in attribute
 - Background web components should be visible in editing view, and show their settings
@@ -8,8 +17,6 @@ Design Thoughts
 - Linking components - by id or nesting or in content?
 - Ways to edit structured data JSON files and store in CMS
 
-Components
-----------
 
 - Data - JSON inline in host doc
 - Data - references another file
@@ -19,3 +26,22 @@ Component editing
 -----------------
 
 - Use JSON editor with JSON Schema generated from property defs
+
+Admin
+-----
+- Admin pages to view/adjust all users
+- Instant setup scripts to create a bucket and set it up as your CMS
+
+Single-user mode
+----------------
+- Everything directly under bucket root - good for standalone websites
+- Still allow multiple users
+
+Preview mode
+------------
+- Different bucket?
+
+Versioned mode
+--------------
+- Link to Github
+- Could have several versions before publishing
