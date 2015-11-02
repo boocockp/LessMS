@@ -43,6 +43,11 @@
         background-color: #ffffff;
     }
 
+    .ag-file-browser .ag-action {
+        margin-left: 11px;
+        font-size: 1.3em;
+    }
+
 </style>
 
 <script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
@@ -56,6 +61,7 @@
         <div style="height: 500px;">
             <ag-grid id="grid" class="ag-file-browser"></ag-grid>
         </div>
+        <input id="fileInput" type="file" multiple style="display:none">
     </template>
 </dom-module>
 
@@ -110,13 +116,40 @@
                 observer: '_fileTreeChanged'
             },
             bucketName: String,
-            editUrlBase: String
+            editUrlBase: String,
+            filesToUpload: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            }
         },
 
         _fileTreeChanged: function (fileTree) {
             if (this.$.grid.api) {
                 this.$.grid.api.setRowData(gridDataFromFileTree(fileTree));
             }
+        },
+
+        listeners: {
+            click: 'onClick'
+        },
+
+        onClick: function(e) {
+            console.log('onClick', e, e.target.getAttribute('data-upload'));
+            var uploadPath = e.target.getAttribute('data-upload');
+            if (uploadPath) {
+                this._selectFilesToUpload(uploadPath);
+            }
+        },
+
+        _selectFilesToUpload: function(path) {
+            var comp = this;
+
+            this.$.fileInput.onchange = function() {
+                console.log('Files selected', this.files);
+                comp._setFilesToUpload({path: path, files: this.files} );
+            };
+            this.$.fileInput.click();
         },
 
         ready: function () {
@@ -134,8 +167,12 @@
             }
 
             function editLink(path, name) {
-                return '<a href="' + editUrl(path) + '" target="' + 'edit_' + name + '">' +
-                        '<i class="fa fa-pencil-square-o" style="padding-left: 11px; font-size: 1.3em;"></i>' + '</a>'
+                return '<a href="' + editUrl(path) + '" target="' + 'edit_' + name + '" class="ag-action" title="Edit">' +
+                        '<i class="fa fa-pencil-square-o"></i>' + '</a>'
+            }
+
+            function uploadLink(path) {
+                return '<a href="#" class="ag-action fa fa-upload" title="Upload" data-upload="' + path + '"></a>';
             }
 
             function nameCellRenderer(params) {
@@ -153,7 +190,7 @@
             }
 
             function editCellRenderer(params) {
-                return params.node.group ? '' : editLink(params.data.path, params.data.name);
+                return params.node.group ? uploadLink(params.data.path) : editLink(params.data.path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
@@ -162,7 +199,7 @@
 
             function dateCellRenderer(params) {
                 var date = params.data.dateModified;
-                return date ? new XDate(params.data.dateModified).toString("dd MMM yyyy hh:mm") : '';
+                return date ? new XDate(params.data.dateModified).toString("dd MMM yyyy HH:mm") : '';
             }
 
             function sizeCellStyle() {
@@ -177,7 +214,7 @@
                         innerRenderer: nameCellRenderer
                     }
                 },
-                { headerName: "Edit", width: 50, cellRenderer: editCellRenderer},
+                { headerName: "Actions", width: 60, cellRenderer: editCellRenderer},
                 {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle, cellRenderer: sizeCellRenderer},
                 {headerName: "Type", field: "type", width: 150},
                 {headerName: "Date Modified", field: "dateModified", width: 175, cellRenderer: dateCellRenderer}

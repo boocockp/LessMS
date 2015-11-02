@@ -1,0 +1,15 @@
+Upload new file
+===============
+
+Aim
+---
+- Allow a general user to add a new file from their computer to their web files
+
+Requirements
+------------
+- Upload action on folder rows only
+- Can Pick one or more files
+- Uploads go to selected folder
+- Browser display updates after upload
+- Content type set correctly
+- Date modified retained from original

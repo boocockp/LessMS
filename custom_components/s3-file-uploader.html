@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/aws-sdk/dist/aws-sdk.js"></script>
+
+<dom-module id="s3-file-uploader">
+    <template>
+        <style>
+            p {
+                display: none;
+                color: #aaaaaa;
+            }
+        </style>
+
+        <p>{{identityPoolId}}</p>
+        <p>{{googleIdToken}}</p>
+        <p>{{filePath}}</p>
+        <p>{{contentType}}</p>
+        <p>{{fileData}}</p>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 's3-file-uploader',
+
+        properties: {
+            bucketName: String,
+            identityPoolId: String,
+            googleIdToken: String,
+            filesToUpload: {
+                type: Object,
+                observer: '_filesToUploadChanged'
+            },
+            filesUploaded: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        _filesToUploadChanged: function (requestedUploads) {
+            console.log("_filesToUploadChanged", requestedUploads.files);
+
+            AWS.config.region = this.identityPoolId.split(":")[0];
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            });
+
+            var s3bucket = new AWS.S3({ params: {Bucket: this.bucketName} });
+
+            var cognitoidentity = new AWS.CognitoIdentity();
+            var params = {
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            };
+
+            var comp = this;
+            cognitoidentity.getId(params, function(err, identity) {
+
+                if (err) console.log('Failed to get id', err, err.stack);
+                else {
+                    console.log('Got id', identity);
+                    var folder = identity.IdentityId;
+                    var uploadsRemaining = requestedUploads.files.length;
+                    var filesUploaded = [];
+                    for (var i = 0; i < requestedUploads.files.length; i++) {
+                        var file = requestedUploads.files[i];
+                        s3bucket.putObject({
+                            Key: requestedUploads.path + '/' + file.name,
+                            ContentType: file.type,
+                            ACL: 'public-read',
+                            Body: file
+                        }, function(error, data) {
+                            if (error) {
+                                console.log('Error uploading file', file.name, error);
+                            } else {
+                                console.log('Uploaded file', file.name);
+                                filesUploaded.push(file.name);
+                            }
+                            uploadsRemaining = uploadsRemaining - 1;
+                            if (uploadsRemaining == 0) {
+                                comp._setFilesUploaded(filesUploaded);
+                            }
+                        });
+                    }
+
+                }
+            });
+
+
+        }
+
+    });
+</script>

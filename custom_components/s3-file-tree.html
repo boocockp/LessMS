@@ -55,9 +55,11 @@
             });
 
         var subFolderResults = subFolderNames.map(function(subName) {
+            var path = prefix + subName;
             return {
                 name: subName,
-                children: extractItemsInFolder(subFolderItems, prefix + subName)
+                path: path,
+                children: extractItemsInFolder(subFolderItems, path)
             }
         });
 
@@ -72,11 +74,10 @@
             bucketName: {
                 type: String
             },
-
-//            folderPrefix: {
-//                type: String
-//            },
-
+            filesUploaded: {
+                type: Array,
+                value: function() { return [];}
+            },
             identityPoolId: String,
             googleIdToken: String,
             fileTree: {
@@ -86,7 +87,7 @@
             }
         },
         observers: [
-            '_updateFileTree(googleIdToken)'
+            '_updateFileTree(googleIdToken, filesUploaded)'
         ],
 
         _updateFileTree: function (googleIdToken) {
