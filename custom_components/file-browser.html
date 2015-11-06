@@ -290,7 +290,7 @@
             }
 
            function sizeCellRenderer(params) {
-                return params.node.group ? '' : filesize(params.data.size);
+                return params.node.group ? '' : filesize(params.data.size, {round: 0});
             }
 
             function dateCellRenderer(params) {
@@ -323,6 +323,7 @@
                 rowsAlreadyGrouped: true,
                 enableColResize: true,
                 enableSorting: true,
+                suppressCellSelection: true,
                 rowHeight: 20,
                 icons: {
                     groupExpanded: '<i class="fa fa-minus-square-o"/>',

@@ -1,12 +1,12 @@
 Backlog
 =======
 
-- Root folder visible in browser
+    - Root folder visible in browser
 - Create new file
-- Empty folder visible but empty placeholder not visible
+    - Empty folder visible but empty placeholder not visible
 - Create new folder
 - Deployable build
-- Move file
+    - Move file
 - Copy file
 - Single window tabbed browsing
 - View page in tabs
