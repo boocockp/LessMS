@@ -1,0 +1,20 @@
+Backlog
+=======
+
+- Root folder visible in browser
+- Create new file
+- Empty folder visible but empty placeholder not visible
+- Create new folder
+- Deployable build
+- Move file
+- Copy file
+- Single window tabbed browsing
+- View page in tabs
+- Preview
+- Move folder
+- Move multiple items
+- Delete file
+- Copy/delete multiple
+- Drag and drop image
+- Help/demo
+- Tests

@@ -3,6 +3,7 @@
 <link href="../bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/ag-grid.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/theme-fresh.css" rel="stylesheet">
+<script src="../bower_components/lodash/lodash.js"></script>
 <style>
 
     .ag-file-browser .ag-root {
@@ -48,6 +49,18 @@
         font-size: 1.3em;
     }
 
+    .ag-file-browser .fb-name {
+        cursor: move;
+    }
+
+    .ag-file-browser .fb-name.dragging {
+        opacity: 0.4;
+    }
+
+    .ag-file-browser .fb-name.fb-folder.over {
+        border: 1px solid green;
+    }
+
 </style>
 
 <script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
@@ -57,7 +70,7 @@
 
 <dom-module id="file-browser">
     <template>
-        <h1>File browser</h1>
+        <h1>Your files</h1>
         <div style="height: 500px;">
             <ag-grid id="grid" class="ag-file-browser"></ag-grid>
         </div>
@@ -66,41 +79,65 @@
 </dom-module>
 
 <script>
+
+    function createElement(html) {
+        var el = document.createElement('div');
+        el.innerHTML = html;
+        return el.childNodes[0];
+    }
+
     // fileTree must be the root object of the file tree
-    function gridDataFromFileTree(fileTree) {
-        var result = fileTree ? fileTree.children.map(gridDataFromNode) : [];
-        result = result.map(function(r) {if (r.group) r.expanded = true; return r;});
+    function gridDataFromFileTree(fileTreeRoot, previouslyExpandedPaths) {
+        if (!fileTreeRoot) return [];
+
+        var pathsToExpand = previouslyExpandedPaths.concat(fileTreeRoot.path);
+
+        function isExpanded(path) { return _.includes(pathsToExpand, path); }
+
+        function gridDataFromNode(node) {
+            if (node.children && node.children.length) {
+                return {
+                    group: true,
+                    expanded: isExpanded(node.path),
+                    data: {
+                        name: node.name,
+                        path: node.path,
+                        size: '',
+                        type: 'Folder',
+                        dateModified: node.dateModified
+                    },
+                    children: node.children.map(gridDataFromNode)
+                }
+            } else {
+                return {
+                    group: false,
+                    data: {
+                        name: node.name,
+                        path: node.path,
+                        size: node.size,
+                        type: node.type,
+                        dateModified: node.dateModified
+                    }
+                }
+            }
+        }
+
+        var result = [gridDataFromNode(fileTreeRoot)];
 //        console.log('gridDataFromFileTree', result);
 //        console.log('result data', JSON.stringify(result));
         return result;
     }
 
-    function gridDataFromNode(node) {
-        if (node.children && node.children.length) {
-            return {
-                group: true,
-//                expanded: true,
-                data: {
-                    name: node.name,
-                    path: node.path,
-                    size: '',
-                    type: 'Folder',
-                    dateModified: node.dateModified
-                },
-                children: node.children.map(gridDataFromNode)
+
+    function findExpandedPaths(gridApi) {
+        var result = [];
+        gridApi.forEachNode(function(node) {
+            if (node.expanded) {
+                result.push(node.data.path);
             }
-        } else {
-            return {
-                group: false,
-                data: {
-                    name: node.name,
-                    path: node.path,
-                    size: node.size,
-                    type: node.type,
-                    dateModified: node.dateModified
-                }
-            }
-        }
+        });
+
+        return result;
     }
 
 
@@ -109,10 +146,7 @@
 
         properties: {
             fileTree: {
-                type: Array,
-                value: function () {
-                    return {children: []};
-                },
+                type: Object,
                 observer: '_fileTreeChanged'
             },
             bucketName: String,
@@ -121,25 +155,83 @@
                 type: Object,
                 readOnly: true,
                 notify: true
+            },
+            filePathToMove: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+            destinationFilePath:  {
+                type: String,
+                readOnly: true,
+                notify: true
             }
+
         },
 
         _fileTreeChanged: function (fileTree) {
             if (this.$.grid.api) {
-                this.$.grid.api.setRowData(gridDataFromFileTree(fileTree));
+                var expandedPaths = findExpandedPaths(this.$.grid.api);
+                this.$.grid.api.setRowData(gridDataFromFileTree(fileTree, expandedPaths));
             }
         },
 
         listeners: {
-            click: 'onClick'
+            click: 'onClick',
+            dragstart: 'onDragStart',
+            dragenter: 'onDragEnter',
+            dragleave: 'onDragLeave',
+            dragover: 'onDragOver',
+            drop: 'onDrop',
+            dragend: 'onDragend'
         },
 
         onClick: function(e) {
-            console.log('onClick', e, e.target.getAttribute('data-upload'));
             var uploadPath = e.target.getAttribute('data-upload');
             if (uploadPath) {
                 this._selectFilesToUpload(uploadPath);
             }
+        },
+
+        onDragStart: function(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.path);
+        },
+
+        onDragEnter: function(e) {
+            if (e.target.classList.contains("fb-folder")) {
+                e.target.classList.add('over');
+            }
+        },
+
+        onDragLeave: function(e) {
+            e.target.classList.remove('over');
+        },
+
+        onDragOver: function(e) {
+            if (e.target.classList.contains("fb-folder")) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+        },
+
+        onDrop: function(e) {
+            if (e.target.classList.contains("fb-folder")) {
+                var toPath = e.target.path;
+                var sourcePath = e.dataTransfer.getData('text/plain');
+                this._setFilePathToMove(sourcePath);
+                this._setDestinationFilePath(toPath);
+            }
+        },
+
+        onDragend: function(e) {
+            e.stopPropagation(); // stops the browser from redirecting.
+            var folderEls = this.querySelectorAll(".fb-name");
+            [].forEach.call(folderEls, function (el) {
+                el.classList.remove('dragging');
+                el.classList.remove('over');
+            })
         },
 
         _selectFilesToUpload: function(path) {
@@ -163,7 +255,7 @@
             }
 
             function viewLink(path, name) {
-                return '<a href="' + viewUrl(path) + '" target="' + name + '">' + name + '</a>'
+                return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false">' + name + '</a>'
             }
 
             function editLink(path, name) {
@@ -185,8 +277,12 @@
 
                 //TODO use class with background image so path relative to CSS
                 var imageFullUrl = '../../bower_components/ag-grid/dist/' + image + '.png';
-                var cellContent = params.node.group ? params.data.name : viewLink(params.data.path, params.data.name);
-                return '<img src="' + imageFullUrl + '" style="padding-left: 4px;" /> ' + cellContent;
+                var name = params.node.level === 0 ? 'Your files' : params.data.name;
+                var cellContent = params.node.group ? name : viewLink(params.data.path, name);
+                var classList = params.node.group ? "fb-name fb-folder" : "fb-name fb-file";
+                var cell = createElement('<span draggable="true" class="' + classList + '"><img src="' + imageFullUrl + '" style="padding-left: 4px;" draggable="false"/> ' + cellContent + '</span>');
+                cell.path = params.data.path;
+                return cell;
             }
 
             function editCellRenderer(params) {
@@ -222,7 +318,7 @@
 
             var gridOptions = {
                 columnDefs: columnDefs,
-                rowData: gridDataFromFileTree(this.fileTree),
+                rowData: gridDataFromFileTree(this.fileTree, []),
                 rowSelection: 'multiple',
                 rowsAlreadyGrouped: true,
                 enableColResize: true,

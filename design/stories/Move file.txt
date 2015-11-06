@@ -1,0 +1,14 @@
+Move file
+=========
+
+Aim
+---
+- Allow a general user to move a file from one folder to another
+
+Requirements
+------------
+- Upload action on folder rows only
+- Can drag a single file and drop it on a folder
+- File copied to selected folder and deleted from original
+- Browser display updates after upload
+- Folders that are expanded stay open after redisplay

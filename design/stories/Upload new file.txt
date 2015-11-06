@@ -12,4 +12,3 @@ Requirements
 - Uploads go to selected folder
 - Browser display updates after upload
 - Content type set correctly
-- Date modified retained from original

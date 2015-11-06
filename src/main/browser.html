@@ -11,6 +11,7 @@
     <link rel="import" href="../../custom_components/user-signin-google.html">
     <link rel="import" href="../../custom_components/s3-file-tree.html">
     <link rel="import" href="../../custom_components/s3-file-uploader.html">
+    <link rel="import" href="../../custom_components/s3-file-mover.html">
     <link rel="import" href="../../custom_components/file-browser.html">
 </head>
 <body>
@@ -28,13 +29,24 @@
             <file-browser id="fb" file-tree="{{fileTree}}"
                           bucket-name="ashridgetech.cmstest"
                           edit-url-base="edit.html"
-                          files-to-upload="{{filesToUpload}}"></file-browser>
+                          files-to-upload="{{filesToUpload}}"
+                          file-path-to-move="{{filePathToMove}}"
+                          destination-file-path="{{destinationFilePath}}"></file-browser>
             <s3-file-uploader id="fu"
                               bucket-name="ashridgetech.cmstest"
                               google-id-token="{{idToken}}"
                               identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
                               files-to-upload="{{filesToUpload}}"
-                              files-uploaded="{{filesUploaded}}"></s3-file-uploader>
+                              files-uploaded="{{filesUploaded}}"
+                              file-path-to-move="{{filePathToMove}}"
+                              destination-file-path="{{destinationFilePath}}"></s3-file-uploader>
+            <s3-file-mover id="fm"
+                           bucket-name="ashridgetech.cmstest"
+                           google-id-token="{{idToken}}"
+                           identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
+                           file-path-to-move="{{filePathToMove}}"
+                           files-moved="{{filesUploaded}}"
+                           destination-file-path="{{destinationFilePath}}"></s3-file-mover>
 
         </template>
     </div>

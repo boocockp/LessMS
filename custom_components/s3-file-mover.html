@@ -1,0 +1,103 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/aws-sdk/dist/aws-sdk.js"></script>
+
+<dom-module id="s3-file-mover">
+    <template>
+        <style>
+            p {
+                display: none;
+                color: #aaaaaa;
+            }
+        </style>
+
+        <p>{{identityPoolId}}</p>
+
+        <p>{{googleIdToken}}</p>
+
+        <p>{{filePath}}</p>
+
+        <p>{{contentType}}</p>
+
+        <p>{{fileData}}</p>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 's3-file-mover',
+
+        properties: {
+            bucketName: String,
+            identityPoolId: String,
+            googleIdToken: String,
+            filePathToMove: String,
+            destinationFilePath: String,
+            filesMoved: {
+                type: Array,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        observers: [
+            '_moveFile(googleIdToken, filePathToMove, destinationFilePath)'
+        ],
+
+
+        _moveFile: function (googleIdToken, filePathToMove, destinationFilePath) {
+            console.log("_moveFile", filePathToMove, destinationFilePath);
+            var fileName = filePathToMove.split('/').pop();
+            var fullSourcePath = this.bucketName + '/' + filePathToMove;
+            var fullDestinationPath = destinationFilePath + '/' + fileName;
+
+
+            AWS.config.region = this.identityPoolId.split(":")[0];
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            });
+
+            var s3bucket = new AWS.S3({params: {Bucket: this.bucketName}});
+
+            var cognitoidentity = new AWS.CognitoIdentity();
+            var params = {
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            };
+
+            var self = this;
+            cognitoidentity.getId(params, function (err, identity) {
+                if (err) console.log('Failed to get id', err, err.stack);
+                else {
+                    console.log('Got id', identity);
+                    var folder = identity.IdentityId;
+                    s3bucket.copyObject({
+                        CopySource: fullSourcePath,
+                        Key: fullDestinationPath,
+                        ACL: 'public-read'
+                    }, function (error, data) {
+                        if (error) {
+                            console.log('Error copying file', error);
+                        } else {
+                            console.log('Copied file', data);
+                            s3bucket.deleteObject({Key: filePathToMove}, function (error, data) {
+                                if (error) {
+                                    console.log('Error deleting file', error);
+                                } else {
+                                    self._setFilesMoved([fullDestinationPath])
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+
+        }
+
+    });
+</script>
