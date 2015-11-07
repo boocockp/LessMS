@@ -9,7 +9,6 @@
     <link href="../../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
     <!--<link rel="import" href="../../custom_components/component-container.html">-->
     <link rel="import" href="../../custom_components/file-editor.html">
-    <link rel="import" href="../../custom_components/html-editor.html">
     <link rel="import" href="../../custom_components/user-signin-google.html">
     <link rel="import" href="../../custom_components/location-file-chooser.html">
     <link rel="import" href="../../custom_components/url-file-loader.html">
@@ -24,7 +23,7 @@
                                 id-token="{{idToken}}"></user-signin-google>
             <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}" bucket-name="ashridgetech.cmstest"></location-file-chooser>
             <url-file-loader id="ufl" file-url="{{fileUrl}}" file-data="{{fileData}}"></url-file-loader>
-            <html-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></html-editor>
+            <file-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></file-editor>
             <s3-file-saver bucket-name="ashridgetech.cmstest"
                            file-path="{{filePath}}" google-id-token="{{idToken}}"
                            identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"

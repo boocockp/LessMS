@@ -4,10 +4,6 @@
 <dom-module id="html-editor">
     <template>
         <textarea id="editarea">{{fileData}}</textarea>
-        <div>
-            <button on-click="save">Save</button>
-            <button on-click="close">Close</button>
-        </div>
     </template>
 </dom-module>
 
@@ -18,14 +14,8 @@
         properties: {
             fileData: {
                 type: String
-            },
-
-            savedFileData: {
-                type: String,
-                readOnly: true,
-                notify: true
             }
-        } ,
+        },
 
         ready: function() {
             CKEDITOR.basePath = "../../bower_components/ckeditor/";
@@ -37,20 +27,8 @@
             } );
         },
 
-        computeFileName: function(url) {
-            var parser = document.createElement('a');
-            parser.href = url;
-            return parser.pathname;
-        },
-
-        save: function() {
-            console.log('Save');
-            this._setSavedFileData(this.ckeditor.getData());
-        },
-
-        close: function() {
-            console.log('Close');
-
+        getFileData: function() {
+            return this.ckeditor.getData();
         }
     });
 </script>

@@ -33,11 +33,11 @@
         },
 
         ready: function() {
-            this._setFilePath(this.computeFileBasePath());
+            this._setFilePath(this.computeFilePath());
             this._setFileUrl(this.computeFileUrl());
         },
 
-        computeFileBasePath: function() {
+        computeFilePath: function() {
             var parser = document.createElement('a');
             parser.href = this.computeFileUrl();
             var path = parser.pathname.substring(1);
