@@ -170,6 +170,7 @@
             },
             bucketName: String,
             editUrlBase: String,
+            newUrlBase: String,
             filesToUpload: {
                 type: Object,
                 readOnly: true,
@@ -272,6 +273,8 @@
 
         _editNewFile: function(newType, newPath) {
             console.log('_editNewFile', newType, newPath);
+            var editNewUrl = this.newUrlBase + "?fileBasePath=" + newPath + "&contentType=" + newType;
+            window.open(editNewUrl, 'newFile')
         },
 
         ready: function () {
@@ -307,10 +310,10 @@
                         '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">' +
                         '  <li class="dropdown-header">New</li>' +
                         '  <li role="separator" class="divider"></li>' +
-                        '  <li><a href="#" data-newtype="html">HTML page</a></li>' +
-                        '  <li><a href="#" data-newtype="css">CSS file</a></li>' +
-                        '  <li><a href="#" data-newtype="js">JavaScript file</a></li>' +
-                        '  <li><a href="#" data-newtype="json">JSON file</a></li>' +
+                        '  <li><a href="#" data-newtype="text/html">HTML page</a></li>' +
+                        '  <li><a href="#" data-newtype="text/css">CSS file</a></li>' +
+                        '  <li><a href="#" data-newtype="text/js">JavaScript file</a></li>' +
+                        '  <li><a href="#" data-newtype="application/json">JSON file</a></li>' +
                         '</ul>' +
                         '</div>';
                 return html;

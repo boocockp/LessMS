@@ -13,11 +13,27 @@
     var REGION_REGEX = '[a-z]{2}-[a-z]+-\\d';
     var ID_REGEX = REGION_REGEX + ':' + UUID_REGEX;
 
+    function getQueryParameters() {
+        var query = location.search.substr(1);
+        var result = {};
+        query.split("&").forEach(function(part) {
+            var item = part.split("=");
+            result[item[0]] = decodeURIComponent(item[1]);
+        });
+        return result;
+    }
+
     Polymer({
         is: 'location-file-namer',
 
         properties: {
             fileBasePath: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+
+            contentType: {
                 type: String,
                 readOnly: true,
                 notify: true
@@ -38,6 +54,7 @@
 
         ready: function () {
             this._setFileBasePath(this.computeFileBasePath());
+            this._setContentType(this.computeContentType());
         },
 
         _fileNameChanged: function(fileName) {
@@ -45,9 +62,13 @@
         },
 
         computeFileBasePath: function () {
-            var path = location.search.split('=')[1];
+            var path = getQueryParameters().fileBasePath;
             path = path.replace(new RegExp(ID_REGEX + '/'), '');
             return path;
+        },
+
+        computeContentType: function () {
+            return getQueryParameters().contentType;
         }
     });
 </script>

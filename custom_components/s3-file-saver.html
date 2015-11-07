@@ -5,7 +5,7 @@
     <template>
         <style>
             p {
-                display: block;
+                display: none;
                 color: #aaaaaa;
             }
         </style>
@@ -81,7 +81,6 @@
                             console.log('Error saving file', error);
                         } else {
                             console.log('Saved file', data);
-//                            self.fire('save', {fullPath: fullPath, shortPath: self.filePath});
                             self._setSavedFileUrl("http://" + self.bucketName + ".s3.amazonaws.com/" + fullPath);
                         }
                     });

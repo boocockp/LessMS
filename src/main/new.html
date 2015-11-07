@@ -19,12 +19,12 @@
             <user-signin-google id="usg"
                                 client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"
                                 id-token="{{idToken}}"></user-signin-google>
-            <location-file-namer id="lfn" file-path="{{filePath}}"></location-file-namer>
-            <file-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></file-editor>
-            <s3-file-saver id="fs" bucket-name="ashridgetech.cmstest"
+            <location-file-namer id="lfn" file-path="{{filePath}}" content-type="{{contentType}}"></location-file-namer>
+            <file-editor file-data="{{fileData}}" content-type="{{contentType}}" saved-file-data="{{savedData}}"></file-editor>
+            <s3-file-saver id="fileSaver" bucket-name="ashridgetech.cmstest"
                            file-path="{{filePath}}" google-id-token="{{idToken}}"
                            identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
-                           content-type="text/html" file-data="{{savedData}}"></s3-file-saver>
+                           content-type="{{contentType}}" file-data="{{savedData}}"></s3-file-saver>
 
          </template>
     </div>
@@ -33,11 +33,8 @@
         var t = document.querySelector('#t1');
 
         t.addEventListener('dom-change', function() {
-            var fileSaver = t.$.fs;
-            fileSaver.addEventListener('saved-file-url-changed', function(e) {
-                var editUrl = "edit.html?fileUrl=" + e.detail.value;
-                console.log('saved-file-url-changed', editUrl);
-                location.href = editUrl;
+            t.$.fileSaver.addEventListener('saved-file-url-changed', function(e) {
+                location.href = "edit.html?fileUrl=" + e.detail.value;
             });
         });
     </script>

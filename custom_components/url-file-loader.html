@@ -29,11 +29,20 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+
+            contentType: {
+                type: String,
+                readOnly: true,
+                notify: true
             }
         },
 
         onResponse: function(e) {
             this._setFileData(e.detail.value);
+            // TODO hack - this uses non-documented internal implementation of iron-ajax component
+            var contentType = e.target.lastRequest.xhr.getResponseHeader("Content-Type").split(';').shift();
+            this._setContentType(contentType);
         }
 
     });
