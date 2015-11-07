@@ -1,9 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link href="../bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/ag-grid.css" rel="stylesheet">
 <link href="../bower_components/ag-grid/dist/theme-fresh.css" rel="stylesheet">
+
 <script src="../bower_components/lodash/lodash.js"></script>
+<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <style>
 
     .ag-file-browser .ag-root {
@@ -45,8 +49,15 @@
     }
 
     .ag-file-browser .ag-action {
-        margin-left: 11px;
-        font-size: 1.3em;
+        display: inline;
+        margin-left: 10px;
+        font-size: 1.1em;
+        text-decoration: none;
+    }
+
+    .ag-file-browser .ag-action a {
+        text-decoration: none;
+        cursor: pointer;
     }
 
     .ag-file-browser .fb-name {
@@ -59,6 +70,14 @@
 
     .ag-file-browser .fb-name.fb-folder.over {
         border: 1px solid green;
+    }
+
+    .ag-file-browser .dropdown-header {
+        font-size: 14px;
+    }
+
+    .ag-file-browser .dropdown-menu .divider {
+        margin: 4px 0
     }
 
 </style>
@@ -187,9 +206,16 @@
         },
 
         onClick: function(e) {
-            var uploadPath = e.target.getAttribute('data-upload');
+            var button = e.target;
+            var uploadPath = button.getAttribute('data-upload');
             if (uploadPath) {
                 this._selectFilesToUpload(uploadPath);
+            }
+
+            var newType = button.getAttribute('data-newtype');
+            if (newType) {
+                var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
+                this._editNewFile(newType, newPath);
             }
         },
 
@@ -244,6 +270,10 @@
             this.$.fileInput.click();
         },
 
+        _editNewFile: function(newType, newPath) {
+            console.log('_editNewFile', newType, newPath);
+        },
+
         ready: function () {
             var self = this;
             function viewUrl(path)  {
@@ -267,6 +297,25 @@
                 return '<a href="#" class="ag-action fa fa-upload" title="Upload" data-upload="' + path + '"></a>';
             }
 
+            function newMenu(path) {
+                var html =
+                        '<div class="ag-action dropdown" data-newpath="' + path + '">' +
+                        '<a class="dropdown-toggle"id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="New">' +
+                        '        <span class="fa fa-file-o">' +
+                        '        <span class="caret"></span>' +
+                        '</a>' +
+                        '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">' +
+                        '  <li class="dropdown-header">New</li>' +
+                        '  <li role="separator" class="divider"></li>' +
+                        '  <li><a href="#" data-newtype="html">HTML page</a></li>' +
+                        '  <li><a href="#" data-newtype="css">CSS file</a></li>' +
+                        '  <li><a href="#" data-newtype="js">JavaScript file</a></li>' +
+                        '  <li><a href="#" data-newtype="json">JSON file</a></li>' +
+                        '</ul>' +
+                        '</div>';
+                return html;
+            }
+
             function nameCellRenderer(params) {
                 var image;
                 if (params.node.group) {
@@ -285,8 +334,9 @@
                 return cell;
             }
 
-            function editCellRenderer(params) {
-                return params.node.group ? uploadLink(params.data.path) : editLink(params.data.path, params.data.name);
+            function actionsCellRenderer(params) {
+                var path = params.data.path;
+                return params.node.group ? uploadLink(path) + newMenu(path) : editLink(path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
@@ -302,6 +352,10 @@
                 return {'text-align': 'right'};
             }
 
+            function actionsCellStyle() {
+                return {'overflow': 'visible'};
+            }
+
             var columnDefs = [
                 {
                     headerName: "Name", field: "name", width: 250,
@@ -310,7 +364,7 @@
                         innerRenderer: nameCellRenderer
                     }
                 },
-                { headerName: "Actions", width: 60, cellRenderer: editCellRenderer},
+                { headerName: "Actions", width: 90, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer},
                 {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle, cellRenderer: sizeCellRenderer},
                 {headerName: "Type", field: "type", width: 150},
                 {headerName: "Date Modified", field: "dateModified", width: 175, cellRenderer: dateCellRenderer}

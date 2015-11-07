@@ -1,0 +1,11 @@
+Create new file
+===============
+
+Aim
+---
+- General user can create a new file and start editing it
+
+Requirements
+------------
+- New file icon on each folder
+- Brings up file type menu
