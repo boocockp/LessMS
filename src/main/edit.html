@@ -25,7 +25,8 @@
             <location-file-chooser id="lfc" file-url="{{fileUrl}}" file-path="{{filePath}}" bucket-name="ashridgetech.cmstest"></location-file-chooser>
             <url-file-loader id="ufl" file-url="{{fileUrl}}" file-data="{{fileData}}"></url-file-loader>
             <html-editor file-data="{{fileData}}" saved-file-data="{{savedData}}"></html-editor>
-            <s3-file-saver file-path="{{filePath}}" google-id-token="{{idToken}}"
+            <s3-file-saver bucket-name="ashridgetech.cmstest"
+                           file-path="{{filePath}}" google-id-token="{{idToken}}"
                            identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
                            content-type="text/html" file-data="{{savedData}}"></s3-file-saver>
 
