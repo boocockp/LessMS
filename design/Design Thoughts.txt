@@ -3,7 +3,7 @@ Design Thoughts
 
 Separation of concerns
 ----------------------
-- Nomess is just a CMS - can use web components in it or not
+- LessMS is just a CMS - can use web components in it or not
 - Any web components used in content could be used in any other site
 - Web components used in its implementation, but doesn't mean have to use them in content
 - SO - put user web components elsewhere

@@ -1,0 +1,15 @@
+What a CMS does
+===============
+
+- Hold web pages
+- Digital assets
+- Data assets
+- Publish
+- Versioning
+- Templating
+- Searching
+- Metadata
+- Content authoring UI
+- Central styling
+- User access control
+- Widgets

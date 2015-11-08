@@ -18,5 +18,7 @@ Backlog
 - Delete file
 - Copy/delete multiple
 - Drag and drop image to upload
+- Gzip files
+- Versioning and caching
 - Help/demo
 - Tests
