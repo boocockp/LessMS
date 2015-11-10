@@ -85,6 +85,10 @@
                 type: Array,
                 value: function() { return [];}
             },
+            folderCreated: {
+                type: String,
+                value: ''
+            },
             identityPoolId: String,
             googleIdToken: String,
             fileTree: {
@@ -94,11 +98,13 @@
             }
         },
         observers: [
-            '_updateFileTree(googleIdToken, filesUploaded)'
+            '_updateFileTree(googleIdToken, filesUploaded, folderCreated)'
         ],
 
         _updateFileTree: function (googleIdToken) {
             console.log("_updateFileTree", "googleIdToken", googleIdToken);
+
+            // uncomment for dummy data
 //            if (!googleIdToken) {
 //                this._setFileTree(fileTreeFromS3(dummyData, dummyFolder));
 //                return;

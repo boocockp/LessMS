@@ -25,6 +25,7 @@
                           identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
                           bucket-name="ashridgetech.cmstest"
                           files-uploaded="{{filesUploaded}}"
+                          folder-created="{{folderCreated}}"
                           file-tree="{{fileTree}}"></s3-file-tree>
             <file-browser id="fb" file-tree="{{fileTree}}"
                           bucket-name="ashridgetech.cmstest"
@@ -32,6 +33,7 @@
                           edit-url-base="edit.html"
                           files-to-upload="{{filesToUpload}}"
                           file-path-to-move="{{filePathToMove}}"
+                          folder-to-create="{{folderToCreate}}"
                           destination-file-path="{{destinationFilePath}}"></file-browser>
             <s3-file-uploader id="fu"
                               bucket-name="ashridgetech.cmstest"
@@ -39,7 +41,8 @@
                               identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
                               files-to-upload="{{filesToUpload}}"
                               files-uploaded="{{filesUploaded}}"
-                              file-path-to-move="{{filePathToMove}}"
+                              folder-to-create="{{folderToCreate}}"
+                              folder-created="{{folderCreated}}"
                               destination-file-path="{{destinationFilePath}}"></s3-file-uploader>
             <s3-file-mover id="fm"
                            bucket-name="ashridgetech.cmstest"

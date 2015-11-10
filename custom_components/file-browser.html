@@ -80,6 +80,15 @@
         margin: 4px 0
     }
 
+    .ag-file-browser .new-folder-name {
+        margin: 5px;
+        width: 20em;
+    }
+
+    .ag-file-browser .dropdown-input {
+        padding: 3px 20px;
+    }
+
 </style>
 
 <script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
@@ -114,7 +123,7 @@
         function isExpanded(path) { return _.includes(pathsToExpand, path); }
 
         function gridDataFromNode(node) {
-            if (node.children && node.children.length) {
+            if (node.children) {
                 return {
                     group: true,
                     expanded: isExpanded(node.path),
@@ -185,6 +194,11 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+            folderToCreate: {
+                type: String,
+                readOnly: true,
+                notify: true
             }
 
         },
@@ -198,6 +212,7 @@
 
         listeners: {
             click: 'onClick',
+            submit: 'onSubmit',
             dragstart: 'onDragStart',
             dragenter: 'onDragEnter',
             dragleave: 'onDragLeave',
@@ -217,6 +232,17 @@
             if (newType) {
                 var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
                 this._editNewFile(newType, newPath);
+            }
+        },
+
+        onSubmit: function(e) {
+            var form = e.target;
+
+            var newFolderPath = form.getAttribute('data-newfolder');
+            if (newFolderPath) {
+                e.preventDefault();
+                var newFolderName = form.querySelector(".new-folder-name").value;
+                this._newFolder(newFolderPath, newFolderName);
             }
         },
 
@@ -277,8 +303,22 @@
             window.open(editNewUrl, 'newFile')
         },
 
+        _newFolder: function(parentPath, folderName) {
+            console.log('_newFolder', parentPath, folderName);
+            this._setFolderToCreate(parentPath + '/' + folderName);
+        },
+
         ready: function () {
             var self = this;
+            function displayPath(path) {
+                var UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+                var REGION_REGEX = '[a-z]{2}-[a-z]+-\\d';
+                var ID_REGEX = REGION_REGEX + ':' + UUID_REGEX;
+                var pathNoId = path.replace(new RegExp(ID_REGEX), '');
+                var parentFolder = pathNoId.split('/').pop();
+                return parentFolder ? parentFolder : 'Your files';
+            }
+
             function viewUrl(path)  {
                 return "http://" + self.bucketName + ".s3.amazonaws.com/" + path;
             }
@@ -300,20 +340,42 @@
                 return '<a href="#" class="ag-action fa fa-upload" title="Upload" data-upload="' + path + '"></a>';
             }
 
-            function newMenu(path) {
+            function newFolderDropdown(path) {
+                var html =
+                        '<div class="ag-action dropdown">' +
+                        '<a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="New folder">' +
+                        '        <span class="fa fa-folder-o">' +
+                        '        <span class="caret"></span>' +
+                        '</a>' +
+                        '<ul class="dropdown-menu">' +
+                        '  <li class="dropdown-header">New folder in <strong>' + displayPath(path) + '</strong></li>' +
+                        '  <li role="separator" class="divider"></li>' +
+                        '  <li class="dropdown-input">' +
+                        '    <form data-newfolder="' + path + '">' +
+                        '      <span>Name</span><input class="new-folder-name">' +
+                        '      <button type="submit" class="create-folder btn btn-sm btn-primary">Create folder</button>' +
+                        '    </form>' +
+                        '  </li>' +
+                        '</ul>' +
+                        '</div>';
+                return html;
+            }
+
+            function newFileMenu(path) {
                 var html =
                         '<div class="ag-action dropdown" data-newpath="' + path + '">' +
-                        '<a class="dropdown-toggle"id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="New">' +
+                        '<a class="dropdown-toggle"id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="New file">' +
                         '        <span class="fa fa-file-o">' +
                         '        <span class="caret"></span>' +
                         '</a>' +
                         '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">' +
-                        '  <li class="dropdown-header">New</li>' +
+                        '  <li class="dropdown-header">New file</li>' +
                         '  <li role="separator" class="divider"></li>' +
                         '  <li><a href="#" data-newtype="text/html">HTML page</a></li>' +
                         '  <li><a href="#" data-newtype="text/css">CSS file</a></li>' +
                         '  <li><a href="#" data-newtype="text/js">JavaScript file</a></li>' +
                         '  <li><a href="#" data-newtype="application/json">JSON file</a></li>' +
+                        '  <li><a href="#" data-newtype="text/plain">Text file</a></li>' +
                         '</ul>' +
                         '</div>';
                 return html;
@@ -339,7 +401,7 @@
 
             function actionsCellRenderer(params) {
                 var path = params.data.path;
-                return params.node.group ? uploadLink(path) + newMenu(path) : editLink(path, params.data.name);
+                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : editLink(path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
@@ -367,7 +429,7 @@
                         innerRenderer: nameCellRenderer
                     }
                 },
-                { headerName: "Actions", width: 90, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer},
+                { headerName: "Actions", width: 120, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer},
                 {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle, cellRenderer: sizeCellRenderer},
                 {headerName: "Type", field: "type", width: 150},
                 {headerName: "Date Modified", field: "dateModified", width: 175, cellRenderer: dateCellRenderer}

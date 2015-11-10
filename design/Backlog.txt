@@ -4,10 +4,10 @@ Backlog
     - Root folder visible in browser
     - Create new file
     - Empty folder visible but empty placeholder not visible
-- Create new folder
+    - Create new folder
 - Deployable build
     - Move file
-- Insert image into page
+- Choose image to insert into page
 - Auto file type editing
 - Copy file
 - Single window tabbed browsing
