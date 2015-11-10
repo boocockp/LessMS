@@ -6,7 +6,7 @@ Store files in an S3 bucket in a folder linked to your Google id that only you c
 
 If the S3 bucket is a website bucket all the files are publicly available.
 
-List your files and edit them in a suitable editor.
+List your files and edit them in the browser.
 
 Everything is done in the browser using the AWS SDK - no server needed.
 
