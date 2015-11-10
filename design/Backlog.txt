@@ -18,7 +18,9 @@ Backlog
 - Delete file
 - Copy/delete multiple
 - Drag and drop image to upload
-- Gzip files
+- Gzip files - but keep sizes correct
+- Friendly user folder names
 - Versioning and caching
 - Help/demo
 - Tests
+- Refactor s3 access components into one

@@ -3,7 +3,7 @@
 
 <dom-module id="html-editor">
     <template>
-        <textarea id="editarea">{{fileData}}</textarea>
+        <textarea id="editarea"></textarea>
     </template>
 </dom-module>
 
@@ -13,13 +13,18 @@
 
         properties: {
             fileData: {
-                type: String
+                type: String,
+                observer: '_fileDataChanged'
             }
+        },
+
+        _fileDataChanged: function(data) {
+            this.editor.setData(data);
         },
 
         ready: function() {
             CKEDITOR.basePath = "../../bower_components/ckeditor/";
-            this.ckeditor = CKEDITOR.replace( this.$.editarea, {
+            this.editor = CKEDITOR.replace( this.$.editarea, {
                 fullPage: true,
                 extraPlugins: 'docprops',
                 allowedContent: true,
@@ -28,7 +33,7 @@
         },
 
         getFileData: function() {
-            return this.ckeditor.getData();
+            return this.editor.getData();
         }
     });
 </script>

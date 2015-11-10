@@ -1,9 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../custom_components/ace-editor.html">
 <link rel="import" href="../custom_components/html-editor.html">
 
 <dom-module id="file-editor">
     <template>
-        <html-editor id="editor" file-data="{{fileData}}"></html-editor>
+        <div id="editorContainer">
+        </div>
         <div>
             <button on-click="save">Save</button>
             <button on-click="close">Close</button>
@@ -17,7 +19,13 @@
 
         properties: {
             fileData: {
-                type: String
+                type: String,
+                observer: '_fileDataChanged'
+            },
+
+            contentType: {
+                type: String,
+                observer: '_contentTypeChanged'
             },
 
             savedFileData: {
@@ -30,14 +38,34 @@
         ready: function() {
         },
 
+        _fileDataChanged: function(data) {
+            if (this.editorElement) {
+                this.editorElement.fileData = data;
+            }
+        },
+
+        _contentTypeChanged: function(type) {
+            var editorType = this.editorTypes[type] || "ace-editor";
+            var editorElement = this.editorElement = document.createElement(editorType);
+            editorElement.id = "editor";
+            this.$.editorContainer.appendChild(editorElement);
+            editorElement.fileData = this.fileData;
+            editorElement.contentType = type;
+        },
+
         save: function() {
             console.log('Save');
-            this._setSavedFileData(this.$.editor.getFileData());
+            this._setSavedFileData(this.editorElement.getFileData());
         },
 
         close: function() {
             console.log('Close');
 
+        },
+
+        editorTypes: {
+            "text/html": "html-editor"
         }
+
     });
 </script>

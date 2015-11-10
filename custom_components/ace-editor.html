@@ -1,0 +1,59 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../lib/ace/ace.js"></script>
+
+<dom-module id="ace-editor">
+    <template>
+        <style>
+            #editarea {
+                width: 100%;
+                height: 500px;
+            }
+        </style>
+        <div id="editarea"></div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'ace-editor',
+
+        properties: {
+            fileData: {
+                type: String,
+                observer: '_fileDataChanged'
+            },
+            contentType: {
+                type: String,
+                observer: '_contentTypeChanged'
+            }
+        },
+
+        _fileDataChanged: function (data) {
+            this.editor.setValue(data);
+        },
+
+        _contentTypeChanged: function (mimeType) {
+            var mode = "ace/mode/" + this.modes[mimeType];
+            this.editor.session.setMode(mode);
+        },
+
+        ready: function () {
+            var editor = this.editor = ace.edit(this.$.editarea);
+            editor.setTheme("ace/theme/eclipse");
+            editor.session.setMode("ace/mode/javascript");
+
+        },
+
+        getFileData: function () {
+            return this.editor.getValue();
+        },
+
+        modes: {
+            "text/html": "html",
+            "text/css": "css",
+            "text/js": "javascript",
+            "application/json": "json",
+            "text/plain": "text"
+        }
+    });
+</script>
