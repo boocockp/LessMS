@@ -1,4 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script>
+    window.CKEDITOR_BASEPATH = "../../bower_components/ckeditor/";
+</script>
 <script src="../bower_components/ckeditor/ckeditor.js"></script>
 
 <dom-module id="html-editor">
@@ -23,7 +26,6 @@
         },
 
         ready: function() {
-            CKEDITOR.basePath = "../../bower_components/ckeditor/";
             this.editor = CKEDITOR.replace( this.$.editarea, {
                 fullPage: true,
                 extraPlugins: 'docprops',

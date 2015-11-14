@@ -6,13 +6,16 @@ Backlog
     - Empty folder visible but empty placeholder not visible
     - Create new folder
 - Deployable build
+- Live site
     - Move file
 - Choose image to insert into page
-- Auto file type editing
+    - Auto file type editing
+- Image editing
 - Copy file
+- Rename file
 - Single window tabbed browsing
 - View page in tabs
-- Preview
+- Preview before save
 - Move folder
 - Move multiple items
 - Delete file
@@ -22,5 +25,19 @@ Backlog
 - Friendly user folder names
 - Versioning and caching
 - Help/demo
+
+To do
+-----
 - Tests
 - Refactor s3 access components into one
+    - CKE plugins not working
+- Expanded groups not working
+- File list refreshes after change
+- Focus on new folder name box
+- Dismiss pop-ups with ESC
+- Ensure pop-ups at bottom of box
+- Focus in Ace editor, not all selected
+- No save without name
+- Correct extension for type on new file but can change
+- Close button closes tab but warns if edited
+- Stay on page warning

@@ -8,6 +8,7 @@
 
 <script src="../bower_components/lodash/lodash.js"></script>
 <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../bower_components/clipboard/dist/clipboard.js"></script>
 <style>
 
     .ag-file-browser .ag-root {
@@ -331,6 +332,11 @@
                 return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false">' + name + '</a>'
             }
 
+            function copyButton(path, name) {
+                return '<a href="#" data-clipboard-text="' + viewUrl(path) + '" class="ag-action" title="Copy link to clipboard">' +
+                        '<i class="fa fa-clipboard"></i>' + '</a>'
+            }
+
             function editLink(path, name) {
                 return '<a href="' + editUrl(path) + '" target="' + 'edit_' + name + '" class="ag-action" title="Edit">' +
                         '<i class="fa fa-pencil-square-o"></i>' + '</a>'
@@ -401,7 +407,7 @@
 
             function actionsCellRenderer(params) {
                 var path = params.data.path;
-                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : editLink(path, params.data.name);
+                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + editLink(path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
@@ -453,6 +459,8 @@
             };
 
             this.$.grid.setGridOptions(gridOptions);
+
+            new Clipboard('[data-clipboard-text]');
 
         }
 

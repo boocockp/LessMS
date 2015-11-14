@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../custom_components/ace-editor.html">
 <link rel="import" href="../custom_components/html-editor.html">
+<link rel="import" href="../custom_components/image-editor.html">
 
 <dom-module id="file-editor">
     <template>
@@ -64,7 +65,8 @@
         },
 
         editorTypes: {
-            "text/html": "html-editor"
+            "text/html": "html-editor",
+            "image/jpeg": "image-editor"
         }
 
     });
