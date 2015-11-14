@@ -1,16 +1,9 @@
 Backlog
 =======
 
-    - Root folder visible in browser
-    - Create new file
-    - Empty folder visible but empty placeholder not visible
-    - Create new folder
 - Deployable build
 - Live site
-    - Move file
 - Choose image to insert into page
-    - Auto file type editing
-    - Image editing
 - Feedback after actions
 - Copy file
 - Rename file
@@ -22,7 +15,6 @@ Backlog
 - Delete file
 - Copy/delete multiple
 - Drag and drop image to upload
-
 - Gzip files - but keep sizes correct
 - Friendly user folder names
 - Versioning and caching
@@ -43,3 +35,16 @@ To do
 - Correct extension for type on new file but can change
 - Close button closes tab but warns if edited
 - Stay on page warning
+
+Done
+----
+
+    - Root folder visible in browser
+    - Create new file
+    - Empty folder visible but empty placeholder not visible
+    - Create new folder
+    - Move file
+    - Copy URL to clipboard
+    - Auto file type editing
+    - Image editing
+

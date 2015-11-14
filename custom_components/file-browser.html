@@ -1,14 +1,14 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower/polymer/polymer.html">
 
-<link href="../bower_components/font-awesome/css/font-awesome.css" rel="stylesheet">
-<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
-<link href="../bower_components/ag-grid/dist/ag-grid.css" rel="stylesheet">
-<link href="../bower_components/ag-grid/dist/theme-fresh.css" rel="stylesheet">
+<link href="../bower/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="../bower/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="../bower/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="../bower/ag-grid/dist/ag-grid.css" rel="stylesheet">
+<link href="../bower/ag-grid/dist/theme-fresh.css" rel="stylesheet">
 
-<script src="../bower_components/lodash/lodash.js"></script>
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="../bower_components/clipboard/dist/clipboard.js"></script>
+<script src="../bower/lodash/lodash.js"></script>
+<script src="../bower/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../bower/clipboard/dist/clipboard.js"></script>
 <style>
 
     .ag-file-browser .ag-root {
@@ -92,9 +92,9 @@
 
 </style>
 
-<script src="../bower_components/ag-grid/dist/ag-grid.js"></script>
-<script src="../bower_components/xdate/src/xdate.js"></script>
-<script src="../bower_components/filesize/lib/filesize.min.js"></script>
+<script src="../bower/ag-grid/dist/ag-grid.js"></script>
+<script src="../bower/xdate/src/xdate.js"></script>
+<script src="../bower/filesize/lib/filesize.min.js"></script>
 
 
 <dom-module id="file-browser">
@@ -396,7 +396,7 @@
                 }
 
                 //TODO use class with background image so path relative to CSS
-                var imageFullUrl = '../../bower_components/ag-grid/dist/' + image + '.png';
+                var imageFullUrl = 'custom/images/' + image + '.png';
                 var name = params.node.level === 0 ? 'Your files' : params.data.name;
                 var cellContent = params.node.group ? name : viewLink(params.data.path, name);
                 var classList = params.node.group ? "fb-name fb-folder" : "fb-name fb-file";

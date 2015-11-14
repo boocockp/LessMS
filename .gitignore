@@ -4,3 +4,5 @@ bower_components/
 .idea/
 stuff/
 **/node_modules/
+src/main/bower
+src/main/custom
