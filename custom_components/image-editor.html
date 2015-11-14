@@ -8,8 +8,9 @@
         <style>
             #editarea {
                 width: 100%;
-                height: 500px;
+                min-height: 100px;
                 margin-top: 65px;
+                margin-bottom: 25px;
             }
         </style>
         <div id="editarea">
@@ -71,7 +72,7 @@
             var comp = this;
             this.$.target.addEventListener('load', function () {
                 comp.darkroom = new Darkroom('#target', {
-                    maxHeight: 500,
+                    maxHeight: 1000,
 
                     plugins: {
                         crop: {
