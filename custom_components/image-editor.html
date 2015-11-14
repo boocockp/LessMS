@@ -21,23 +21,18 @@
 </dom-module>
 
 <script>
-    function str2ab(str) {
-        var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-        var bufView = new Uint16Array(buf);
-        for (var i=0, strLen=str.length; i<strLen; i++) {
-            bufView[i] = str.charCodeAt(i);
+
+    function _arrayBufferToBase64( buffer ) {
+        var binary = '';
+        var bytes = new Uint8Array( buffer );
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode( bytes[ i ] );
         }
-        return buf;
+        return window.btoa( binary );
     }
 
-    function encode(data)
-    {
-        var str = "";
-        for (var i = 0; i < data.length; i++)
-            str += String.fromCharCode(data[i]);
 
-        return btoa(str);
-    }
     Polymer({
         is: 'image-editor',
 
@@ -54,9 +49,8 @@
 
         _fileDataChanged: function (data) {
             console.log('_fileDataChanged');
-            var buf = str2ab(data);
 
-            var base64ImageData = encode(buf);
+            var base64ImageData = _arrayBufferToBase64(data);
             var dataUrl = "data:image/jpeg;base64," + base64ImageData;
             this.$.target.src = dataUrl;
 

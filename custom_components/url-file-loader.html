@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/text-encoding/lib/encoding.js">
 
 <dom-module id="url-file-loader">
     <template>
@@ -9,14 +10,17 @@
                 color: #aaaaaa;
             }
         </style>
-        <iron-ajax auto url="{{fileUrl}}" on-last-response-changed="onResponse" handle-as="text"></iron-ajax>
+        <iron-ajax auto url="{{fileUrl}}" on-last-response-changed="onResponse" handle-as="arraybuffer"></iron-ajax>
 
         <p>{{fileUrl}}</p>
+
         <p>{{fileData}}</p>
     </template>
 </dom-module>
 
 <script>
+    var textMimeTypes = ['text/','application/javascript', 'application/json'];
+
     Polymer({
         is: 'url-file-loader',
 
@@ -38,11 +42,20 @@
             }
         },
 
-        onResponse: function(e) {
-            this._setFileData(e.detail.value);
+        onResponse: function (e) {
             // TODO hack - this uses non-documented internal implementation of iron-ajax component
             var contentType = e.target.lastRequest.xhr.getResponseHeader("Content-Type").split(';').shift();
             this._setContentType(contentType);
+
+            var fileBytes = e.detail.value;
+            var isText = textMimeTypes.some(function(typePrefix) { return contentType.indexOf(typePrefix) === 0});
+            if (isText) {
+                this._setFileData(new TextDecoder('UTF-8').decode(fileBytes));
+            } else {
+                this._setFileData(fileBytes);
+            }
+
+
         }
 
     });

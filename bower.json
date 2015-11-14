@@ -33,6 +33,7 @@
     "ckeditor": "~4.5.4",
     "ace": "~1.2.2",
     "darkroom": "~2.0.1",
-    "clipboard": "~1.5.3"
+    "clipboard": "~1.5.3",
+    "text-encoding": "~0.5.3"
   }
 }

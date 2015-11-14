@@ -43,6 +43,7 @@
             var path = parser.pathname.substring(1);
             path = path.replace(new RegExp(this.bucketName + '/'), '');
             path = path.replace(new RegExp(ID_REGEX + '/'), '');
+            path = decodeURIComponent(path);
             return path;
         },
 
