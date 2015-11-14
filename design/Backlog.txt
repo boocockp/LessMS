@@ -10,7 +10,8 @@ Backlog
     - Move file
 - Choose image to insert into page
     - Auto file type editing
-- Image editing
+    - Image editing
+- Feedback after actions
 - Copy file
 - Rename file
 - Single window tabbed browsing
@@ -21,6 +22,7 @@ Backlog
 - Delete file
 - Copy/delete multiple
 - Drag and drop image to upload
+
 - Gzip files - but keep sizes correct
 - Friendly user folder names
 - Versioning and caching
