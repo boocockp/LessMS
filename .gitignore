@@ -2,7 +2,9 @@ bower_components/
 *.iml
 *.log
 .idea/
+dist
 stuff/
 **/node_modules/
 src/main/bower
-src/main/custom
+src/main/lib
+
