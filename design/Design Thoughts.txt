@@ -37,11 +37,23 @@ Single-user mode
 - Everything directly under bucket root - good for standalone websites
 - Still allow multiple users
 
-Preview mode
-------------
+Preview/publish
+---------------
 - Different bucket?
+- Two copies?
+- Redirect from preview unless edited version there
+- Editor loads from preview (via redirect), writes back to preview
+- Publish done in client or server - move each file and replace with redirect
 
 Versioned mode
 --------------
 - Link to Github
 - Could have several versions before publishing
+- Linked to asset naming and optimisation
+
+Optimisation
+------------
+- Gzip files in place on S3
+- File sizes and other metadata in user data file
+- Assets versioned when publish, long expiry
+- Main files not versioned, but etag
