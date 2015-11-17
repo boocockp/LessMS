@@ -5,13 +5,12 @@
     <template>
         <style>
             p {
-                display: block;
+                display: none;
                 color: #aaaaaa;
             }
         </style>
         <iron-ajax id="ij" auto url="../config.json" on-last-response-changed="onResponse" handle-as="json"></iron-ajax>
 
-        <p>{{config}}</p>
     </template>
 </dom-module>
 

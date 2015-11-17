@@ -21,6 +21,8 @@ scss
 .npmignore
 .*
 CHANGELOG*
+CHANGES*
 changelog*
 Makefile
 version.txt
+samples

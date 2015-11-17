@@ -98,17 +98,17 @@
             }
         },
         observers: [
-            '_updateFileTree(googleIdToken, filesUploaded, folderCreated)'
+            '_updateFileTree(googleIdToken, bucketName, identityPoolId, filesUploaded, folderCreated)'
         ],
 
         _updateFileTree: function (googleIdToken) {
             console.log("_updateFileTree", "googleIdToken", googleIdToken);
 
             // uncomment for dummy data
-//            if (!googleIdToken) {
-//                this._setFileTree(fileTreeFromS3(dummyData, dummyFolder));
-//                return;
-//            }
+            if (!googleIdToken) {
+                this._setFileTree(fileTreeFromS3(dummyData, dummyFolder));
+                return;
+            }
 
             AWS.config.region = this.identityPoolId.split(":")[0];
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
