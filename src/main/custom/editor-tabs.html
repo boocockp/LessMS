@@ -1,0 +1,68 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<dom-module id="editor-tabs">
+    <template>
+        <style>
+        </style>
+        <div id="editorTabContainer">
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'editor-tabs',
+
+        properties: {
+            fileData: {
+                type: String,
+                observer: '_fileDataChanged'
+            },
+
+            contentType: {
+                type: String,
+                observer: '_contentTypeChanged'
+            },
+
+            savedFileData: {
+                type: String,
+                readOnly: true,
+                notify: true
+            }
+        } ,
+
+        ready: function() {
+        },
+
+        _fileDataChanged: function(data) {
+            if (this.editorElement) {
+                this.editorElement.fileData = data;
+            }
+        },
+
+        _contentTypeChanged: function(type) {
+            var editorType = this.editorTypes[type] || "ace-editor";
+            var editorElement = this.editorElement = document.createElement(editorType);
+            editorElement.id = "editor";
+            this.$.editorContainer.appendChild(editorElement);
+            editorElement.fileData = this.fileData;
+            editorElement.contentType = type;
+        },
+
+        save: function() {
+            console.log('Save');
+            this._setSavedFileData(this.editorElement.getFileData());
+        },
+
+        close: function() {
+            console.log('Close');
+
+        },
+
+        editorTypes: {
+            "text/html": "html-editor",
+            "image/jpeg": "image-editor"
+        }
+
+    });
+</script>
