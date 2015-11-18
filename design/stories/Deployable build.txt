@@ -10,9 +10,9 @@ Requirements
 ------------
 
 - Directory with all files except site-specific config
-- Deployment method is to copy distribution to a web server directory, along with config.json
+    - Deployment method is to copy distribution to a web server directory, along with config.json
     - Must include all files with correct relative paths
-- Have index.html file with link to browser page
+    - Have index.html file with link to browser page
     - Use minified versions of all third-party files
     - Include only the necessary parts of bower_components in the deployment
     - Include lib if bower dir not good enough
