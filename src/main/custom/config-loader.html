@@ -1,0 +1,33 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="../bower/iron-ajax/iron-ajax.html">
+
+<dom-module id="config-loader">
+    <template>
+        <style>
+            p {
+                display: none;
+                color: #aaaaaa;
+            }
+        </style>
+        <iron-ajax id="ij" auto url="../config.json" on-last-response-changed="onResponse" handle-as="json"></iron-ajax>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'config-loader',
+
+        properties: {
+            config: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        onResponse: function (e) {
+            this._setConfig(e.detail.value);
+        }
+    });
+</script>

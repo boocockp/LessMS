@@ -8,6 +8,7 @@
     <link href="bower/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="bower/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
 
+    <link rel="import" href="custom/config-loader.html">
     <link rel="import" href="custom/user-signin-google.html">
     <link rel="import" href="custom/s3-file-tree.html">
     <link rel="import" href="custom/s3-file-uploader.html">
@@ -19,36 +20,42 @@
         <template id="t1" is="dom-bind">
             <h1>LessMS - Your files</h1>
 
+            <config-loader config="{{config}}"></config-loader>
+
             <user-signin-google id="usg"
-                                client-id="919408445147-a0csgn7e21d773ilrif3q8d9hfrfc7vm.apps.googleusercontent.com"
+                                client-id="{{config.clientId}}"
                                 id-token="{{idToken}}"></user-signin-google>
+
             <s3-file-tree id="ft" google-id-token="{{idToken}}"
-                          identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
-                          bucket-name="ashridgetech.cmstest"
+                          identity-pool-id="{{config.identityPoolId}}"
+                          bucket-name="{{config.bucketName}}"
                           files-uploaded="{{filesUploaded}}"
                           folder-created="{{folderCreated}}"
                           file-tree="{{fileTree}}"></s3-file-tree>
+
             <file-browser id="fb" file-tree="{{fileTree}}"
-                          bucket-name="ashridgetech.cmstest"
+                          bucket-name="{{config.bucketName}}"
                           new-url-base="new.html"
                           edit-url-base="edit.html"
                           files-to-upload="{{filesToUpload}}"
                           file-path-to-move="{{filePathToMove}}"
                           folder-to-create="{{folderToCreate}}"
                           destination-file-path="{{destinationFilePath}}"></file-browser>
+
             <s3-file-uploader id="fu"
-                              bucket-name="ashridgetech.cmstest"
+                              bucket-name="{{config.bucketName}}"
                               google-id-token="{{idToken}}"
-                              identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
+                              identity-pool-id="{{config.identityPoolId}}"
                               files-to-upload="{{filesToUpload}}"
                               files-uploaded="{{filesUploaded}}"
                               folder-to-create="{{folderToCreate}}"
                               folder-created="{{folderCreated}}"
                               destination-file-path="{{destinationFilePath}}"></s3-file-uploader>
+
             <s3-file-mover id="fm"
-                           bucket-name="ashridgetech.cmstest"
+                           bucket-name="{{config.bucketName}}"
                            google-id-token="{{idToken}}"
-                           identity-pool-id="eu-west-1:c46e1da2-72cf-4965-92b8-ebe270684050"
+                           identity-pool-id="{{config.identityPoolId}}"
                            file-path-to-move="{{filePathToMove}}"
                            files-moved="{{filesUploaded}}"
                            destination-file-path="{{destinationFilePath}}"></s3-file-mover>
