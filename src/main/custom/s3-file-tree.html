@@ -104,8 +104,8 @@
         _updateFileTree: function (googleIdToken) {
             console.log("_updateFileTree", "googleIdToken", googleIdToken);
 
-            // uncomment for dummy data
-            if (!googleIdToken) {
+            // dummy data test mode
+            if (!!location.search.match(/\bdummyData=true\b/)) {
                 this._setFileTree(fileTreeFromS3(dummyData, dummyFolder));
                 return;
             }

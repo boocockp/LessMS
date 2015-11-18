@@ -69,7 +69,7 @@
 
         onSignOut: function (e) {
             this._setProfile({imageUrl: ""});
-            this._setIdToken(null);
+            this._setIdToken(undefined);   // use undefined rather than null as Polymer observers regards null as a valid value
         }
 
     });
