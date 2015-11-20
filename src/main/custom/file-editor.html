@@ -1,6 +1,7 @@
 <link rel="import" href="../bower/polymer/polymer.html">
 <link rel="import" href="ace-editor.html">
 <link rel="import" href="html-editor.html">
+<link rel="import" href="json-editor.html">
 <link rel="import" href="image-editor.html">
 
 <dom-module id="file-editor">
@@ -27,13 +28,11 @@
 
         properties: {
             fileData: {
-                type: String,
-                observer: '_fileDataChanged'
+                type: String
             },
 
             contentType: {
-                type: String,
-                observer: '_contentTypeChanged'
+                type: String
             },
 
             savedFileData: {
@@ -41,24 +40,47 @@
                 readOnly: true,
                 notify: true
             }
-        } ,
+        },
+
+        observers: [
+            '_updateEditor(fileData, contentType)'
+        ],
+
 
         ready: function() {
         },
 
-        _fileDataChanged: function(data) {
-            if (this.editorElement) {
-                this.editorElement.fileData = data;
-            }
+        _updateEditor: function() {
+            var comp = this;
+            this._createEditorElement().then(function (editorElement) {
+                editorElement.id = "editor";
+                comp.$.editorContainer.appendChild(editorElement);
+                editorElement.fileData = this.fileData;
+                editorElement.contentType = this.contentType;
+
+            });
         },
 
-        _contentTypeChanged: function(type) {
-            var editorType = this.editorTypes[type] || "ace-editor";
-            var editorElement = this.editorElement = document.createElement(editorType);
-            editorElement.id = "editor";
-            this.$.editorContainer.appendChild(editorElement);
-            editorElement.fileData = this.fileData;
-            editorElement.contentType = type;
+        _createEditorElement: function() {
+            if (this.contentType == "application/json") {
+                return this._findSchema().then(function(schema) {
+                    if (schema) {
+                        var editor = document.createElement("json-editor");
+                        editor.schema = schema;
+                        return editor;
+                    } else {
+                        return document.createElement("ace-editor");
+                    }
+                });
+            } else {
+                var editorType = this.editorTypes[type] || "ace-editor";
+                return Promise.resolve(document.createElement(editorType));
+            }
+
+        },
+
+        _findSchema: function() {
+            return Promise.resolve(testSchema);
         },
 
         save: function() {
@@ -77,4 +99,38 @@
         }
 
     });
+
+    var testSchema =
+    {
+        "title": "Person",
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "description": "First and Last name",
+                "minLength": 4,
+                "default": "Mickey"
+            },
+            "age": {
+                "type": "integer",
+                "default": 25,
+                "minimum": 18,
+                "maximum": 99
+            },
+            "favorite_color": {
+                "type": "string",
+                "format": "color",
+                "title": "favorite color",
+                "default": "#aabbcc"
+            },
+            "gender": {
+                "type": "string",
+                "enum": [
+                    "male",
+                    "female", "unspecified"
+                ]
+            }
+        }
+    };
+
 </script>

@@ -34,6 +34,7 @@
     "ace": "~1.2.2",
     "darkroom": "~2.0.1",
     "clipboard": "~1.5.3",
-    "text-encoding": "~0.5.3"
+    "text-encoding": "~0.5.3",
+    "json-editor": "~0.7.23"
   }
 }

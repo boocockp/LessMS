@@ -1,0 +1,52 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link href="../bower/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<script src="../bower/json-editor/dist/jsoneditor.js"></script>
+
+<dom-module id="json-editor">
+    <template>
+        <style>
+        </style>
+        <div id="jsonEditorContainer">
+        </div>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'json-editor',
+
+        properties: {
+            fileData: {
+                type: Object,
+                value: function() { return {}; }
+            },
+
+            schema: {
+                type: Object
+            }
+        },
+
+        observers: [
+            '_dataChanged(fileData, schema)'
+        ],
+
+
+        ready: function() {
+        },
+
+
+
+        _dataChanged: function() {
+            var options = {
+                schema: this.schema,
+                theme: "bootstrap3",
+                iconlib: "fontawesome4"
+            };
+            var el = this.$.jsonEditorContainer;
+            this.editor = new JSONEditor(el, options);
+        }
+
+    });
+
+</script>
