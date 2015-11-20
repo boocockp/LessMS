@@ -27,6 +27,7 @@ Component editing
 
 - Use JSON editor with JSON Schema generated from property defs
 
+
 Admin
 -----
 - Admin pages to view/adjust all users
@@ -57,3 +58,8 @@ Optimisation
 - File sizes and other metadata in user data file
 - Assets versioned when publish, long expiry
 - Main files not versioned, but etag
+
+Data objects
+------------
+- Convention: data dir, subdirs for each object type named after object type, schema in each object type dir
+- Editor looks for schema in same dir

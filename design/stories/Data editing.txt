@@ -1,0 +1,35 @@
+Data editing
+============
+
+Aim
+---
+- User can view/edit JSON data files with a form UI
+
+Requirements
+------------
+- When edit a JSON file, and schema.json available, use schema editor
+- When edit a JSON file, and no schema.json available, use ACE editor
+- Same behaviour when create a new JSON data file
+
+Finding schema
+--------------
+
+- Also need to be able to specify schema for a new file
+- In same dir? Convenient, but mixing data and definition.  Go with this for now.
+- As _schema or $schema in top-level object -  But how resolve to a file? - URL?  Convention?
+  - What if want an array?  _data convention?
+- As (invalid for JSON) comment in the object
+- Embedded in the object
+- Embedded in the file as a separate object
+- $schema which can be either embedded or a $ref
+- New file - need to select schema
+- Maybe JSON editor shows schema selector when opened if not set
+- Recently used schemas or favourites easy to find
+- Give choice to edit without schema
+- Could have default schema for dir
+
+Creating schemas
+----------------
+- Have a JSON editor for schemas
+- Can be used to define types of worksheet inputs
+

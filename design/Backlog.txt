@@ -1,13 +1,14 @@
 Backlog
 =======
 
-- Deployable build
-- Live site
-- Choose image to insert into page
+- Single window tabbed browsing
+- Data editing
+- Page components
 - Feedback after actions
+- Image thumbnails
+- Choose image to insert into page
 - Copy file
 - Rename file
-- Single window tabbed browsing
 - View page in tabs
 - Preview before save
 - Move folder
@@ -39,6 +40,8 @@ To do
 Done
 ----
 
+    - Deployable build
+    - Live site
     - Root folder visible in browser
     - Create new file
     - Empty folder visible but empty placeholder not visible

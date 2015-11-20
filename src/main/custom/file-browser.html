@@ -99,7 +99,6 @@
 
 <dom-module id="file-browser">
     <template>
-        <h1>Your files</h1>
         <div style="height: 500px;">
             <ag-grid id="grid" class="ag-file-browser"></ag-grid>
         </div>
@@ -175,12 +174,12 @@
 
         properties: {
             fileTree: {
-                type: Object,
-                observer: '_fileTreeChanged'
+                type: Object
             },
             bucketName: String,
             editUrlBase: String,
             newUrlBase: String,
+
             filesToUpload: {
                 type: Object,
                 readOnly: true,
@@ -204,7 +203,11 @@
 
         },
 
-        _fileTreeChanged: function (fileTree) {
+        observers: [
+            '_propsChanged(fileTree, bucketName, editUrlBase, newUrlBase)'
+        ],
+
+        _propsChanged: function (fileTree) {
             if (this.$.grid.api) {
                 var expandedPaths = findExpandedPaths(this.$.grid.api);
                 this.$.grid.api.setRowData(gridDataFromFileTree(fileTree, expandedPaths));
