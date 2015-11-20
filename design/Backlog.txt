@@ -2,6 +2,8 @@ Backlog
 =======
 
 - Single window tabbed browsing
+- Data editing
+- Page components
 - Feedback after actions
 - Image thumbnails
 - Choose image to insert into page
