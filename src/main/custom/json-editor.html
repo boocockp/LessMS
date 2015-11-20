@@ -18,8 +18,8 @@
 
         properties: {
             fileData: {
-                type: Object,
-                value: function() { return {}; }
+                type: Object/*,
+                value: function() { return {}; }*/
             },
 
             schema: {
@@ -35,7 +35,9 @@
         ready: function() {
         },
 
-
+        getFileData: function () {
+            return JSON.stringify(this.editor.getValue());
+        },
 
         _dataChanged: function() {
             var options = {

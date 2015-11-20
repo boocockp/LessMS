@@ -55,9 +55,9 @@
             this._createEditorElement().then(function (editorElement) {
                 editorElement.id = "editor";
                 comp.$.editorContainer.appendChild(editorElement);
-                editorElement.fileData = this.fileData;
-                editorElement.contentType = this.contentType;
-
+                editorElement.fileData = comp.fileData;
+                editorElement.contentType = comp.contentType;
+                comp.editorElement = editorElement;
             });
         },
 
