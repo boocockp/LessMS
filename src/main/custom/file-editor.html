@@ -26,18 +26,13 @@
         is: 'file-editor',
 
         properties: {
-            fileData: {
-                type: String,
-                observer: '_fileDataChanged'
+            fileForEdit: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileForEditChanged'
             },
 
-            contentType: {
-                type: String,
-                observer: '_contentTypeChanged'
-            },
-
-            savedFileData: {
-                type: String,
+            savedFile: {
+                type: Object,  // {filePath, contentType, data }
                 readOnly: true,
                 notify: true
             }
@@ -46,24 +41,22 @@
         ready: function() {
         },
 
-        _fileDataChanged: function(data) {
-            if (this.editorElement) {
-                this.editorElement.fileData = data;
-            }
-        },
-
-        _contentTypeChanged: function(type) {
-            var editorType = this.editorTypes[type] || "ace-editor";
+        _fileForEditChanged: function(file) {
+            var editorType = this.editorTypes[file.contentType] || "ace-editor";
             var editorElement = this.editorElement = document.createElement(editorType);
             editorElement.id = "editor";
             this.$.editorContainer.appendChild(editorElement);
-            editorElement.fileData = this.fileData;
-            editorElement.contentType = type;
+            editorElement.fileData = file.data;
+            editorElement.contentType = file.contentType;
         },
 
         save: function() {
             console.log('Save');
-            this._setSavedFileData(this.editorElement.getFileData());
+            this._setSavedFile({
+                filePath: this.fileForEdit.filePath,
+                contentType: this.fileForEdit.contentType,
+                data: this.editorElement.getFileData()
+            });
         },
 
         close: function() {
