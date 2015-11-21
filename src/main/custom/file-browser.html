@@ -199,12 +199,17 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+            filePathToEdit:  {
+                type: String,
+                readOnly: true,
+                notify: true
             }
 
         },
 
         observers: [
-            '_propsChanged(fileTree, bucketName, editUrlBase, newUrlBase)'
+            '_propsChanged(fileTree, bucketName)'
         ],
 
         _propsChanged: function (fileTree) {
@@ -227,6 +232,12 @@
 
         onClick: function(e) {
             var button = e.target;
+            e.preventDefault()
+            var editPath = button.getAttribute('data-edit');
+            if (editPath) {
+                this._editFile(editPath);
+            }
+
             var uploadPath = button.getAttribute('data-upload');
             if (uploadPath) {
                 this._selectFilesToUpload(uploadPath);
@@ -301,6 +312,11 @@
             this.$.fileInput.click();
         },
 
+        _editFile: function(editPath) {
+            console.log('_editFile', editPath);
+            this._setFilePathToEdit(editPath);
+        },
+
         _editNewFile: function(newType, newPath) {
             console.log('_editNewFile', newType, newPath);
             var editNewUrl = this.newUrlBase + "?fileBasePath=" + newPath + "&contentType=" + newType;
@@ -341,8 +357,7 @@
             }
 
             function editLink(path, name) {
-                return '<a href="' + editUrl(path) + '" target="' + 'edit_' + name + '" class="ag-action" title="Edit">' +
-                        '<i class="fa fa-pencil-square-o"></i>' + '</a>'
+                return '<a href="#" data-edit="' + path + '" class="ag-action fa fa-pencil-square-o" title="Edit"></a>'
             }
 
             function uploadLink(path) {

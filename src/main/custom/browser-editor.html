@@ -1,0 +1,94 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="file-browser.html">
+<link rel="import" href="tabbed-editor.html">
+
+<dom-module id="browser-editor">
+    <template>
+        <style>
+        </style>
+        <div id="browserEditorContainer">
+            <file-browser id="fileBrowser"
+                          bucket-name="{{bucketName}}"
+                          file-tree="{{fileTree}}"
+                          files-to-upload="{{filesToUpload}}"
+                          file-path-to-move="{{filePathToMove}}"
+                          folder-to-create="{{folderToCreate}}"
+                          destination-file-path="{{destinationFilePath}}"></file-browser>
+
+            <tabbed-editor id="te"
+                           bucket-name="{{bucketName}}"
+                           file-for-edit="{{fileForEdit}}"></tabbed-editor>
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'browser-editor',
+
+        properties: {
+            bucketName: String,
+            fileTree: {
+                type: Object
+            },
+
+            fileForEdit: Object,
+
+            filePathToEdit: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+
+            filesToUpload: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+            filePathToMove: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+            destinationFilePath:  {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+            folderToCreate: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+
+            fileInfo: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileInfoChanged'
+            },
+
+            savedFileData: {
+                type: String,
+                readOnly: true,
+                notify: true
+            }
+        } ,
+
+        listeners: {
+            'fileBrowser.file-path-to-edit-changed': '_fileEdit'
+        },
+
+
+        ready: function() {
+
+        },
+
+        _fileEdit: function(e) {
+            this._setFilePathToEdit(e.detail.value);
+        },
+
+        _fileInfoChanged: function(info) {
+            console.log('_fileInfoChanged', info);
+        }
+
+    });
+</script>

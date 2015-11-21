@@ -1,0 +1,48 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="file-editor.html">
+
+<dom-module id="tabbed-editor">
+    <template>
+        <style>
+        </style>
+        <div id="editorTabContainer">
+            <h2>{{fileInfo.filePath}}</h2>
+            <file-editor id="fe"
+                         file-data="{{fileData}}"
+                         saved-file-data="{{savedData}}"
+                         content-type="{{contentType}}"></file-editor>
+
+
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'tabbed-editor',
+
+        properties: {
+            bucketName: String,
+            fileForEdit: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileForEditChanged'
+            },
+
+            savedFileData: {
+                type: String,
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        ready: function() {
+        },
+
+        _fileForEditChanged: function(info) {
+            console.log('_fileForEditChanged', info);
+            this.$.fe.contentType = info.contentType;
+            this.$.fe.fileData = info.data;
+        }
+
+    });
+</script>

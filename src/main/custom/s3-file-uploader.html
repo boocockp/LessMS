@@ -19,6 +19,17 @@
 </dom-module>
 
 <script>
+    function getContent(fileBytes, contentType) {
+        var textMimeTypes = ['text/','application/javascript', 'application/json'];
+        var isText = textMimeTypes.some(function(typePrefix) { return contentType.indexOf(typePrefix) === 0});
+        if (isText) {
+            return new TextDecoder('UTF-8').decode(fileBytes);
+        } else {
+            return fileBytes;
+        }
+
+    }
+
     Polymer({
         is: 's3-file-uploader',
 
@@ -47,7 +58,20 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+
+            // get files
+            filePathToEdit: {
+                type: String,
+                observer: '_filePathToEditChanged'
+            },
+
+            fileForEdit: {
+                type: Object,
+                readOnly: true,
+                notify: true
             }
+
         },
 
         _filesToUploadChanged: function (requestedUploads) {
@@ -148,7 +172,37 @@
                     });
                 }
             });
+        },
+
+        _filePathToEditChanged: function (filePath) {
+            console.log("_filePathToEditChanged");
+
+            AWS.config.region = this.identityPoolId.split(":")[0];
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: this.identityPoolId,
+                Logins: {
+                    'accounts.google.com': this.googleIdToken
+                }
+            });
+
+            var s3bucket = new AWS.S3({ params: {Bucket: this.bucketName} });
+            var comp = this;
+            s3bucket.getObject({ Key: filePath}, function(error, data) {
+                if (error) {
+                    console.log('Error getting file', filePath, error);
+                } else {
+                    console.log('Got file', filePath);
+
+                    var contentType = data.ContentType.split(';')[0];
+                    comp._setFileForEdit({
+                        filePath: filePath,
+                        contentType: contentType,
+                        data: getContent(data.Body.buffer, contentType)
+                    });
+                }
+            });
         }
+
 
     });
 </script>

@@ -22,6 +22,36 @@ Components
 - Data - references another file
 - JSON Editor from JSON Schema, with undo by saving version each time it changes
 
+Component communication
+-----------------------
+- If A wants C to do something using data from B (eg file browser, file loader, editor)
+
+Pattern 1 - Instruction passing: (Restaurant with numbered tables)
+- A can send event with instruction object (eg Edit, path)
+- B listens for events from A, gets data, fires event containing data and instruction
+- C listens for events from B, knows what to do when event with instruction and data received
+
+Pattern 2 - Instruction matching
+- A sends event with instruction object (eg Edit, path)
+- C listens for events from A, fires a retrieve data event (eg path), stores instruction against path
+- B listens for events from C, gets data, fires event containing data and path
+- C listens for events from B, matches up path with instruction, knows what to do with data
+
+Pattern 3 - Simultaneous instructions
+- A sends event with instruction object (eg Edit, path)
+- B listens for events from A, gets data, fires event containing data and path
+- C listens for events from A, stores instruction against path
+- C listens for events from B, matches up path with instruction, knows what to do with data
+
+Pattern 4 - Separate events for each action
+- A sends edit event with path
+- B listens for edit events from A, gets data, fires fileLoadedForEdit event containing data and path
+- C listens for fileLoadedForEdit events from B, knows what to do when event with path and data received
+- B2 listens for view events from A, gets data, fires fileLoadedForView event containing data and path
+- C listens for fileLoadedForView events from B2, knows what to do when event with path and data received
+
+- Communicating with properties gives you a great debugging tool - you can just inspect the latest value
+
 Component editing
 -----------------
 
