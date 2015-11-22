@@ -1,5 +1,5 @@
 <link rel="import" href="../bower/polymer/polymer.html">
-<link rel="import" href="file-browser.html">
+<link rel="import" href="file-list.html">
 <link rel="import" href="tabbed-editor.html">
 
 <dom-module id="browser-editor">
@@ -7,17 +7,23 @@
         <style>
         </style>
         <div id="browserEditorContainer">
-            <file-browser id="fileBrowser"
-                          bucket-name="{{bucketName}}"
-                          file-tree="{{fileTree}}"
-                          files-to-upload="{{filesToUpload}}"
-                          file-path-to-move="{{filePathToMove}}"
-                          folder-to-create="{{folderToCreate}}"
-                          destination-file-path="{{destinationFilePath}}"></file-browser>
+            <div class="row">
+                <div class="col-md-2">
+                    <file-list id="fileBrowser"
+                               bucket-name="{{bucketName}}"
+                               file-tree="{{fileTree}}"
+                               files-to-upload="{{filesToUpload}}"
+                               file-path-to-move="{{filePathToMove}}"
+                               folder-to-create="{{folderToCreate}}"
+                               destination-file-path="{{destinationFilePath}}"></file-list>
+                </div>
+                <div class="col-md-10">
+                    <tabbed-editor id="te"
+                                   bucket-name="{{bucketName}}"
+                                   file-for-edit="{{fileForEdit}}"></tabbed-editor>
+                </div>
+            </div>
 
-            <tabbed-editor id="te"
-                           bucket-name="{{bucketName}}"
-                           file-for-edit="{{fileForEdit}}"></tabbed-editor>
         </div>
     </template>
 </dom-module>
