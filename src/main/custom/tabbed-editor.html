@@ -6,9 +6,14 @@
         <style>
         </style>
         <div id="editorTabContainer">
-            <h2>{{fileForEdit.filePath}}</h2>
-            <file-editor id="fe" file-for-edit="{{fileForEdit}}"></file-editor>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
 
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+            </div>
 
         </div>
     </template>
@@ -21,7 +26,8 @@
         properties: {
             bucketName: String,
             fileForEdit: {
-                type: Object  // {filePath, contentType, data}
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileForEditChanged'
             },
 
             savedFile: {
@@ -31,7 +37,21 @@
             }
         },
 
-        ready: function() {
+        ready: function () {
+        },
+
+        _fileForEditChanged: function(fileInfo) {
+            var fileName = fileInfo.filePath.split('/').pop();
+            var tabId = 'tab_' + Date.now();
+            var navTabElement = $('<li role="presentation"><a href="#' + tabId + '" role="tab" data-toggle="tab">' + fileName + '</a></li>')[0];
+            var tabPaneElement = $('<div role="tabpanel" class="tab-pane" id="' + tabId + '"></div>')[0];
+            var editorElement = document.createElement("file-editor");
+            this.$.editorTabContainer.querySelector("[role='tablist']").appendChild(navTabElement);
+            this.$.editorTabContainer.querySelector(".tab-content").appendChild(tabPaneElement);
+            tabPaneElement.appendChild(editorElement);
+            editorElement.fileForEdit = fileInfo;
+            $(navTabElement).find('a').tab('show');
+
         }
     });
 </script>
