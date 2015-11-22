@@ -8,7 +8,7 @@
         </style>
         <div id="browserEditorContainer">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <file-list id="fileList"
                                bucket-name="{{bucketName}}"
                                file-tree="{{fileTree}}"
@@ -17,7 +17,7 @@
                                folder-to-create="{{folderToCreate}}"
                                destination-file-path="{{destinationFilePath}}"></file-list>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <tabbed-editor id="te"
                                    bucket-name="{{bucketName}}"
                                    file-for-edit="{{fileForEdit}}"></tabbed-editor>
@@ -82,7 +82,9 @@
         listeners: {
             'fileList.file-path-to-edit-changed': '_fileEdit',
             'fileList.file-path-to-move-changed': '_fileMove',
-            'fileList.destination-file-path-changed': '_fileDest'
+            'fileList.destination-file-path-changed': '_fileDest',
+            'fileList.files-to-upload-changed': '_fileUpload',
+            'fileList.folder-to-create-changed': '_folderCreate'
         },
 
 
@@ -100,6 +102,14 @@
 
         _fileDest: function(e) {
             this._setDestinationFilePath(e.detail.value);
+        },
+
+        _fileUpload: function(e) {
+            this._setFilesToUpload(e.detail.value);
+        },
+
+        _folderCreate: function(e) {
+            this._setFolderToCreate(e.detail.value);
         },
 
         _fileInfoChanged: function(info) {

@@ -66,15 +66,5 @@
         </template>
     </div>
 
-    <script>
-        var t1 = document.querySelector('#t1');
-
-        t1.addEventListener('dom-change', function() {
-            t1.$.be.addEventListener('file-path-to-edit-changed', function(e) {
-                console.log('file-path-to-edit-changed', e.detail.value)
-            })
-        });
-    </script>
-
 </body>
 </html>

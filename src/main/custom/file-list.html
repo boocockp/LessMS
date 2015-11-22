@@ -232,19 +232,21 @@
 
         onClick: function(e) {
             var button = e.target;
-            e.preventDefault()
             var editPath = button.getAttribute('data-edit');
             if (editPath) {
+                e.preventDefault()
                 this._editFile(editPath);
             }
 
             var uploadPath = button.getAttribute('data-upload');
             if (uploadPath) {
+                e.preventDefault()
                 this._selectFilesToUpload(uploadPath);
             }
 
             var newType = button.getAttribute('data-newtype');
             if (newType) {
+                e.preventDefault()
                 var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
                 this._editNewFile(newType, newPath);
             }
@@ -451,7 +453,9 @@
                         renderer: 'group',
                         innerRenderer: nameCellRenderer
                     }
-                }
+                },
+                { headerName: "Actions", width: 120, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer}
+
             ];
 
             var gridOptions = {
