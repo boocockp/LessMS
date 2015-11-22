@@ -81,9 +81,17 @@
         margin: 4px 0
     }
 
+    .ag-file-browser .dropdown-menu.new-folder {
+        left: -300px;
+    }
+
+    .ag-file-browser .dropdown-menu.new-file {
+        left: -50px;
+    }
+
     .ag-file-browser .new-folder-name {
-        margin: 5px;
-        width: 20em;
+        margin-right: 5px;
+        width: 15em;
     }
 
     .ag-file-browser .dropdown-input {
@@ -372,12 +380,13 @@
                         '        <span class="fa fa-folder-o">' +
                         '        <span class="caret"></span>' +
                         '</a>' +
-                        '<ul class="dropdown-menu">' +
+                        '<ul class="dropdown-menu new-folder">' +
                         '  <li class="dropdown-header">New folder in <strong>' + displayPath(path) + '</strong></li>' +
                         '  <li role="separator" class="divider"></li>' +
                         '  <li class="dropdown-input">' +
                         '    <form data-newfolder="' + path + '">' +
-                        '      <span>Name</span><input class="new-folder-name">' +
+                        '      <div>Name</div>' +
+                        '      <input class="new-folder-name">' +
                         '      <button type="submit" class="create-folder btn btn-sm btn-primary">Create folder</button>' +
                         '    </form>' +
                         '  </li>' +
@@ -393,7 +402,7 @@
                         '        <span class="fa fa-file-o">' +
                         '        <span class="caret"></span>' +
                         '</a>' +
-                        '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">' +
+                        '<ul class="dropdown-menu new-file" aria-labelledby="dropdownMenu1">' +
                         '  <li class="dropdown-header">New file</li>' +
                         '  <li role="separator" class="divider"></li>' +
                         '  <li><a href="#" data-newtype="text/html">HTML page</a></li>' +
