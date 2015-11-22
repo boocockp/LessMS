@@ -9,7 +9,7 @@
         <div id="browserEditorContainer">
             <div class="row">
                 <div class="col-md-2">
-                    <file-list id="fileBrowser"
+                    <file-list id="fileList"
                                bucket-name="{{bucketName}}"
                                file-tree="{{fileTree}}"
                                files-to-upload="{{filesToUpload}}"
@@ -80,7 +80,9 @@
         } ,
 
         listeners: {
-            'fileBrowser.file-path-to-edit-changed': '_fileEdit'
+            'fileList.file-path-to-edit-changed': '_fileEdit',
+            'fileList.file-path-to-move-changed': '_fileMove',
+            'fileList.destination-file-path-changed': '_fileDest'
         },
 
 
@@ -90,6 +92,14 @@
 
         _fileEdit: function(e) {
             this._setFilePathToEdit(e.detail.value);
+        },
+
+        _fileMove: function(e) {
+            this._setFilePathToMove(e.detail.value);
+        },
+
+        _fileDest: function(e) {
+            this._setDestinationFilePath(e.detail.value);
         },
 
         _fileInfoChanged: function(info) {

@@ -52,6 +52,11 @@ Pattern 4 - Separate events for each action
 
 - Communicating with properties gives you a great debugging tool - you can just inspect the latest value
 
+Component communication 2
+-------------------------
+- Wrapper component wants to pass on events from sub-component eg browser editor exposing events from file-list and editors
+- Need common pattern/behaviour to do this
+
 Component editing
 -----------------
 
