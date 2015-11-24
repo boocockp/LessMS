@@ -13,7 +13,7 @@ Requirements
     - New file opens in new tab
     - Share one file store component between the tabs
 - Browser tab auto updates when changes occur in any tab eg save a new file
-- Can close tabs
+    Close tab- Can close tabs
     - Open in new window action on files
 
 Nice to have

@@ -57,13 +57,18 @@
                 contentType: this.fileForEdit.contentType,
                 data: this.editorElement.getFileData()
             };
-//            this._setSavedFile(fileInfo);
+            this._setSavedFile(fileInfo);
             this.fire('saved', {value: fileInfo});
         },
 
         close: function() {
-            console.log('Close');
+            this._destroy();
+            this.fire('closed', this.fileForEdit);
 
+        },
+
+        _destroy: function() {
+//            this.editorElement.destroy();
         },
 
         editorTypes: {
