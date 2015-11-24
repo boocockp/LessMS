@@ -371,7 +371,8 @@
             }
 
             function viewLink(path, name) {
-                return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false">' + name + '</a>'
+                return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false" class="ag-action" title="Open in new window">' +
+                        '<i class="fa fa-external-link"></i>' + '</a>'
             }
 
             function copyButton(path, name) {
@@ -467,7 +468,7 @@
 
             function actionsCellRenderer(params) {
                 var path = params.data.path;
-                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + editLink(path, params.data.name);
+                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + viewLink(path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
