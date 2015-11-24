@@ -86,12 +86,17 @@
     }
 
     .ag-file-browser .dropdown-menu.new-file {
-        left: -50px;
+        left: -270px;
     }
 
     .ag-file-browser .new-folder-name {
         margin-right: 5px;
         width: 15em;
+    }
+
+    .ag-file-browser .new-file-name {
+        margin-right: 5px;
+        width: 17em;
     }
 
     .ag-file-browser .dropdown-input {
@@ -185,8 +190,6 @@
                 type: Object
             },
             bucketName: String,
-            editUrlBase: String,
-            newUrlBase: String,
 
             filesToUpload: {
                 type: Object,
@@ -210,6 +213,11 @@
             },
             filePathToEdit:  {
                 type: String,
+                readOnly: true,
+                notify: true
+            },
+            newFileToEdit:  {
+                type: Object, // {filePath, contentType}
                 readOnly: true,
                 notify: true
             }
@@ -242,19 +250,19 @@
             var button = e.target;
             var editPath = button.getAttribute('data-edit');
             if (editPath) {
-                e.preventDefault()
+                e.preventDefault();
                 this._editFile(editPath);
             }
 
             var uploadPath = button.getAttribute('data-upload');
             if (uploadPath) {
-                e.preventDefault()
+                e.preventDefault();
                 this._selectFilesToUpload(uploadPath);
             }
 
             var newType = button.getAttribute('data-newtype');
             if (newType) {
-                e.preventDefault()
+                e.preventDefault();
                 var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
                 this._editNewFile(newType, newPath);
             }
@@ -268,6 +276,16 @@
                 e.preventDefault();
                 var newFolderName = form.querySelector(".new-folder-name").value;
                 this._newFolder(newFolderPath, newFolderName);
+                $(form).closest('.dropdown-menu').parent().find('a.dropdown-toggle').dropdown('toggle');
+            }
+
+            var newFilePath = form.getAttribute('data-newfile');
+            if (newFilePath) {
+                e.preventDefault();
+                var newFileName = form.querySelector(".new-file-name").value;
+                var contentType = form.querySelector("input:checked").value;
+                this._newFile(newFilePath, newFileName, contentType);
+                $(form).closest('.dropdown-menu').parent().find('a.dropdown-toggle').dropdown('toggle');
             }
         },
 
@@ -327,10 +345,9 @@
             this._setFilePathToEdit(editPath);
         },
 
-        _editNewFile: function(newType, newPath) {
-            console.log('_editNewFile', newType, newPath);
-            var editNewUrl = this.newUrlBase + "?fileBasePath=" + newPath + "&contentType=" + newType;
-            window.open(editNewUrl, 'newFile')
+        _newFile: function(newFilePath, newFileName, contentType) {
+            console.log('_newFile', newFilePath, newFileName, contentType);
+            this._setNewFileToEdit({filePath: newFilePath + '/' + newFileName, contentType: contentType});
         },
 
         _newFolder: function(parentPath, folderName) {
@@ -385,8 +402,7 @@
                         '  <li role="separator" class="divider"></li>' +
                         '  <li class="dropdown-input">' +
                         '    <form data-newfolder="' + path + '">' +
-                        '      <div>Name</div>' +
-                        '      <input class="new-folder-name">' +
+                        '      <input class="new-folder-name" placeholder="New folder name">' +
                         '      <button type="submit" class="create-folder btn btn-sm btn-primary">Create folder</button>' +
                         '    </form>' +
                         '  </li>' +
@@ -403,13 +419,29 @@
                         '        <span class="caret"></span>' +
                         '</a>' +
                         '<ul class="dropdown-menu new-file" aria-labelledby="dropdownMenu1">' +
-                        '  <li class="dropdown-header">New file</li>' +
+                        '  <li class="dropdown-header">New file in <strong>' + displayPath(path) + '</strong></li>' +
                         '  <li role="separator" class="divider"></li>' +
-                        '  <li><a href="#" data-newtype="text/html">HTML page</a></li>' +
-                        '  <li><a href="#" data-newtype="text/css">CSS file</a></li>' +
-                        '  <li><a href="#" data-newtype="text/js">JavaScript file</a></li>' +
-                        '  <li><a href="#" data-newtype="application/json">JSON file</a></li>' +
-                        '  <li><a href="#" data-newtype="text/plain">Text file</a></li>' +
+                        '  <li class="dropdown-input">' +
+                        '    <form data-newfile="' + path + '">' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/html" checked>HTML page</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/css">CSS file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/js">JavaScript file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="application/json">JSON file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/plain">Text file</label>' +
+                        '       </div>' +
+                        '       <input class="new-file-name" placeholder="New file name">' +
+                        '       <button type="submit" class="create-file btn btn-sm btn-primary">Create file</button>' +
+                        '    </form>' +
+                        '  </li>' +
                         '</ul>' +
                         '</div>';
                 return html;

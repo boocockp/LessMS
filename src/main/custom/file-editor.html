@@ -52,11 +52,13 @@
 
         save: function() {
             console.log('Save');
-            this._setSavedFile({
+            var fileInfo = {
                 filePath: this.fileForEdit.filePath,
                 contentType: this.fileForEdit.contentType,
                 data: this.editorElement.getFileData()
-            });
+            };
+//            this._setSavedFile(fileInfo);
+            this.fire('saved', {value: fileInfo});
         },
 
         close: function() {

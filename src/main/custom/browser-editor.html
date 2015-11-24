@@ -15,12 +15,14 @@
                                files-to-upload="{{filesToUpload}}"
                                file-path-to-move="{{filePathToMove}}"
                                folder-to-create="{{folderToCreate}}"
-                               destination-file-path="{{destinationFilePath}}"></file-list>
+                               destination-file-path="{{destinationFilePath}}"
+                               new-file-to-edit="{{newFileToEdit}}"></file-list>
                 </div>
                 <div class="col-md-9">
-                    <tabbed-editor id="te"
+                    <tabbed-editor id="tabbedEditor"
                                    bucket-name="{{bucketName}}"
-                                   file-for-edit="{{fileForEdit}}"></tabbed-editor>
+                                   file-for-edit="{{fileForEdit}}"
+                                   new-file-to-edit="{{newFileToEdit}}"></tabbed-editor>
                 </div>
             </div>
 
@@ -72,8 +74,8 @@
                 observer: '_fileInfoChanged'
             },
 
-            savedFileData: {
-                type: String,
+            savedFile: {
+                type: Object,  // {filePath, contentType, data}
                 readOnly: true,
                 notify: true
             }
@@ -84,7 +86,9 @@
             'fileList.file-path-to-move-changed': '_fileMove',
             'fileList.destination-file-path-changed': '_fileDest',
             'fileList.files-to-upload-changed': '_fileUpload',
-            'fileList.folder-to-create-changed': '_folderCreate'
+            'fileList.folder-to-create-changed': '_folderCreate',
+            'tabbedEditor.saved-file-changed': '_savedFile',
+            'tabbedEditor.saved': '_savedFile'
         },
 
 
@@ -112,8 +116,8 @@
             this._setFolderToCreate(e.detail.value);
         },
 
-        _fileInfoChanged: function(info) {
-            console.log('_fileInfoChanged', info);
+        _savedFile: function(e) {
+            this._setSavedFile(e.detail.value);
         }
 
     });

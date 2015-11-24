@@ -13,6 +13,7 @@
     <link rel="import" href="custom/s3-file-tree.html">
     <link rel="import" href="custom/s3-file-uploader.html">
     <link rel="import" href="custom/s3-file-mover.html">
+    <link rel="import" href="custom/s3-file-saver.html">
     <link rel="import" href="custom/browser-editor.html">
 </head>
 <body>
@@ -53,9 +54,16 @@
                            files-moved="{{filesUploaded}}"
                            destination-file-path="{{destinationFilePath}}"></s3-file-mover>
 
+            <s3-file-saver bucket-name="{{config.bucketName}}"
+                           google-id-token="{{idToken}}"
+                           identity-pool-id="{{config.identityPoolId}}"
+                           saved-file="{{savedFile}}"></s3-file-saver>
+
+
             <browser-editor id="be"
                             file-tree="{{fileTree}}"
                             bucket-name="{{config.bucketName}}"
+                            saved-file="{{savedFile}}"
                             files-to-upload="{{filesToUpload}}"
                             file-path-to-move="{{filePathToMove}}"
                             file-path-to-edit="{{filePathToEdit}}"
