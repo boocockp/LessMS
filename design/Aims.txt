@@ -5,7 +5,7 @@ Aims
 - Wrap in a web component that can be included in any page
 - Uses REST API for all loading, saving, file lists
 - UX familiar to users of file finders and word processors
-- Can manage all types of files - HTML, CSS, image, FreeSheet
+- Can manage all types of files - HTML, CSS, image, FreeSheet, JSON
 - Edit HTML in WYSIWYG
 - Make viewing/previewing easy as well as editing
 - Support preview/publish

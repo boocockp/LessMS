@@ -11,6 +11,9 @@
 <script src="../bower/clipboard/dist/clipboard.min.js"></script>
 <style>
 
+    button.refresh {
+        margin-bottom: 5px;
+    }
     .ag-file-browser .ag-root {
         border: 1px solid grey;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -81,9 +84,22 @@
         margin: 4px 0
     }
 
+    .ag-file-browser .dropdown-menu.new-folder {
+        left: -300px;
+    }
+
+    .ag-file-browser .dropdown-menu.new-file {
+        left: -270px;
+    }
+
     .ag-file-browser .new-folder-name {
-        margin: 5px;
-        width: 20em;
+        margin-right: 5px;
+        width: 15em;
+    }
+
+    .ag-file-browser .new-file-name {
+        margin-right: 5px;
+        width: 17em;
     }
 
     .ag-file-browser .dropdown-input {
@@ -97,9 +113,12 @@
 <script src="../bower/filesize/lib/filesize.min.js"></script>
 
 
-<dom-module id="file-browser">
+<dom-module id="file-list">
     <template>
-        <div style="height: 500px;">
+        <div>
+            <button id="refresh" class="btn btn-default btn-xs refresh">Refresh</button>
+        </div>
+        <div style="height: 800px;">
             <ag-grid id="grid" class="ag-file-browser"></ag-grid>
         </div>
         <input id="fileInput" type="file" multiple style="display:none">
@@ -170,15 +189,13 @@
 
 
     Polymer({
-        is: 'file-browser',
+        is: 'file-list',
 
         properties: {
             fileTree: {
                 type: Object
             },
             bucketName: String,
-            editUrlBase: String,
-            newUrlBase: String,
 
             filesToUpload: {
                 type: Object,
@@ -204,6 +221,16 @@
                 type: String,
                 readOnly: true,
                 notify: true
+            },
+            newFileToEdit:  {
+                type: Object, // {filePath, contentType}
+                readOnly: true,
+                notify: true
+            },
+            refreshRequested:  {
+                type: Number,
+                readOnly: true,
+                notify: true
             }
 
         },
@@ -220,6 +247,7 @@
         },
 
         listeners: {
+            'refresh.click': 'onRefresh',
             click: 'onClick',
             submit: 'onSubmit',
             dragstart: 'onDragStart',
@@ -230,21 +258,28 @@
             dragend: 'onDragend'
         },
 
+        onRefresh: function() {
+            console.log('refresh');
+            this._setRefreshRequested(Date.now());
+        },
+
         onClick: function(e) {
             var button = e.target;
-            e.preventDefault()
             var editPath = button.getAttribute('data-edit');
             if (editPath) {
+                e.preventDefault();
                 this._editFile(editPath);
             }
 
             var uploadPath = button.getAttribute('data-upload');
             if (uploadPath) {
+                e.preventDefault();
                 this._selectFilesToUpload(uploadPath);
             }
 
             var newType = button.getAttribute('data-newtype');
             if (newType) {
+                e.preventDefault();
                 var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
                 this._editNewFile(newType, newPath);
             }
@@ -258,6 +293,16 @@
                 e.preventDefault();
                 var newFolderName = form.querySelector(".new-folder-name").value;
                 this._newFolder(newFolderPath, newFolderName);
+                $(form).closest('.dropdown-menu').parent().find('a.dropdown-toggle').dropdown('toggle');
+            }
+
+            var newFilePath = form.getAttribute('data-newfile');
+            if (newFilePath) {
+                e.preventDefault();
+                var newFileName = form.querySelector(".new-file-name").value;
+                var contentType = form.querySelector("input:checked").value;
+                this._newFile(newFilePath, newFileName, contentType);
+                $(form).closest('.dropdown-menu').parent().find('a.dropdown-toggle').dropdown('toggle');
             }
         },
 
@@ -317,10 +362,9 @@
             this._setFilePathToEdit(editPath);
         },
 
-        _editNewFile: function(newType, newPath) {
-            console.log('_editNewFile', newType, newPath);
-            var editNewUrl = this.newUrlBase + "?fileBasePath=" + newPath + "&contentType=" + newType;
-            window.open(editNewUrl, 'newFile')
+        _newFile: function(newFilePath, newFileName, contentType) {
+            console.log('_newFile', newFilePath, newFileName, contentType);
+            this._setNewFileToEdit({filePath: newFilePath + '/' + newFileName, contentType: contentType});
         },
 
         _newFolder: function(parentPath, folderName) {
@@ -343,12 +387,9 @@
                 return "http://" + self.bucketName + ".s3.amazonaws.com/" + path;
             }
 
-            function editUrl(path)  {
-                return self.editUrlBase + "?fileUrl=" + viewUrl(path);
-            }
-
             function viewLink(path, name) {
-                return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false">' + name + '</a>'
+                return '<a href="' + viewUrl(path) + '" target="' + name + '" draggable="false" class="ag-action" title="Open in new window">' +
+                        '<i class="fa fa-external-link"></i>' + '</a>'
             }
 
             function copyButton(path, name) {
@@ -360,6 +401,9 @@
                 return '<a href="#" data-edit="' + path + '" class="ag-action fa fa-pencil-square-o" title="Edit"></a>'
             }
 
+            function viewEditLink(path, name) {
+                return '<a href="#" data-edit="' + path + '">' + name + '</a>'
+            }
             function uploadLink(path) {
                 return '<a href="#" class="ag-action fa fa-upload" title="Upload" data-upload="' + path + '"></a>';
             }
@@ -371,12 +415,12 @@
                         '        <span class="fa fa-folder-o">' +
                         '        <span class="caret"></span>' +
                         '</a>' +
-                        '<ul class="dropdown-menu">' +
+                        '<ul class="dropdown-menu new-folder">' +
                         '  <li class="dropdown-header">New folder in <strong>' + displayPath(path) + '</strong></li>' +
                         '  <li role="separator" class="divider"></li>' +
                         '  <li class="dropdown-input">' +
                         '    <form data-newfolder="' + path + '">' +
-                        '      <span>Name</span><input class="new-folder-name">' +
+                        '      <input class="new-folder-name" placeholder="New folder name">' +
                         '      <button type="submit" class="create-folder btn btn-sm btn-primary">Create folder</button>' +
                         '    </form>' +
                         '  </li>' +
@@ -392,14 +436,30 @@
                         '        <span class="fa fa-file-o">' +
                         '        <span class="caret"></span>' +
                         '</a>' +
-                        '<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">' +
-                        '  <li class="dropdown-header">New file</li>' +
+                        '<ul class="dropdown-menu new-file" aria-labelledby="dropdownMenu1">' +
+                        '  <li class="dropdown-header">New file in <strong>' + displayPath(path) + '</strong></li>' +
                         '  <li role="separator" class="divider"></li>' +
-                        '  <li><a href="#" data-newtype="text/html">HTML page</a></li>' +
-                        '  <li><a href="#" data-newtype="text/css">CSS file</a></li>' +
-                        '  <li><a href="#" data-newtype="text/js">JavaScript file</a></li>' +
-                        '  <li><a href="#" data-newtype="application/json">JSON file</a></li>' +
-                        '  <li><a href="#" data-newtype="text/plain">Text file</a></li>' +
+                        '  <li class="dropdown-input">' +
+                        '    <form data-newfile="' + path + '">' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/html" checked>HTML page</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/css">CSS file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/js">JavaScript file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="application/json">JSON file</label>' +
+                        '       </div>' +
+                        '       <div class="radio">' +
+                        '           <label><input type="radio" name="contentType" value="text/plain">Text file</label>' +
+                        '       </div>' +
+                        '       <input class="new-file-name" placeholder="New file name">' +
+                        '       <button type="submit" class="create-file btn btn-sm btn-primary">Create file</button>' +
+                        '    </form>' +
+                        '  </li>' +
                         '</ul>' +
                         '</div>';
                 return html;
@@ -416,7 +476,7 @@
                 //TODO use class with background image so path relative to CSS
                 var imageFullUrl = 'custom/images/' + image + '.png';
                 var name = params.node.level === 0 ? 'Your files' : params.data.name;
-                var cellContent = params.node.group ? name : viewLink(params.data.path, name);
+                var cellContent = params.node.group ? name : viewEditLink(params.data.path, name);
                 var classList = params.node.group ? "fb-name fb-folder" : "fb-name fb-file";
                 var cell = createElement('<span draggable="true" class="' + classList + '"><img src="' + imageFullUrl + '" style="padding-left: 4px;" draggable="false"/> ' + cellContent + '</span>');
                 cell.path = params.data.path;
@@ -425,7 +485,7 @@
 
             function actionsCellRenderer(params) {
                 var path = params.data.path;
-                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + editLink(path, params.data.name);
+                return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + viewLink(path, params.data.name);
             }
 
            function sizeCellRenderer(params) {
@@ -453,10 +513,8 @@
                         innerRenderer: nameCellRenderer
                     }
                 },
-                { headerName: "Actions", width: 120, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer},
-                {headerName: "Size", field: "size", width: 100, cellStyle: sizeCellStyle, cellRenderer: sizeCellRenderer},
-                {headerName: "Type", field: "type", width: 150},
-                {headerName: "Date Modified", field: "dateModified", width: 175, cellRenderer: dateCellRenderer}
+                { headerName: "Actions", width: 120, cellStyle: actionsCellStyle, cellRenderer: actionsCellRenderer}
+
             ];
 
             var gridOptions = {

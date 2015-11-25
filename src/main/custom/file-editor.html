@@ -27,16 +27,13 @@
         is: 'file-editor',
 
         properties: {
-            fileData: {
-                type: String
+            fileForEdit: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileForEditChanged'
             },
 
-            contentType: {
-                type: String
-            },
-
-            savedFileData: {
-                type: String,
+            savedFile: {
+                type: Object,  // {filePath, contentType, data }
                 readOnly: true,
                 notify: true
             }
@@ -50,47 +47,34 @@
         ready: function() {
         },
 
-        _updateEditor: function() {
-            var comp = this;
-            this._createEditorElement().then(function (editorElement) {
-                editorElement.id = "editor";
-                comp.$.editorContainer.appendChild(editorElement);
-                editorElement.fileData = comp.fileData;
-                editorElement.contentType = comp.contentType;
-                comp.editorElement = editorElement;
-            });
-        },
-
-        _createEditorElement: function() {
-            if (this.contentType == "application/json") {
-                return this._findSchema().then(function(schema) {
-                    if (schema) {
-                        var editor = document.createElement("json-editor");
-                        editor.schema = schema;
-                        return editor;
-                    } else {
-                        return document.createElement("ace-editor");
-                    }
-                });
-            } else {
-                var editorType = this.editorTypes[type] || "ace-editor";
-                return Promise.resolve(document.createElement(editorType));
-            }
-
-        },
-
-        _findSchema: function() {
-            return Promise.resolve(testSchema);
+        _fileForEditChanged: function(file) {
+            var editorType = this.editorTypes[file.contentType] || "ace-editor";
+            var editorElement = this.editorElement = document.createElement(editorType);
+            editorElement.id = "editor";
+            this.$.editorContainer.appendChild(editorElement);
+            editorElement.fileData = file.data;
+            editorElement.contentType = file.contentType;
         },
 
         save: function() {
             console.log('Save');
-            this._setSavedFileData(this.editorElement.getFileData());
+            var fileInfo = {
+                filePath: this.fileForEdit.filePath,
+                contentType: this.fileForEdit.contentType,
+                data: this.editorElement.getFileData()
+            };
+            this._setSavedFile(fileInfo);
+            this.fire('saved', {value: fileInfo});
         },
 
         close: function() {
-            console.log('Close');
+            this._destroy();
+            this.fire('closed', this.fileForEdit);
 
+        },
+
+        _destroy: function() {
+//            this.editorElement.destroy();
         },
 
         editorTypes: {

@@ -1,0 +1,22 @@
+Tabbed editor
+=============
+
+Aims
+----
+A user can browse, view and edit files in a tabbed container in one browser window
+
+Requirements
+------------
+    - Sign-in at top above tabs
+    - Fixed file browser tab at left
+    - Edit file opens editor in new tab
+    - New file opens in new tab
+    - Share one file store component between the tabs
+    - Can close tabs
+    - Open in new window action on files
+
+Nice to have
+------------
+- Browser tab auto updates when changes occur in any tab eg save a new file
+- View file opens in iframe in a new tab
+- Edit button on view tabs - changes that tab

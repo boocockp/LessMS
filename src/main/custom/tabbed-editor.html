@@ -1,0 +1,99 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="file-editor.html">
+
+<dom-module id="tabbed-editor">
+    <template>
+        <style>
+        </style>
+        <div id="editorTabContainer">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+            </div>
+
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'tabbed-editor',
+
+        properties: {
+            bucketName: String,
+            fileForEdit: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileForEditChanged'
+            },
+
+            newFileToEdit: {
+                type: Object,  // {filePath, contentType}
+                observer: '_fileForEditChanged'
+            },
+
+            savedFile: {
+                type: Object,  // {filePath, contentType, data }
+                readOnly: true,
+                notify: true
+            }
+        },
+
+        listeners: {
+            'saved-file-changed': '_savedFile',
+            'editorTabContainer.saved': '_savedFile',
+            'editorTabContainer.closed': '_closedFile'
+        },
+
+        ready: function () {
+        },
+
+        _savedFile: function(e) {
+//            this._setSavedFile(e.detail.value);
+            this.fire('saved', {value: e.detail.value});
+        },
+
+        _closedFile: function(e) {
+            console.log('_closedFile', e);
+            var tabPaneElement = e.target.parentElement;
+            var tabId = tabPaneElement.id;
+            var navTabElement = this.$.editorTabContainer.querySelector("[role='tablist']").querySelector("a[href='#" + tabId + "']").parentElement;
+            var navTabToShow = $(navTabElement).prev('li');
+            if (!navTabToShow.length) {
+                navTabToShow = $(navTabElement).next('li') ;
+            }
+            this.$.editorTabContainer.querySelector("[role='tablist']").removeChild(navTabElement);
+            this.$.editorTabContainer.querySelector(".tab-content").removeChild(tabPaneElement);
+            $(navTabToShow).find('a').tab('show');
+        },
+
+        _fileForEditChanged: function(fileInfo) {
+            var fileName = fileInfo.filePath.split('/').pop();
+            var tabId = 'tab_' + Date.now();
+            var navTabElement = $('<li role="presentation"><a href="#' + tabId + '" role="tab" data-toggle="tab">' + fileName + '</a></li>')[0];
+            var tabPaneElement = $('<div role="tabpanel" class="tab-pane" id="' + tabId + '"></div>')[0];
+            var editorElement = document.createElement("file-editor");
+            this.$.editorTabContainer.querySelector("[role='tablist']").appendChild(navTabElement);
+            this.$.editorTabContainer.querySelector(".tab-content").appendChild(tabPaneElement);
+            tabPaneElement.appendChild(editorElement);
+            editorElement.fileForEdit = fileInfo;
+            $(navTabElement).find('a').tab('show');
+        }//,
+
+//        _newFileToEditChanged: function(fileInfo) {
+//            var fileName = '';
+//            var tabId = 'tab_' + Date.now();
+//            var navTabElement = $('<li role="presentation"><a href="#' + tabId + '" role="tab" data-toggle="tab">' + fileName + '</a></li>')[0];
+//            var tabPaneElement = $('<div role="tabpanel" class="tab-pane" id="' + tabId + '"></div>')[0];
+//            var editorElement = document.createElement("file-editor");
+//            this.$.editorTabContainer.querySelector("[role='tablist']").appendChild(navTabElement);
+//            this.$.editorTabContainer.querySelector(".tab-content").appendChild(tabPaneElement);
+//            tabPaneElement.appendChild(editorElement);
+//            editorElement.fileForEdit = fileInfo;
+//            $(navTabElement).find('a').tab('show');
+//        }
+    });
+</script>

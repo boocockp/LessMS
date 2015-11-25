@@ -35,16 +35,21 @@
                 type: String,
                 observer: '_fileDataChanged'
             },
+            savedFile: {
+                type: Object,
+                observer: '_savedFileChanged'
+            },
             savedFileUrl: {
                 type: String,
                 readOnly: true,
                 notify: true
             }
 
+
         },
 
-        _fileDataChanged: function (fileContents) {
-            console.log("_fileDataChanged");
+        _savedFileChanged: function (fileInfo) {
+            console.log("_savedFileChanged");
 
             AWS.config.region = this.identityPoolId.split(":")[0];
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -70,12 +75,13 @@
                 else {
                     console.log('Got id', identity);
                     var folder = identity.IdentityId;
-                    var fullPath = folder + '/' + self.filePath;
+//                    var fullPath = folder + '/' + fileInfo.filePath;
+                    var fullPath = fileInfo.filePath;
                     s3bucket.putObject({
                         Key: fullPath,
-                        ContentType: self.contentType,
+                        ContentType: fileInfo.contentType,
                         ACL: 'public-read',
-                        Body: fileContents
+                        Body: fileInfo.data
                     }, function(error, data) {
                         if (error) {
                             console.log('Error saving file', error);

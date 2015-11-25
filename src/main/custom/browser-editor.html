@@ -1,0 +1,138 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="file-list.html">
+<link rel="import" href="tabbed-editor.html">
+
+<dom-module id="browser-editor">
+    <template>
+        <style>
+            #browserEditorContainer {
+                margin-top: 10px;
+            }
+        </style>
+        <div id="browserEditorContainer">
+            <div class="row">
+                <div class="col-md-3">
+                    <file-list id="fileList"
+                               bucket-name="{{bucketName}}"
+                               file-tree="{{fileTree}}"
+                               files-to-upload="{{filesToUpload}}"
+                               file-path-to-move="{{filePathToMove}}"
+                               folder-to-create="{{folderToCreate}}"
+                               destination-file-path="{{destinationFilePath}}"
+                               new-file-to-edit="{{newFileToEdit}}"></file-list>
+                </div>
+                <div class="col-md-9">
+                    <tabbed-editor id="tabbedEditor"
+                                   bucket-name="{{bucketName}}"
+                                   file-for-edit="{{fileForEdit}}"
+                                   new-file-to-edit="{{newFileToEdit}}"></tabbed-editor>
+                </div>
+            </div>
+
+        </div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'browser-editor',
+
+        properties: {
+            bucketName: String,
+            fileTree: {
+                type: Object
+            },
+
+            fileForEdit: Object,
+
+            filePathToEdit: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+
+            filesToUpload: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+            filePathToMove: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+            destinationFilePath:  {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+            folderToCreate: {
+                type: String,
+                readOnly: true,
+                notify: true
+            },
+
+            fileInfo: {
+                type: Object,  // {filePath, contentType, data}
+                observer: '_fileInfoChanged'
+            },
+
+            savedFile: {
+                type: Object,  // {filePath, contentType, data}
+                readOnly: true,
+                notify: true
+            },
+
+            refreshRequested:  {
+                type: Number,
+                readOnly: true,
+                notify: true
+            }
+        } ,
+
+        listeners: {
+            'fileList.file-path-to-edit-changed': '_fileEdit',
+            'fileList.file-path-to-move-changed': '_fileMove',
+            'fileList.destination-file-path-changed': '_fileDest',
+            'fileList.files-to-upload-changed': '_fileUpload',
+            'fileList.folder-to-create-changed': '_folderCreate',
+            'fileList.refresh-requested-changed': '_refresh',
+            'tabbedEditor.saved-file-changed': '_savedFile',
+            'tabbedEditor.saved': '_savedFile'
+        },
+
+
+        ready: function() {
+
+        },
+
+        _fileEdit: function(e) {
+            this._setFilePathToEdit(e.detail.value);
+        },
+
+        _fileMove: function(e) {
+            this._setFilePathToMove(e.detail.value);
+        },
+
+        _fileDest: function(e) {
+            this._setDestinationFilePath(e.detail.value);
+        },
+
+        _fileUpload: function(e) {
+            this._setFilesToUpload(e.detail.value);
+        },
+
+        _folderCreate: function(e) {
+            this._setFolderToCreate(e.detail.value);
+        },
+
+        _savedFile: function(e) {
+            this._setSavedFile(e.detail.value);
+        },
+
+        _refresh: function(e) {
+            this._setRefreshRequested(e.detail.value);
+        }
+
+    });
+</script>
