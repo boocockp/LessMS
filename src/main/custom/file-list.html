@@ -11,6 +11,9 @@
 <script src="../bower/clipboard/dist/clipboard.min.js"></script>
 <style>
 
+    button.refresh {
+        margin-bottom: 5px;
+    }
     .ag-file-browser .ag-root {
         border: 1px solid grey;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -112,6 +115,9 @@
 
 <dom-module id="file-list">
     <template>
+        <div>
+            <button id="refresh" class="btn btn-default btn-xs refresh">Refresh</button>
+        </div>
         <div style="height: 800px;">
             <ag-grid id="grid" class="ag-file-browser"></ag-grid>
         </div>
@@ -220,6 +226,11 @@
                 type: Object, // {filePath, contentType}
                 readOnly: true,
                 notify: true
+            },
+            refreshRequested:  {
+                type: Number,
+                readOnly: true,
+                notify: true
             }
 
         },
@@ -236,6 +247,7 @@
         },
 
         listeners: {
+            'refresh.click': 'onRefresh',
             click: 'onClick',
             submit: 'onSubmit',
             dragstart: 'onDragStart',
@@ -244,6 +256,11 @@
             dragover: 'onDragOver',
             drop: 'onDrop',
             dragend: 'onDragend'
+        },
+
+        onRefresh: function() {
+            console.log('refresh');
+            this._setRefreshRequested(Date.now());
         },
 
         onClick: function(e) {

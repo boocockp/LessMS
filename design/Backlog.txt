@@ -1,7 +1,6 @@
 Backlog
 =======
 
-- Single window tabbed browsing
 - Data editing
 - Page components
 - Feedback after actions
@@ -40,6 +39,7 @@ To do
 Done
 ----
 
+    - Single window tabbed browsing
     - Deployable build
     - Live site
     - Root folder visible in browser

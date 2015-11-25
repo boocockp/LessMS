@@ -32,6 +32,7 @@
                           bucket-name="{{config.bucketName}}"
                           files-uploaded="{{filesUploaded}}"
                           folder-created="{{folderCreated}}"
+                          refresh-requested="{{refreshRequested}}"
                           file-tree="{{fileTree}}"></s3-file-tree>
 
             <s3-file-uploader id="fu"
@@ -69,6 +70,7 @@
                             file-path-to-edit="{{filePathToEdit}}"
                             file-for-edit="{{fileForEdit}}"
                             folder-to-create="{{folderToCreate}}"
+                            refresh-requested="{{refreshRequested}}"
                             destination-file-path="{{destinationFilePath}}"></browser-editor>
 
         </template>

@@ -5,6 +5,9 @@
 <dom-module id="browser-editor">
     <template>
         <style>
+            #browserEditorContainer {
+                margin-top: 10px;
+            }
         </style>
         <div id="browserEditorContainer">
             <div class="row">
@@ -78,6 +81,12 @@
                 type: Object,  // {filePath, contentType, data}
                 readOnly: true,
                 notify: true
+            },
+
+            refreshRequested:  {
+                type: Number,
+                readOnly: true,
+                notify: true
             }
         } ,
 
@@ -87,6 +96,7 @@
             'fileList.destination-file-path-changed': '_fileDest',
             'fileList.files-to-upload-changed': '_fileUpload',
             'fileList.folder-to-create-changed': '_folderCreate',
+            'fileList.refresh-requested-changed': '_refresh',
             'tabbedEditor.saved-file-changed': '_savedFile',
             'tabbedEditor.saved': '_savedFile'
         },
@@ -118,6 +128,10 @@
 
         _savedFile: function(e) {
             this._setSavedFile(e.detail.value);
+        },
+
+        _refresh: function(e) {
+            this._setRefreshRequested(e.detail.value);
         }
 
     });
