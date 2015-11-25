@@ -4,7 +4,7 @@
   "description": "Less of a CMS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./build.sh"
   },
   "repository": {
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/boocockp/LessMS/issues"
   },
-  "homepage": "https://github.com/boocockp/LessMS#readme"
+  "homepage": "https://github.com/boocockp/LessMS#readme",
+  "devDependencies": {
+    "s3-cli": "^0.13.0"
+  }
 }

@@ -7,4 +7,5 @@ stuff/
 **/node_modules/
 src/main/bower
 src/main/lib
+s3cmd.conf
 
