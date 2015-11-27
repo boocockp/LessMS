@@ -21,6 +21,7 @@ Backlog
 - Friendly user folder names
 - Versioning
 - Caching
+- Easier setup - scripts and instructions
 - Help/demo
 
 To do
