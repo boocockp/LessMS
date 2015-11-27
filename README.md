@@ -25,3 +25,32 @@ As the S3 bucket is a website bucket all the files are publicly available.
 
 Everything is done in the browser using the AWS SDK - no server needed.
 
+
+## Getting Started
+
+- Clone the project
+- Run devSetup.sh
+
+### Google Developer account
+- Create a Google developer account at ...
+
+### Register an app
+
+- Create an app at ... 
+- Add the URL of the LessMS website to the app
+- Add the localhost URL and port that you use for development
+- Take the app id and put it in your config.json
+
+### AWS account
+- Create an AWS account
+- Create an Admin user
+- Put the access key and secret key in your s3cmd.conf 
+- Create a LessMS user
+- Create a content bucket and configure as static website
+- Create a LessMS install bucket and configure as static website (unless hosting it elsewhere)
+- Put the name of the LessMS install bucket in your deploy_vars
+- Create a Cognito identity pool and link it to the Google app
+- Put the Cognito identity pool id in your config.json
+- Configure the content bucket with the sample policy in the aws directory 
+- ...and some more things
+
