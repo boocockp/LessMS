@@ -2,27 +2,35 @@ Backlog
 =======
 
 - Data editing
-- Page components
+- HTML editor can use web components
 - Feedback after actions
-- Image thumbnails
-- Choose image to insert into page
+- Tile/thumbnail view in file list
+- Better ways to insert image into page - drag from file list
 - Copy file
 - Rename file
-- View page in tabs
+- View page in a tab - with edit button
 - Preview before save
 - Move folder
 - Move multiple items
 - Delete file
 - Copy/delete multiple
 - Drag and drop image to upload
+- Preview pane at bottom of file list
+- Smarter, responsive UI styling
 - Gzip files - but keep sizes correct
 - Friendly user folder names
-- Versioning and caching
+- Versioning
+- Caching
 - Help/demo
 
 To do
 -----
 - Tests
+- Refactor file-list
+- No picture if undefined
+- Different message in grid when not signed in
+- Clear grid and close all tabs when sign out
+- Identity not found when sign in for first time
 - Refactor s3 access components into one
     - CKE plugins not working
 - Expanded groups not working

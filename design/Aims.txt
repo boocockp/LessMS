@@ -1,6 +1,23 @@
 Aims
 ====
 
+Main goals
+----------
+- Provide a website where non-technical users can easily create individual web pages or whole sites
+- Allow users to build interesting and good-looking pages or applications by combining web components
+- Very low running costs so the basic service can be free
+- Still useful for large sites and skilled developers
+
+What you might do with it
+-------------------------
+- In 10 minutes: a party organiser puts up a page describing the event and emails a link to the guests
+- In 1 hour: a language teacher creates a mini-app for students to learn and test themselves on each week's new vocabulary
+- In 8 hours: a teenager creates his own adventure game
+- In 40 hours: an accountant produces an online app for her clients to enter their bookkeeping directly
+
+
+High level requirements
+-----------------------
 - Provide a browser front-end for a CMS
 - Wrap in a web component that can be included in any page
 - Uses REST API for all loading, saving, file lists
@@ -15,7 +32,7 @@ Aims
 
 HTML specific
 -------------
-- Can use web components as easily as any other element
+- Can use web components as easily as any other element in the HTML editor
 - Can use non-UI web components
 - Can configure web components easily
 - Can connect web components to build an app in the page
