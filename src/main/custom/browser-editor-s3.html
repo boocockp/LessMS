@@ -1,0 +1,73 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+<link rel="import" href="config-loader.html">
+<link rel="import" href="user-signin-google.html">
+<link rel="import" href="s3-file-tree.html">
+<link rel="import" href="s3-file-uploader.html">
+<link rel="import" href="s3-file-mover.html">
+<link rel="import" href="s3-file-saver.html">
+<link rel="import" href="browser-editor.html">
+
+<dom-module id="browser-editor-s3">
+    <template>
+        <style>
+        </style>
+        <config-loader config="{{config}}"></config-loader>
+
+        <user-signin-google id="usg"
+                            client-id="{{config.clientId}}"
+                            id-token="{{idToken}}"></user-signin-google>
+
+        <s3-file-tree id="ft" google-id-token="{{idToken}}"
+                      identity-pool-id="{{config.identityPoolId}}"
+                      bucket-name="{{config.bucketName}}"
+                      files-uploaded="{{filesUploaded}}"
+                      folder-created="{{folderCreated}}"
+                      refresh-requested="{{refreshRequested}}"
+                      file-tree="{{fileTree}}"></s3-file-tree>
+
+        <s3-file-uploader id="fu"
+                          bucket-name="{{config.bucketName}}"
+                          google-id-token="{{idToken}}"
+                          identity-pool-id="{{config.identityPoolId}}"
+                          files-to-upload="{{filesToUpload}}"
+                          files-uploaded="{{filesUploaded}}"
+                          folder-to-create="{{folderToCreate}}"
+                          folder-created="{{folderCreated}}"
+                          destination-file-path="{{destinationFilePath}}"
+                          file-path-to-edit="{{filePathToEdit}}"
+                          file-for-edit="{{fileForEdit}}" ></s3-file-uploader>
+
+        <s3-file-mover id="fm"
+                       bucket-name="{{config.bucketName}}"
+                       google-id-token="{{idToken}}"
+                       identity-pool-id="{{config.identityPoolId}}"
+                       file-path-to-move="{{filePathToMove}}"
+                       files-moved="{{filesUploaded}}"
+                       destination-file-path="{{destinationFilePath}}"></s3-file-mover>
+
+        <s3-file-saver bucket-name="{{config.bucketName}}"
+                       google-id-token="{{idToken}}"
+                       identity-pool-id="{{config.identityPoolId}}"
+                       saved-file="{{savedFile}}"></s3-file-saver>
+
+
+        <browser-editor id="be"
+                        file-tree="{{fileTree}}"
+                        bucket-name="{{config.bucketName}}"
+                        saved-file="{{savedFile}}"
+                        files-to-upload="{{filesToUpload}}"
+                        file-path-to-move="{{filePathToMove}}"
+                        file-path-to-edit="{{filePathToEdit}}"
+                        file-for-edit="{{fileForEdit}}"
+                        folder-to-create="{{folderToCreate}}"
+                        refresh-requested="{{refreshRequested}}"
+                        destination-file-path="{{destinationFilePath}}"></browser-editor>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'browser-editor-s3'
+
+    });
+</script>
