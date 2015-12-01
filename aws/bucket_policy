@@ -6,14 +6,14 @@
 			"Effect": "Allow",
 			"Principal": "*",
 			"Action": "s3:GetObject",
-			"Resource": "arn:aws:s3:::ashridgetech.cmstest/*"
+			"Resource": "arn:aws:s3:::your_user_files_s3_bucket/*"
 		},
 		{
 			"Sid": "PublicListObjects",
 			"Effect": "Allow",
 			"Principal": "*",
 			"Action": "s3:ListBucket",
-			"Resource": "arn:aws:s3:::ashridgetech.cmstest"
+			"Resource": "arn:aws:s3:::your_user_files_s3_bucket"
 		}
 	]
 }

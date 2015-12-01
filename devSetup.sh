@@ -7,6 +7,8 @@ cp -n aws/config.json .
 cp -n aws/s3cmd.conf .
 cp -n aws/deploy_vars .
 
+mkdir -p target/main target/test
+
 (cd src/main && ln -fs ../../bower_components bower)
 (cd src/main && ln -fs ../../lib)
 (cd src/main && ln -fs ../../config.json)

@@ -12,7 +12,7 @@ You install LessMS on another website (which can also be a s3 bucket) and config
   
 You also need to register an app in a Google developer account and link it to AWS and your LessMS installation.
   
-Step-by step instructions below (*soon*)
+Step-by step instructions below
   
   
 Your users sign in with their own Google account.
@@ -30,27 +30,56 @@ Everything is done in the browser using the AWS SDK - no server needed.
 
 - Clone the project
 - Run devSetup.sh
+- This will create three files in your working directory that you will need to edit: s3cmd.conf, deploy_vars and config.json
 
-### Google Developer account
-- Create a Google developer account at ...
+### Set up AWS and Google
 
-### Register an app
+#### AWS account
+- Create an AWS account and sign up for S3: [http://docs.aws.amazon.com/AmazonS3/latest/gsg/SigningUpforS3.html]
 
-- Create an app at ... 
-- Add the URL of the LessMS website to the app
-- Add the localhost URL and port that you use for development
-- Take the app id and put it in your config.json
+#### Create AWS users with IAM
+- Refer to [http://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html]
+- Create an Administrators group and an Admin user, noting the access key and secret key
+- Put the access key and secret key of the admin user in the s3cmd.conf in your working directory 
+- Sign in as the Admin user
 
-### AWS account
-- Create an AWS account
-- Create an Admin user
-- Put the access key and secret key in your s3cmd.conf 
-- Create a LessMS user
-- Create a content bucket and configure as static website
+#### Create S3 buckets
+- Refer to [http://docs.aws.amazon.com/AmazonS3/latest/UG/BucketOperations.html]
+- Create a user files bucket and configure as static website
 - Create a LessMS install bucket and configure as static website (unless hosting it elsewhere)
 - Put the name of the LessMS install bucket in your deploy_vars
-- Create a Cognito identity pool and link it to the Google app
-- Put the Cognito identity pool id in your config.json
-- Configure the content bucket with the sample policy in the aws directory 
-- ...and some more things
+- Put the name of the user files bucket in your config.json
+
+#### Set bucket permissions
+- In the AWS console for S3, go to your user files bucket
+- Click Properties and then Permissions
+- Click Edit bucket policy
+- Paste in the contents of aws/bucket_policy, changing the bucket name to your user files bucket, and save
+- Click Edit CORS configuration
+- Paste in the contents of aws/bucket_cors_configuration and save
+
+#### Google Developer project
+- Sign in to a Google account under which you want to create your CMS project
+- Create a new project for your CMS at https://console.developers.google.com/project
+- In the project dashboard at https://console.developers.google.com/home/dashboard, click Use Google APIs
+- Click Credentials in the sidebar
+- Click Add Credentials/OAuth 2.0 Client Id
+- Select Application Type of Web application
+- Under Authorized JavaScript origins, add the URL of the LessMS install website
+- Under Name, choose a name for you CMS
+- Click Create, and note the Client ID shown in a popup box
+- Put the Client ID in your config.json
+
+#### Cognito Identity Pool
+- In AWS Console for Cognito, create a new Identity Pool
+- Enter LessMS as the name
+- Under Authentication Providers, click Google+
+- Enter the Google Client ID from the previous section
+- Click Create
+- On the next page, click View Details
+- In the first Role Summary, for authenticated identities, click Edit next to the policy document
+- Paste in the contents of aws/cognito_role_policy, changing the bucket name to your user files bucket, and save
+- Click Allow
+- Click Edit Identity Pool at the top right and copy the Identity Pool ID
+- Put the Identity Pool ID in your config.json 
 
