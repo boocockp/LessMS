@@ -1,11 +1,14 @@
 # LessMS
 
 ## What it does
-LessMS lets you create a CMS in an S3 website bucket.  The CMS runs entirely in the browser - no server required.  
-Users can sign in with Google and edit files in their own folder.  The files are published immediately on the web.
+- LessMS lets you create a CMS in an S3 website bucket.  
+- The CMS runs entirely in the browser - no server required.  
+- Users can sign in with Google and edit files in their own folder.  
+- The files are published immediately on the web.
 
 ## How it works
 
+### Setting up
 You configure an S3 bucket as a website for your users' content.
  
 You install LessMS on another website (which can also be a s3 bucket) and configure it to point to the content website.
@@ -14,7 +17,7 @@ You also need to register an app in a Google developer account and link it to AW
   
 Step-by step instructions below
   
-  
+### What your users see 
 Your users sign in with their own Google account.
 
 Once signed in, they can create, upload, edit and browse files in their own folder
