@@ -3,14 +3,12 @@ describe "File List", ->
   @timeout 5000
 
   awsRegion = 'eu-west-1'
-  bucketName = "ashridgetech.cms.test"
-
-  testUser = {email: "a@a.com", identityId: "eu-west-1:yourid"}
+  testUser = {email: "a@a.com", identityId: "eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1"}
 
   class S3Tool
-    getConfig = (success) ->
+    getConfig = (fileName, success) ->
       $.ajax
-        url: "s3cmd.conf"
+        url: fileName
         dataType: "text"
         async: false
         success: success
@@ -19,12 +17,16 @@ describe "File List", ->
       new RegExp("\\b#{name}\\s*=\\s*(\\S+)").exec(iniData)[1]
 
 
-    constructor: (@bucketName)->
+    constructor: ()->
       @requestsInFlight = 0
-      getConfig (iniData) =>
+      bucketConfig = { region: awsRegion }
+      getConfig "s3cmd.conf", (iniData) =>
         bucketConfig = { params: {Bucket: @bucketName}, region: awsRegion }
         bucketConfig.accessKeyId = getIniValue iniData, 'access_key'
         bucketConfig.secretAccessKey = getIniValue iniData, 'secret_key'
+      getConfig "config.json", (configData) =>
+        bucketName = JSON.parse(configData).bucketName
+        bucketConfig.params = {Bucket: bucketName}
         @s3bucket = new AWS.S3(bucketConfig)
 
     setItems: (user, items, done) ->
@@ -125,7 +127,7 @@ describe "File List", ->
         checks = checks + 1
     intervalId = setInterval doCheck, 100
 
-  s3 = new S3Tool(bucketName)
+  s3 = new S3Tool()
 
   describe "given test items in user folder", ->
 

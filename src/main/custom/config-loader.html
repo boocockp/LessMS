@@ -9,7 +9,7 @@
                 color: #aaaaaa;
             }
         </style>
-        <iron-ajax id="ij" auto url="../config.json" on-last-response-changed="onResponse" handle-as="json"></iron-ajax>
+        <iron-ajax id="ij" auto url="{{configUrl}}" on-last-response-changed="onResponse" handle-as="json"></iron-ajax>
 
     </template>
 </dom-module>
@@ -19,6 +19,10 @@
         is: 'config-loader',
 
         properties: {
+            configUrl: {
+                type: String,
+                value: "config.json"
+            },
             config: {
                 type: Object,
                 readOnly: true,

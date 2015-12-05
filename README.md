@@ -52,7 +52,8 @@ Everything is done in the browser using the AWS SDK - no server needed.
 - Create a test bucket and configure as a static website
 - Create a LessMS install bucket and configure as a static website (unless hosting it elsewhere)
 - Put the name of the LessMS install bucket in your deploy_vars
-- Put the name of the user files bucket and test bucket in your config.json
+- Put the name of the user files bucket in your config.json
+- Put the name of the test bucket in your config.test.json
 
 #### Set bucket permissions
 - In the AWS console for S3, go to your user files bucket
