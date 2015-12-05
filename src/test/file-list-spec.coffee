@@ -7,10 +7,15 @@ describe "File List", ->
       @requestsInFlight = 0
       @s3bucket = new AWS.S3(bucketConfig)
 
+    clearFolder: (folder, done) ->
+      @s3bucket.listObjects {Prefix: folder}, (error, data) =>
+        console.log(data)
+        @deleteObject item.Key for item in data.Contents
+        waitFor (=> @requestsInFlight == 0), done
+
     setItems: (folder, items, done) ->
       @setFileOrFolder folder, i for i in items
-      waitFor (=>
-        @requestsInFlight == 0), done
+      waitFor (=> @requestsInFlight == 0), done
 
     setFileOrFolder: (userFolder, item) -> if item instanceof FolderItem then @setFolder(userFolder, item) else @setFile(userFolder, item)
 
@@ -32,13 +37,25 @@ describe "File List", ->
         ACL: 'public-read',
         Body: body or "#{file.name} content"
 
-      @requestsInFlight = @requestsInFlight + 1
       @s3bucket.putObject putParams, (error, data) =>
         @requestsInFlight = @requestsInFlight - 1
         if error
           throw new Error "Error creating #{path}: #{error}"
         else
           console.log 'Created', path
+
+      @requestsInFlight = @requestsInFlight + 1
+
+
+    deleteObject: (path) ->
+      @s3bucket.deleteObject {Key: path}, (error) =>
+        @requestsInFlight = @requestsInFlight - 1
+        if error
+          throw new Error "Error deleting #{path}: #{error}"
+        else
+          console.log 'Deleted', path
+
+      @requestsInFlight = @requestsInFlight + 1
 
 
 
@@ -160,10 +177,11 @@ describe "File List", ->
           console.log('Got id in test', identity);
           userFolder = identity.IdentityId
 
-          s3.setItems userFolder, testItems, ->
-            waitFor (->
-              console.log "waiting for fileList"
-              fileList.hasItems()), done
+          s3.clearFolder userFolder, ->
+            s3.setItems userFolder, testItems, ->
+              waitFor (->
+                console.log "waiting for fileList"
+                fileList.hasItems()), done
 
     it "shows files and folders in top-level directory",  ->
       fileList.itemsShown().should.eql [
@@ -189,5 +207,5 @@ describe "File List", ->
         tabbedEditor.tabs()[0].name.should.eql "d1.css"
         done()
 
-    it.skip "can create a folder in top level", ->
+    it "can create a folder in top level", ->
       fileList.createFolderIn "Your files", "folderX"

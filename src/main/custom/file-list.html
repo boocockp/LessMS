@@ -274,13 +274,6 @@
                 e.preventDefault();
                 this._selectFilesToUpload(uploadPath);
             }
-
-            var newType = button.getAttribute('data-newtype');
-            if (newType) {
-                e.preventDefault();
-                var newPath = button.parentElement.parentElement.parentElement.getAttribute('data-newpath');
-                this._editNewFile(newType, newPath);
-            }
         },
 
         onSubmit: function(e) {
@@ -395,10 +388,6 @@
                         '<i class="fa fa-clipboard"></i>' + '</a>'
             }
 
-            function editLink(path, name) {
-                return '<a href="#" data-edit="' + path + '" class="ag-action fa fa-pencil-square-o" title="Edit"></a>'
-            }
-
             function viewEditLink(path, name) {
                 return '<a href="#" data-edit="' + path + '">' + name + '</a>'
             }
@@ -484,19 +473,6 @@
             function actionsCellRenderer(params) {
                 var path = params.data.path;
                 return params.node.group ? uploadLink(path) + newFileMenu(path) + newFolderDropdown(path) : copyButton(path, params.data.name) + viewLink(path, params.data.name);
-            }
-
-           function sizeCellRenderer(params) {
-                return params.node.group ? '' : filesize(params.data.size, {round: 0});
-            }
-
-            function dateCellRenderer(params) {
-                var date = params.data.dateModified;
-                return date ? new XDate(params.data.dateModified).toString("dd MMM yyyy HH:mm") : '';
-            }
-
-            function sizeCellStyle() {
-                return {'text-align': 'right'};
             }
 
             function actionsCellStyle() {

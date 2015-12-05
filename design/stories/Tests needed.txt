@@ -1,0 +1,19 @@
+Tests needed
+============
+
+File list
+---------
+- Expanded trees stay expanded on refresh
+
+
+Upload
+
+New file
+
+New folder
+
+Drag folder
+
+Open in new window
+
+Edit each type of file
