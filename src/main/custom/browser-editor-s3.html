@@ -11,7 +11,7 @@
     <template>
         <style>
         </style>
-        <config-loader config="{{config}}"></config-loader>
+        <config-loader id="configLoader" config-url="{{configUrl}}" config="{{config}}"></config-loader>
 
         <user-signin-google id="usg"
                             client-id="{{config.clientId}}"
@@ -35,7 +35,7 @@
                           folder-created="{{folderCreated}}"
                           destination-file-path="{{destinationFilePath}}"
                           file-path-to-edit="{{filePathToEdit}}"
-                          file-for-edit="{{fileForEdit}}" ></s3-file-uploader>
+                          file-for-edit="{{fileForEdit}}"></s3-file-uploader>
 
         <s3-file-mover id="fm"
                        bucket-name="{{config.bucketName}}"
@@ -67,7 +67,13 @@
 
 <script>
     Polymer({
-        is: 'browser-editor-s3'
+        is: 'browser-editor-s3',
+        properties: {
+            configUrl: {
+                type: String,
+                value: "config.json"
+            }
+        }
 
     });
 </script>

@@ -24,7 +24,7 @@ describe "File List", ->
         bucketConfig = { params: {Bucket: @bucketName}, region: awsRegion }
         bucketConfig.accessKeyId = getIniValue iniData, 'access_key'
         bucketConfig.secretAccessKey = getIniValue iniData, 'secret_key'
-      getConfig "config.json", (configData) =>
+      getConfig "config.test.json", (configData) =>
         bucketName = JSON.parse(configData).bucketName
         bucketConfig.params = {Bucket: bucketName}
         @s3bucket = new AWS.S3(bucketConfig)

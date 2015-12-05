@@ -13,5 +13,6 @@ src/test/s3cmd.conf
 
 /s3cmd.conf
 /config.json
+/config.test.json
 /deploy_vars
 
