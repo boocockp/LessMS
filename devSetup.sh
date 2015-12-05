@@ -13,5 +13,6 @@ mkdir -p target
 (cd src/main && ln -fs ../../lib)
 (cd src/main && ln -fs ../../config.json)
 (cd src/test && ln -fs ../../config.json)
+(cd src/test && ln -fs ../../s3cmd.conf)
 
 echo You need to update config.json, s3cmd.conf and deploy_vars with your details

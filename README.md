@@ -48,10 +48,11 @@ Everything is done in the browser using the AWS SDK - no server needed.
 
 #### Create S3 buckets
 - Refer to [http://docs.aws.amazon.com/AmazonS3/latest/UG/BucketOperations.html]
-- Create a user files bucket and configure as static website
-- Create a LessMS install bucket and configure as static website (unless hosting it elsewhere)
+- Create a user files bucket and configure as a static website
+- Create a test bucket and configure as a static website
+- Create a LessMS install bucket and configure as a static website (unless hosting it elsewhere)
 - Put the name of the LessMS install bucket in your deploy_vars
-- Put the name of the user files bucket in your config.json
+- Put the name of the user files bucket and test bucket in your config.json
 
 #### Set bucket permissions
 - In the AWS console for S3, go to your user files bucket
@@ -60,6 +61,7 @@ Everything is done in the browser using the AWS SDK - no server needed.
 - Paste in the contents of aws/bucket_policy, changing the bucket name to your user files bucket, and save
 - Click Edit CORS configuration
 - Paste in the contents of aws/bucket_cors_configuration and save
+- Repeat for your test bucket
 
 #### Google Developer project
 - Sign in to a Google account under which you want to create your CMS project

@@ -1,5 +1,6 @@
 {
   "clientId": "919000000007-a0csgnaaaaaaaaaaaaaaaaaaaaavm.apps.googleusercontent.com",
   "identityPoolId": "eu-west-1:aaaaaaaa-ffff-0000-9999-ababababab",
-  "bucketName": "your_user_files_s3_bucket"
+  "bucketName": "your_user_files_s3_bucket",
+  "testBucketName": "your_test_s3_bucket"
 }
