@@ -2,38 +2,14 @@ describe "File List", ->
 
   @timeout 5000
 
-  awsRegion = 'eu-west-1'
-  testUser = {email: "a@a.com", identityId: "eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1"}
-
   class S3Tool
-    getConfig = (fileName, success) ->
-      $.ajax
-        url: fileName
-        dataType: "text"
-        async: false
-        success: success
-
-    getIniValue = (iniData, name) ->
-      new RegExp("\\b#{name}\\s*=\\s*(\\S+)").exec(iniData)[1]
-
-
-    constructor: ()->
+    constructor: (bucketConfig)->
       @requestsInFlight = 0
-      bucketConfig = { region: awsRegion }
-      getConfig "s3cmd.conf", (iniData) =>
-        bucketConfig = { params: {Bucket: @bucketName}, region: awsRegion }
-        bucketConfig.accessKeyId = getIniValue iniData, 'access_key'
-        bucketConfig.secretAccessKey = getIniValue iniData, 'secret_key'
-      getConfig "config.test.json", (configData) =>
-        bucketName = JSON.parse(configData).bucketName
-        bucketConfig.params = {Bucket: bucketName}
-        @s3bucket = new AWS.S3(bucketConfig)
+      @s3bucket = new AWS.S3(bucketConfig)
 
-    setItems: (user, items, done) ->
-      userFolder = user.identityId
-      @setFileOrFolder userFolder, i for i in items
+    setItems: (folder, items, done) ->
+      @setFileOrFolder folder, i for i in items
       waitFor (=>
-        console.log "waiting for requests - @requestsInFlight", @requestsInFlight
         @requestsInFlight == 0), done
 
     setFileOrFolder: (userFolder, item) -> if item instanceof FolderItem then @setFolder(userFolder, item) else @setFile(userFolder, item)
@@ -112,7 +88,6 @@ describe "File List", ->
   file = (name) -> new FileItem name
   folder = (name, items) -> new FolderItem name, items
   browserEditorS3 = -> new BrowserEditor($('browser-editor-s3'))
-  signIn = (user) ->
 
   waitFor = (condition, action) ->
     checks = 0
@@ -127,6 +102,17 @@ describe "File List", ->
         checks = checks + 1
     intervalId = setInterval doCheck, 100
 
+  getConfig = (fileName, success) ->
+        $.ajax
+          url: fileName
+          dataType: "text"
+          async: false
+          success: success
+
+  getIniValue = (iniData, name) ->
+    new RegExp("\\b#{name}\\s*=\\s*(\\S+)").exec(iniData)[1]
+
+
   s3 = new S3Tool()
 
   describe "given test items in user folder", ->
@@ -137,19 +123,47 @@ describe "File List", ->
 
     before 'Set up test items in bucket', (done) ->
       $('browser-editor-s3').find('ag-grid').length.should.eql 1
+      s3 = null
 
-      s3.setItems testUser, [
+      testItems = [
         file "a1.html"
         file "b1.txt"
         folder "c1", [
           file "d1.css"
         ]
-      ], ->
-        waitFor (->
-          console.log "waiting for fileList"
-          fileList.hasItems()), done
+      ]
 
-    signIn testUser
+      identityPoolId = null
+      bucketConfig = null
+      getConfig "s3cmd.conf", (iniData) ->
+        bucketConfig =
+          accessKeyId: getIniValue iniData, 'access_key'
+          secretAccessKey: getIniValue iniData, 'secret_key'
+
+      getConfig "config.test.json", (configData) ->
+        config = JSON.parse(configData)
+        bucketConfig.params = {Bucket: config.bucketName}
+        identityPoolId = config.identityPoolId
+        bucketConfig.region = identityPoolId.split(":")[0]
+        s3 = new S3Tool(bucketConfig)
+
+      idToken = null
+      waitFor (-> idToken = $('user-signin-google')[0]?.idToken), ->
+        cognitoIdentity = new AWS.CognitoIdentity()
+        params =
+            IdentityPoolId: identityPoolId
+            Logins:
+              'accounts.google.com': idToken
+
+        cognitoIdentity.getId params, (err, identity) ->
+          if (err) then throw new Error('Failed to get id', err, err.stack)
+          console.log('Got id in test', identity);
+          userFolder = identity.IdentityId
+
+          s3.setItems userFolder, testItems, ->
+            waitFor (->
+              console.log "waiting for fileList"
+              fileList.hasItems()), done
 
     it "shows files and folders in top-level directory",  ->
       fileList.itemsShown().should.eql [

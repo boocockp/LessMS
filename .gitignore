@@ -8,7 +8,7 @@ stuff/
 **/node_modules/
 src/main/bower
 src/main/lib
-src/test/config.json
+src/test/config.test.json
 src/test/s3cmd.conf
 
 /s3cmd.conf
