@@ -3,10 +3,13 @@ bower_components/
 *.log
 .idea/
 dist
+target
 stuff/
 **/node_modules/
 src/main/bower
 src/main/lib
+src/test/config.json
+
 /s3cmd.conf
 /config.json
 /deploy_vars

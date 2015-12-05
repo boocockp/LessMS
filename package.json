@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/boocockp/LessMS#readme",
   "devDependencies": {
+    "coffee": "^2.1.0",
     "s3-cli": "^0.13.0"
   }
 }

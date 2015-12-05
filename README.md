@@ -40,7 +40,7 @@ Everything is done in the browser using the AWS SDK - no server needed.
 #### AWS account
 - Create an AWS account and sign up for S3: [http://docs.aws.amazon.com/AmazonS3/latest/gsg/SigningUpforS3.html]
 
-#### Create AWS users with IAM
+#### Create AWS users with IAM (Identity and Access Management)
 - Refer to [http://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html]
 - Create an Administrators group and an Admin user, noting the access key and secret key
 - Put the access key and secret key of the admin user in the s3cmd.conf in your working directory 
@@ -86,3 +86,15 @@ Everything is done in the browser using the AWS SDK - no server needed.
 - Click Edit Identity Pool at the top right and copy the Identity Pool ID
 - Put the Identity Pool ID in your config.json 
 
+## Building
+
+Run ./build.sh to build the distribution bundle
+
+Run ./deploy.sh to copy the distribution files to your LessMS install bucket
+
+## Tests
+The tests (under src/test) need to be run manually in a browser and are not suitable for CI yet.
+
+The tests are written in CoffeeScript and need to be compiled to the target dir - it is best to set up a file watcher for this during development.
+
+The browser needs to be signed into a Google account before the tests are run

@@ -36,5 +36,9 @@
     "clipboard": "~1.5.3",
     "text-encoding": "~0.5.3",
     "json-editor": "~0.7.23"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.4",
+    "should": "~7.1.1"
   }
 }

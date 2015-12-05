@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>browser-editor-s3-spec</title>
+    <script src="../main/bower/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link href="../main/custom/bootstrap.html" rel="import">
+
+    <link rel="import" href="../main/custom/browser-editor-s3.html">
+    <link rel="stylesheet" href="../main/bower/mocha/mocha.css">
+</head>
+
+<body>
+
+<div id="mocha"></div>
+<!--<script src="../main/bower/jquery/dist/jquery.min.js"></script>-->
+<script src="../main/bower/mocha/mocha.js"></script>
+<script src="../main/bower/should/should.js"></script>
+
+<script>mocha.setup('bdd')</script>
+
+<browser-editor-s3></browser-editor-s3>
+
+<script id="s3conf" src="../../s3cmd.conf" type="text/plain"></script>
+<script id="spec" src="../../target/js/file-list-spec.js"></script>
+
+<script>
+
+</script>
+
+<script>mocha.run()</script>
+
+</body>
+</html>

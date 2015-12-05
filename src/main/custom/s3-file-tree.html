@@ -74,6 +74,10 @@
 
     }
 
+    function isTestMode() {
+        return !!location.search.match(/\bdummyData=true\b/);
+    }
+
     Polymer({
         is: 's3-file-tree',
 
@@ -103,15 +107,22 @@
 
         },
         observers: [
-//            '_updateFileTree(googleIdToken, bucketName, identityPoolId, filesUploaded, folderCreated, refreshRequested)'
-            '_updateFileTree(bucketName, filesUploaded, folderCreated)'
+            '_updateFileTree(googleIdToken, bucketName, identityPoolId, filesUploaded, folderCreated, refreshRequested)'
+//            '_updateFileTree(bucketName, filesUploaded, folderCreated)'
         ],
+
+        ready: function () {
+            if (isTestMode()) {
+                this.googleIdToken = "DUMMY_GOOGLE_ID_TOKEN";
+            }
+        },
+
 
         _updateFileTree: function (googleIdToken) {
             console.log("_updateFileTree", "googleIdToken", googleIdToken);
 
             // dummy data test mode
-            if (!!location.search.match(/\bdummyData=true\b/)) {
+            if (isTestMode()) {
                 this._setFileTree(fileTreeFromS3(dummyData, dummyFolder));
                 return;
             }
@@ -153,10 +164,6 @@
                 }
             });
 
-        },
-
-
-        ready: function () {
         }
 
     });
