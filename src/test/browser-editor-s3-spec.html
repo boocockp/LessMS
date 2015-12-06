@@ -8,6 +8,9 @@
 
     <link rel="import" href="../main/custom/browser-editor-s3.html">
     <link rel="stylesheet" href="../main/bower/mocha/mocha.css">
+    <link id="s3conf" rel="import" href="s3cmd.conf">
+    <link id="testConfig" rel="import" href="config.test.json">
+
 </head>
 
 <body>
@@ -22,7 +25,6 @@
 
 <browser-editor-s3 config-url="config.test.json"></browser-editor-s3>
 
-<script id="s3conf" src="../../s3cmd.conf" type="text/plain"></script>
 <script id="spec" src="../../target/js/file-list-spec.js"></script>
 
 <script>

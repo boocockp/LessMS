@@ -119,13 +119,6 @@ describe "File List", ->
         checks = checks + 1
     intervalId = setInterval doCheck, 100
 
-  getConfig = (fileName, success) ->
-        $.ajax
-          url: fileName
-          dataType: "text"
-          async: false
-          success: success
-
   getIniValue = (iniData, name) ->
     new RegExp("\\b#{name}\\s*=\\s*(\\S+)").exec(iniData)[1]
 
@@ -140,7 +133,6 @@ describe "File List", ->
 
     before 'Set up test items in bucket', (done) ->
       $('browser-editor-s3').find('ag-grid').length.should.eql 1
-      s3 = null
 
       testItems = [
         file "a1.html"
@@ -150,19 +142,16 @@ describe "File List", ->
         ]
       ]
 
-      identityPoolId = null
-      bucketConfig = null
-      getConfig "s3cmd.conf", (iniData) ->
-        bucketConfig =
-          accessKeyId: getIniValue iniData, 'access_key'
-          secretAccessKey: getIniValue iniData, 'secret_key'
+      iniData = $('#s3conf')[0].import.body.innerText
+      bucketConfig =
+        accessKeyId: getIniValue iniData, 'access_key'
+        secretAccessKey: getIniValue iniData, 'secret_key'
 
-      getConfig "config.test.json", (configData) ->
-        config = JSON.parse(configData)
-        bucketConfig.params = {Bucket: config.bucketName}
-        identityPoolId = config.identityPoolId
-        bucketConfig.region = identityPoolId.split(":")[0]
-        s3 = new S3Tool(bucketConfig)
+      config = JSON.parse($('#testConfig')[0].import.body.innerText)
+      bucketConfig.params = {Bucket: config.bucketName}
+      identityPoolId = config.identityPoolId
+      bucketConfig.region = identityPoolId.split(":")[0]
+      s3 = new S3Tool(bucketConfig)
 
       idToken = null
       waitFor (-> idToken = $('user-signin-google')[0]?.idToken), ->
