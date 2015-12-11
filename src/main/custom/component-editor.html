@@ -1,0 +1,68 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<dom-module id="component-editor">
+    <template>
+        <style>
+            #editorContainer {
+                width: 500px;
+                /*height: 500px;*/
+                padding: 20px;
+                border: 2px solid darkslategray;
+            }
+
+            label.prop-label {
+                width: 15em;
+            }
+        </style>
+        <div id="editorContainer">
+        </div>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'component-editor',
+
+        properties: {
+            componentId: {
+                type: String,
+                observer: '_onComponentId'
+            }
+        },
+
+        listeners: {
+            click: 'onClick'
+        },
+
+        _onComponentId: function(id) {
+            this.component = document.getElementById(id);
+            for (p in this.component.properties) {
+                var val = this.component[p];
+                var propRow = document.createElement('div');
+                propRow.innerHTML = "<label class='prop-label'>" + p + "</label>" + "<input type='text' name='" + p + "' value='" + val + "'>";
+                this.$.editorContainer.appendChild(propRow);
+            }
+
+            var buttonRow = document.createElement('div');
+            buttonRow.innerHTML = "<button id='update'>Update</button>";
+            this.$.editorContainer.appendChild(buttonRow);
+
+        },
+
+        onClick: function(e) {
+            var button = e.target;
+            if (button.id = 'update') {
+                this.component.height = this.$.editorContainer.querySelector("input[name='" + "height" + "']").value;
+            }
+        },
+
+
+        ready: function() {
+        }
+
+    });
+
+
+
+</script>
