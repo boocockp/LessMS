@@ -1,4 +1,7 @@
 <link rel="import" href="../bower/polymer/polymer.html">
+
+<link rel="import" href="test-box.html">
+
 <script>
     window.CKEDITOR_BASEPATH = "bower/ckeditor/";
 </script>
@@ -11,6 +14,9 @@
 </dom-module>
 
 <script>
+    CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
+
     Polymer({
         is: 'html-editor',
 
@@ -26,10 +32,12 @@
         },
 
         ready: function() {
+
             this.editor = CKEDITOR.replace( this.$.editarea, {
                 fullPage: true,
-                extraPlugins: 'docprops',
+                extraPlugins: 'docprops,timestamp,box',
                 allowedContent: true,
+                extraAllowedContent: 'test-box',
                 height: 650
             } );
         },
