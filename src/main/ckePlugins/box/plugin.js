@@ -17,7 +17,7 @@ CKEDITOR.plugins.add( 'box', {
             exec: function( editor ) {
                 var head = editor.document.getHead();
                 if (!findImport(head, "test-box")) {
-                    head.appendHtml('<link rel="import" href="/LessMS/src/main/custom/test-box.html">');
+                    head.appendHtml('<link rel="import" href="/LessMS/src/main/custom/test-box.html" data-cke-new>');
                 }
 
                 var boxEl = new CKEDITOR.dom.element('test-box');

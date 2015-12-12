@@ -65,18 +65,19 @@
         },
 
         ready: function () {
-//            this.editor = CKEDITOR.replace( this.$.editarea, {
-//                fullPage: true,
-//                extraPlugins: 'docprops',
-//                allowedContent: true,
-//                height: 650
-//            } );
         },
 
         getFileData: function () {
             var iframe = this.$.editorFrame;
             var head = this.originalHead;
-            var body = this.editor.getData();
+            var newHeadElements = iframe.contentWindow.document.querySelectorAll('head [data-cke-new]');
+            if (newHeadElements) {
+                for (var i = 0; i < newHeadElements.length; i++) {
+                    var elText = newHeadElements[i].outerHTML.replace(/data-cke-new(="")?/, '');
+                    head = head.replace(/<\/head>/, elText + '\n' + "</head>")
+                }
+            }
+            var body = '<body>' + this.editor.getData() + '</body>';
             return '<html>' + head + body + '</html>';
         }
     });
