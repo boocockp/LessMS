@@ -1,12 +1,25 @@
 CKEDITOR.plugins.add( 'box', {
     icons: 'box',
     init: function( editor ) {
+
+        function findImport(el, elementName) {
+            var imports = el.find('link[rel="import"]');
+            for (var i = 0; i < imports.count(); i++) {
+                var node = imports.getItem(i);
+                if (node.getAttribute('href').match("\\/" + elementName + ".html")) {
+                    return node;
+                }
+            }
+
+            return null;
+        }
         editor.addCommand( 'insertBox', {
             exec: function( editor ) {
-                var edDoc = editor.document;
+                var head = editor.document.getHead();
+                if (!findImport(head, "test-box")) {
+                    head.appendHtml('<link rel="import" href="/LessMS/src/main/custom/test-box.html">');
+                }
 
-                edDoc.getHead().appendHtml('<link rel="import" href="/LessMS/src/main/custom/test-box.html">');
-                //editor.insertHtml( '<p>Box here</p><test-box></test-box><p>End of box</p>', 'text' );
                 var boxEl = new CKEDITOR.dom.element('test-box');
                 editor.insertElement(boxEl);
             }

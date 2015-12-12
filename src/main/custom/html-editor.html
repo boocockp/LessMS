@@ -40,11 +40,13 @@
         },
 
         _fileDataChanged: function (data) {
+            var comp = this;
             var iframe = this.$.editorFrame;
+            this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
             iframe.onload = function() {
                 var body = iframe.contentWindow.document.body;
                 body.setAttribute('contenteditable', 'true');
-                CKEDITOR.inline(body, {
+                comp.editor = CKEDITOR.inline(body, {
                     fullPage: true,
                     allowedContent: true,
                     extraPlugins: 'sharedspace,timestamp,box',
@@ -73,8 +75,8 @@
 
         getFileData: function () {
             var iframe = this.$.editorFrame;
-            var head = '<head>' + iframe.contentWindow.document.head.innerHTML + '</head>'
-            var body = '<body>' + iframe.contentWindow.document.body.innerHTML + '</body>'
+            var head = this.originalHead;
+            var body = this.editor.getData();
             return '<html>' + head + body + '</html>';
         }
     });
