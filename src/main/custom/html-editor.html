@@ -1,4 +1,7 @@
 <link rel="import" href="../bower/polymer/polymer.html">
+
+<link rel="import" href="test-box.html">
+
 <script>
     window.CKEDITOR_BASEPATH = "bower/ckeditor/";
 </script>
@@ -23,6 +26,9 @@
 </dom-module>
 
 <script>
+    CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
+
     Polymer({
         is: 'html-editor',
 
@@ -39,8 +45,10 @@
                 var body = iframe.contentWindow.document.body;
                 body.setAttribute('contenteditable', 'true');
                 CKEDITOR.inline(body, {
+                    fullPage: true,
                     allowedContent: true,
-                    extraPlugins: 'sharedspace',
+                    extraPlugins: 'sharedspace,timestamp,box',
+                    extraAllowedContent: 'test-box',
                     removePlugins: 'resize',
                     sharedSpaces: {
                         top: 'topToolbar',
