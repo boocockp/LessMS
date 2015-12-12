@@ -1,0 +1,36 @@
+Web components in editor
+========================
+
+Aim
+---
+
+- Choose, insert and configure web components while editing a HTML page
+- See the page as "live" as possible
+
+Requirements
+------------
+
+- Editor action to insert a web component
+- Means of choosing a web component - will evolve
+- Any necessary imports added automatically to the head of the page
+- Web component can be seen as it will appear
+- Non-UI components may not be visible
+- Can switch quickly between edit and preview
+- UI and non-UI components can be seen in a suitable config view
+- Changes made to web components outside the editor are saved
+- Can insert components at a position
+- Can insert inline components around selected areas of text
+- Can insert block-level components around multiple elements
+
+
+Technical
+---------
+- HTML editor shows whole page in an iframe - so appears as will see it
+- Inject CKEditor script into the page
+- If necessary, wrap body in editing div
+- Start inline editor on div
+- On save, take body from editor div
+- On save, take head from head
+- BUT scripts could have modified head or body and don't want to save all changes
+- If just set src of iframe to page url, don't know what it looked like - could retrieve independently
+- Poss: mark/store refs to all original head elements from text and those inserted by editor, save only those
