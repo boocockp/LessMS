@@ -34,3 +34,7 @@ Technical
 - BUT scripts could have modified head or body and don't want to save all changes
 - If just set src of iframe to page url, don't know what it looked like - could retrieve independently
 - Poss: mark/store refs to all original head elements from text and those inserted by editor, save only those
+
+To find child nodes of element:
+tb = test-box element
+Polymer.dom(tb.root).children
