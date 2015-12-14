@@ -1,0 +1,80 @@
+Web component arranger
+=======================
+
+Aims
+----
+- User can create page by arranging components
+- Component-oriented - Powerpoint rather than Word
+
+Requirements
+------------
+- Add components to page
+- Remove components from page
+- Design view and preview
+- Components can be nested
+- Components can be dragged around
+- If component is resizable, can drag to set its size
+- Can have plain text pages by inserting one rich text component
+- CKEditor can work inside components but can't put components into CKE
+- Any arrangement can be saved easily as a component
+- Have text and worksheet components
+- Save only the tags needed to define the page, not elements created by web component
+
+Later
+-----
+- Undo/redo
+- Easily save a set of components as a new component
+
+
+Technical
+---------
+- To distinguish elements to save: elements introduced by user are tagged with attribute - remove others - but if nested?
+
+Libraries
+---------
+
+- Interact
+    - Has resize, constrained, multiple targets, free-placement
+    - All drop is completely freeform
+    - Seems like a lot of markup and CSS
+
+- Dragula
+    - All drags snap into position in page with preview of where going
+    - Drag handles
+    - Simple API with option hooks
+    - No resize - combine with another library?
+    - No autoscroll
+    - Nesting possible with special tricks
+    - Active modern library
+
+- jQuery draggable
+    - Previews, drag handles, grid
+    - Not really integrated
+
+- gridstack, gridster
+    - Lovely grid-based layout and resize
+    - Actual content is drowned in grid wrappers or extra markup
+
+- dragabilly
+    - basic free dragging
+
+- gridly
+    - strange grid block arranger, disconcerting moves between rows like candy crush
+
+- Greensock draggable
+    - Nice smooth specialised drag
+    - Not open source
+
+- Shapeshift
+    - very basic grid dragger
+
+- GridList
+    - not v intuitive gridster thing
+
+Resizing
+--------
+
+-jQueryUI resizable
+    - clean and simple
+    - many options
+    - have to include much jqueryUI stuff even in custom build

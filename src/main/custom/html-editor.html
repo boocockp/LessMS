@@ -29,6 +29,21 @@
     CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
     CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
 
+    function createEditor(el) {
+        el.setAttribute('contenteditable', 'true');
+        return CKEDITOR.inline(body, {
+            fullPage: true,
+            allowedContent: true,
+            extraPlugins: 'sharedspace,timestamp,box',
+            extraAllowedContent: 'test-box',
+            removePlugins: 'resize',
+            sharedSpaces: {
+                top: 'topToolbar',
+                bottom: 'bottomToolbar'
+            }
+        });
+    }
+
     Polymer({
         is: 'html-editor',
 
@@ -45,18 +60,7 @@
             this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
             iframe.onload = function() {
                 var body = iframe.contentWindow.document.body;
-                body.setAttribute('contenteditable', 'true');
-                comp.editor = CKEDITOR.inline(body, {
-                    fullPage: true,
-                    allowedContent: true,
-                    extraPlugins: 'sharedspace,timestamp,box',
-                    extraAllowedContent: 'test-box',
-                    removePlugins: 'resize',
-                    sharedSpaces: {
-                        top: 'topToolbar',
-                        bottom: 'bottomToolbar'
-                    }
-                });
+                comp.editor = createEditor(body);
             };
 
             iframe.contentWindow.document.open();
