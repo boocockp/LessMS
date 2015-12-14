@@ -1,16 +1,34 @@
 <link rel="import" href="../bower/polymer/polymer.html">
+
+<link rel="import" href="test-box.html">
+
 <script>
     window.CKEDITOR_BASEPATH = "bower/ckeditor/";
 </script>
 <script src="../bower/ckeditor/ckeditor.js"></script>
 
 <dom-module id="html-editor">
+    <style>
+        #editorFrame {
+            width: 100%;
+            height: 500px;
+        }
+
+        #topToolbar {
+            min-height: 80px;
+        }
+    </style>
     <template>
-        <textarea id="editarea"></textarea>
+        <div id="topToolbar"></div>
+        <iframe id="editorFrame"></iframe>
+        <div id="bottomToolbar"></div>
     </template>
 </dom-module>
 
 <script>
+    CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
+
     Polymer({
         is: 'html-editor',
 
@@ -21,21 +39,46 @@
             }
         },
 
-        _fileDataChanged: function(data) {
-            this.editor.setData(data);
+        _fileDataChanged: function (data) {
+            var comp = this;
+            var iframe = this.$.editorFrame;
+            this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
+            iframe.onload = function() {
+                var body = iframe.contentWindow.document.body;
+                body.setAttribute('contenteditable', 'true');
+                comp.editor = CKEDITOR.inline(body, {
+                    fullPage: true,
+                    allowedContent: true,
+                    extraPlugins: 'sharedspace,timestamp,box',
+                    extraAllowedContent: 'test-box',
+                    removePlugins: 'resize',
+                    sharedSpaces: {
+                        top: 'topToolbar',
+                        bottom: 'bottomToolbar'
+                    }
+                });
+            };
+
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(data);
+            iframe.contentWindow.document.close();
         },
 
-        ready: function() {
-            this.editor = CKEDITOR.replace( this.$.editarea, {
-                fullPage: true,
-                extraPlugins: 'docprops',
-                allowedContent: true,
-                height: 650
-            } );
+        ready: function () {
         },
 
-        getFileData: function() {
-            return this.editor.getData();
+        getFileData: function () {
+            var iframe = this.$.editorFrame;
+            var head = this.originalHead;
+            var newHeadElements = iframe.contentWindow.document.querySelectorAll('head [data-cke-new]');
+            if (newHeadElements) {
+                for (var i = 0; i < newHeadElements.length; i++) {
+                    var elText = newHeadElements[i].outerHTML.replace(/data-cke-new(="")?/, '');
+                    head = head.replace(/<\/head>/, elText + '\n' + "</head>")
+                }
+            }
+            var body = '<body>' + this.editor.getData() + '</body>';
+            return '<html>' + head + body + '</html>';
         }
     });
 </script>

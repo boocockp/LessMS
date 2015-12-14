@@ -27,6 +27,7 @@ Backlog
 To do
 -----
 - Tests
+- Property observers looking for events need to accept same value twice - maybe set to undefined after using the value?
 - Refactor file-list
 - No picture if undefined
 - Different message in grid when not signed in
