@@ -44,6 +44,28 @@
         });
     }
 
+    function createEl(name, attrs) {
+        var el = document.createElement(name);
+        for (a in attrs) {
+            if (attrs.hasOwnProperty(a)) {
+                el.setAttribute(a, attrs[a]);
+            }
+        }
+        return el;
+    }
+
+    function waitFor(condition, action) {
+        if (condition()) {
+            action()
+        } else {
+            setTimeout(function() { waitFor(condition, action); }, 100);
+        }
+    }
+
+    function toArray(l) {
+        return Array.prototype.slice.call(l, 0);
+    }
+
     Polymer({
         is: 'html-editor',
 
@@ -58,14 +80,23 @@
             var comp = this;
             var iframe = this.$.editorFrame;
             this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
-            iframe.onload = function() {
-                var body = iframe.contentWindow.document.body;
-                comp.editor = createEditor(body);
-            };
 
             iframe.contentWindow.document.open();
             iframe.contentWindow.document.write(data);
             iframe.contentWindow.document.close();
+
+            function dragulaLoaded() { return iframe.contentWindow && iframe.contentWindow.dragula; }
+            function initDragula() {
+                var iframeBody = iframe.contentWindow.document.body;
+                var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]')).concat(iframeBody);
+                iframe.contentWindow.dragula(containersInIframe);
+            }
+
+            iframe.onload = function() {
+                iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css"}));
+                iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js"}));
+                waitFor(dragulaLoaded, initDragula)
+            }
         },
 
         ready: function () {

@@ -1,0 +1,29 @@
+Text-box component
+==================
+
+Aims
+----
+
+- User can put a text box in the page with editable rich-text
+
+Requirements
+------------
+- Use add mechanism to add a text box element
+- Default size to be full width of container and height as required by the text
+- Size can be set like other resizable components
+- Can click in box to edit with rich text editor
+- HTML content saved with component
+- HTML content displayed when page shown
+
+Technical
+---------
+
+- If editable:
+    - Need a contenteditable div in the component
+    - Show an inline editor whenever click in it
+    - Call CKEDITOR.inline on the contenteditable div
+    - Needs to have CKEditor in the page
+
+- If display:
+    - Just show the content
+    - Should not load CKEditor
