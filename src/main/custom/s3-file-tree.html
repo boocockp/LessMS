@@ -16,7 +16,18 @@
 </dom-module>
 
 <script>
-    var dummyData = {"IsTruncated":false,"Marker":"","Contents":[{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file1.html","LastModified":"2015-10-31T08:39:54.000Z","ETag":"\"97e7fdb7d1a636a3816b541f5d4bd7bb\"","Size":162,"StorageClass":"STANDARD"},{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file2.html","LastModified":"2015-10-31T15:09:00.000Z","ETag":"\"5a0350d1d9efa8beeea694c9dd667300\"","Size":307,"StorageClass":"STANDARD"},{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/fruits-vaisiai.svg","LastModified":"2015-11-02T21:02:18.000Z","ETag":"\"8e735626015cfdd003f97fc34038e8a0\"","Size":530989,"StorageClass":"STANDARD"},{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/images/","LastModified":"2015-11-03T07:50:32.000Z","ETag":"\"d41d8cd98f00b204e9800998ecf8427e\"","Size":0,"StorageClass":"STANDARD"},{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/monsieur beau.jpg","LastModified":"2015-11-02T21:06:45.000Z","ETag":"\"8ea1e736d2e349f24937b735457c1f82\"","Size":96199,"StorageClass":"STANDARD"},{"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/paul.jpg","LastModified":"2015-11-02T13:09:25.000Z","ETag":"\"ee3c8303a589ac9a291f104a8d8b4dc3\"","Size":7053,"StorageClass":"STANDARD"}],"Name":"ashridgetech.cmstest","Prefix":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1","MaxKeys":1000,"CommonPrefixes":[]};
+    var dummyData = {"IsTruncated":false,"Marker":"", "Name":"ashridgetech.cmstest","Prefix":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1","MaxKeys":1000,"CommonPrefixes":[],
+        "Contents":[
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file1.html","LastModified":"2015-10-31T08:39:54.000Z","ETag":"\"97e7fdb7d1a636a3816b541f5d4bd7bb\"","Size":162,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file2.html","LastModified":"2015-10-31T15:09:00.000Z","ETag":"\"5a0350d1d9efa8beeea694c9dd667300\"","Size":307,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file3.html","LastModified":"2015-10-31T15:09:00.000Z","ETag":"\"5a0350d1d9efa8beeea694c9dd667300\"","Size":307,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file4.html","LastModified":"2015-10-31T15:09:00.000Z","ETag":"\"5a0350d1d9efa8beeea694c9dd667300\"","Size":307,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/file5.html","LastModified":"2015-10-31T15:09:00.000Z","ETag":"\"5a0350d1d9efa8beeea694c9dd667300\"","Size":307,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/fruits-vaisiai.svg","LastModified":"2015-11-02T21:02:18.000Z","ETag":"\"8e735626015cfdd003f97fc34038e8a0\"","Size":530989,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/images/","LastModified":"2015-11-03T07:50:32.000Z","ETag":"\"d41d8cd98f00b204e9800998ecf8427e\"","Size":0,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/monsieur beau.jpg","LastModified":"2015-11-02T21:06:45.000Z","ETag":"\"8ea1e736d2e349f24937b735457c1f82\"","Size":96199,"StorageClass":"STANDARD"},
+        {"Key":"eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1/paulboocock/paul.jpg","LastModified":"2015-11-02T13:09:25.000Z","ETag":"\"ee3c8303a589ac9a291f104a8d8b4dc3\"","Size":7053,"StorageClass":"STANDARD"}]
+        };
     var dummyFolder = "eu-west-1:0873a97d-f0fd-4ca4-a132-ccdc5dbe82f1";
 
     function fileTreeFromS3(s3Data, folder) {

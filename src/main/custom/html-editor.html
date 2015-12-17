@@ -1,6 +1,6 @@
 <link rel="import" href="../bower/polymer/polymer.html">
 
-<link rel="import" href="test-box.html">
+<link rel="import" href="../brics/test-box.html">
 
 <script>
     window.CKEDITOR_BASEPATH = "bower/ckeditor/";
@@ -20,6 +20,9 @@
     </style>
     <template>
         <div id="topToolbar"></div>
+        <div id="componentToolbar" on-click="onComponent">
+            <button data-component="test-box">Test box</button>
+        </div>
         <iframe id="editorFrame"></iframe>
         <div id="bottomToolbar"></div>
     </template>
@@ -54,6 +57,21 @@
         return el;
     }
 
+    function hasElement(parent, name, attrs) {
+        sel = name;
+        for (a in attrs) {
+            sel += "[" + a + "='" + attrs[a] + "']";
+        }
+        return !!parent.querySelector(sel);
+    }
+
+    function createElementIfNotPresent(parent, name, attrs) {
+        if (!hasElement(parent, name, attrs)) {
+            var el = createEl(name, attrs);
+            parent.appendChild(el);
+        }
+    }
+
     function waitFor(condition, action) {
         if (condition()) {
             action()
@@ -74,6 +92,15 @@
                 type: String,
                 observer: '_fileDataChanged'
             }
+        },
+
+        onComponent: function(e) {
+            console.log('onComponent', e, e.target.getAttribute('data-component'));
+            var componentName = e.target.getAttribute('data-component');
+            var iframe = this.$.editorFrame;
+            createElementIfNotPresent(iframe.contentWindow.document.head, 'link', {rel: 'import', href: '/LessMS/src/main/brics/test-box.html'});
+            var componentEl = createEl(componentName);
+            iframe.contentWindow.document.body.appendChild(componentEl);
         },
 
         _fileDataChanged: function (data) {
@@ -102,6 +129,7 @@
 
         ready: function () {
         },
+
 
         getFileData: function () {
             var iframe = this.$.editorFrame;
