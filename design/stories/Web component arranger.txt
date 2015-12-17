@@ -14,11 +14,15 @@ Requirements
 - Components can be nested
 - Components can be dragged around
 - If component is resizable, can drag to set its size
+- Can view and set component properties
 - Can have plain text pages by inserting one rich text component
 - CKEditor can work inside components but can't put components into CKE
+- Can put text/HTML content into components that accept it
+- Can insert other elements into components that accept it
 - Any arrangement can be saved easily as a component
 - Have text and worksheet components
 - Save only the tags needed to define the page, not elements created by web component
+
 
 Later
 -----

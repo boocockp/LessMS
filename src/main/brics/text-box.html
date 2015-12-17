@@ -1,0 +1,57 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<dom-module id="text-box">
+    <template>
+        <style>
+            #box {
+                width: 200px;
+                height: 50px;
+                border: 2px solid #5d0972;
+            }
+        </style>
+        <div id="box" contenteditable>
+            <content></content>
+        </div>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'text-box',
+
+        properties: {
+            height: {
+                type: Number,
+                observer: '_onHeight'
+            },
+            width: {
+                type: Number,
+                observer: '_onWidth'
+            },
+            borderColor: {
+                type: String,
+                observer: '_onBorderColor'
+            }
+        },
+
+
+        ready: function() {
+        },
+
+        _onHeight: function(value) {
+            this.$.box.style.height = value + "px";
+        },
+
+        _onWidth: function(value) {
+            this.$.box.style.width = value + "px";
+        },
+
+        _onBorderColor: function(value) {
+            this.$.box.style.borderColor = value;
+        }
+    });
+
+
+
+</script>

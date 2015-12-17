@@ -88,8 +88,9 @@
             function dragulaLoaded() { return iframe.contentWindow && iframe.contentWindow.dragula; }
             function initDragula() {
                 var iframeBody = iframe.contentWindow.document.body;
-                var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]')).concat(iframeBody);
-                iframe.contentWindow.dragula(containersInIframe);
+                var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]'));
+                var boxesInIframe = toArray(iframe.contentWindow.document.querySelectorAll('container-box'));
+                iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody));
             }
 
             iframe.onload = function() {

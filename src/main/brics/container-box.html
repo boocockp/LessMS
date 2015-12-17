@@ -1,0 +1,58 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<dom-module id="container-box">
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 500px;
+                height: 200px;
+                border: 1px solid #8b9fb3;
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+        </style>
+        <content></content>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'container-box',
+
+        properties: {
+            height: {
+                type: Number,
+                observer: '_onHeight'
+            },
+            width: {
+                type: Number,
+                observer: '_onWidth'
+            },
+            borderColor: {
+                type: String,
+                observer: '_onBorderColor'
+            }
+        },
+
+
+        ready: function() {
+        },
+
+        _onHeight: function(value) {
+            this.$.box.style.height = value + "px";
+        },
+
+        _onWidth: function(value) {
+            this.$.box.style.width = value + "px";
+        },
+
+        _onBorderColor: function(value) {
+            this.$.box.style.borderColor = value;
+        }
+    });
+
+
+
+</script>
