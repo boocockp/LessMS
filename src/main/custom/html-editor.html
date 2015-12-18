@@ -23,6 +23,9 @@
         <div id="componentToolbar" on-click="onComponent">
             <button data-component="test-box">Test box</button>
         </div>
+        <div id="actionToolbar" on-click="onAction">
+            <button data-action="remove">Delete</button>
+        </div>
         <iframe id="editorFrame"></iframe>
         <div id="bottomToolbar"></div>
     </template>
@@ -47,12 +50,15 @@
         });
     }
 
-    function createEl(name, attrs) {
+    function createEl(name, attrs, content) {
         var el = document.createElement(name);
         for (a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 el.setAttribute(a, attrs[a]);
             }
+        }
+        if (content) {
+            el.innerHTML = content;
         }
         return el;
     }
@@ -70,6 +76,22 @@
             var el = createEl(name, attrs);
             parent.appendChild(el);
         }
+    }
+
+    function insertAfter(existingEl, newEl) {
+        existingEl.parentNode.insertBefore(newEl, existingEl.nextSibling)
+    }
+
+    function removeElement(el) {
+        el.parentElement.removeChild(el);
+    }
+
+    function findClosest(el, condition) {
+        while (el && el.tagName != "BODY" && !condition(el)) {
+            el = el.parentNode;
+        }
+
+        return condition(el) ? el : null;
     }
 
     function waitFor(condition, action) {
@@ -100,7 +122,31 @@
             var iframe = this.$.editorFrame;
             createElementIfNotPresent(iframe.contentWindow.document.head, 'link', {rel: 'import', href: '/LessMS/src/main/brics/test-box.html'});
             var componentEl = createEl(componentName);
-            iframe.contentWindow.document.body.appendChild(componentEl);
+            if (this.selectedElement) {
+                insertAfter(this.selectedElement, componentEl);
+            } else {
+                iframe.contentWindow.document.body.appendChild(componentEl);
+            }
+
+            this._selectElement(componentEl);
+        },
+
+        onAction: function(e) {
+            console.log('onAction', e.target.getAttribute('data-action'));
+            var actionName = e.target.getAttribute('data-action');
+            if (actionName == 'remove') {
+                removeElement(this.selectedElement);
+            }
+        },
+
+        _selectElement: function(el) {
+            var iframe = this.$.editorFrame;
+            function isSelectable(el) {
+                return iframe.contentWindow.dragula.containers.indexOf(el.parentNode) != -1 || el.parentNode.tagName == 'BODY';
+            }
+            this.selectedElement && this.selectedElement.classList.remove("html-editor-selected");
+            this.selectedElement = findClosest(el, isSelectable );
+            this.selectedElement && this.selectedElement.classList.add("html-editor-selected")
         },
 
         _fileDataChanged: function (data) {
@@ -117,13 +163,18 @@
                 var iframeBody = iframe.contentWindow.document.body;
                 var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]'));
                 var boxesInIframe = toArray(iframe.contentWindow.document.querySelectorAll('container-box'));
-                iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody));
+                iframe.contentWindow.dragula = iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody));
             }
 
             iframe.onload = function() {
                 iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css"}));
                 iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js"}));
-                waitFor(dragulaLoaded, initDragula)
+                iframe.contentWindow.document.head.appendChild(createEl('style', {}, ".html-editor-selected { border: 2px dashed orange; }"));
+                waitFor(dragulaLoaded, initDragula);
+                iframe.contentWindow.document.body.addEventListener('click', function(e) {
+                    comp._selectElement(e.target);
+                });
+
             }
         },
 

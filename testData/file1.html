@@ -1,0 +1,30 @@
+<html><head>
+    <title>Test box 1</title>
+    <script src="/LessMS/bower/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="/LessMS/src/main/brics/test-box.html" >
+</head>
+<body>
+
+    <p>&nbsp;</p>
+
+    <div id="top" style="border:3px solid red; margin: 20px; padding: 20px">
+        <p><test-box>
+        </test-box></p>
+
+        <p>-- End of box on this line</p>
+    </div>
+
+    <div id="bottom" style="border:3px solid blue; margin: 20px; padding: 20px">
+        <test-box>
+        </test-box>
+
+        <p>-- End of box on this line</p>
+    </div>
+
+    <test-box>
+    </test-box>
+
+    <p>-- End of box on this line</p>
+</body>
+
+</html>

@@ -8,12 +8,12 @@ Aims
 
 Requirements
 ------------
-- Add components to page
-- Remove components from page
-- Select component
+    - Add components to page
+    - Remove components from page
+    - Select component
 - Design view and preview
-- Components can be nested
-- Components can be dragged around
+    - Components can be nested
+    - Components can be dragged around
 - If component is resizable, can drag to set its size
 - Can view and set component properties
 - Can have plain text pages by inserting one rich text component
