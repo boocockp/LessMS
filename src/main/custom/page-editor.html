@@ -1,6 +1,6 @@
 <link rel="import" href="../bower/polymer/polymer.html">
 
-<link rel="import" href="../custom/component-editor.html">
+<link rel="import" href="property-editor.html">
 <link rel="import" href="../brics/test-box.html">
 
 <script>
@@ -168,7 +168,7 @@
         _showEditor: function(el) {
             var compEdContainer = this.$.componentEditorFrame;
             compEdContainer.innerHTML = '';
-            var compEd = createEl('component-editor' );
+            var compEd = createEl('property-editor' );
             compEd.component = el;
             compEdContainer.appendChild(compEd);
         },
