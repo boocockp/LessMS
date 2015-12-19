@@ -11,8 +11,8 @@ Requirements
     - Add components to page
     - Remove components from page
     - Select component
-- Save only the tags needed to define the page, not elements created by web component
-- Can view and set component properties
+    - Save only the tags needed to define the page, not elements created by web component
+    - Can view and set component properties
 - Can link component inputs to other component outputs
 - Design view and preview
     - Components can be nested
@@ -37,6 +37,7 @@ To do
 -----
 - Can insert at end without selection
 - Scroll inserted into view
+    - Tidy up head before save
 
 
 Technical

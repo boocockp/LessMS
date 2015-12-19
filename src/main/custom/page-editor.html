@@ -47,24 +47,6 @@
 </dom-module>
 
 <script>
-    CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
-    CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
-
-    function createEditor(el) {
-        el.setAttribute('contenteditable', 'true');
-        return CKEDITOR.inline(body, {
-            fullPage: true,
-            allowedContent: true,
-            extraPlugins: 'sharedspace,timestamp,box',
-            extraAllowedContent: 'test-box',
-            removePlugins: 'resize',
-            sharedSpaces: {
-                top: 'topToolbar',
-                bottom: 'bottomToolbar'
-            }
-        });
-    }
-
     function createEl(name, attrs, content) {
         var el = document.createElement(name);
         for (a in attrs) {
@@ -107,6 +89,33 @@
         }
 
         return condition(el) ? el : null;
+    }
+
+    function cloneLightDom(el) {
+        var clone = el.cloneNode(false);
+        var childLightNodes = (el.getContentChildNodes)? el.getContentChildNodes() : el.childNodes;
+
+        if (clone.root) {
+            var rootApi = Polymer.dom(clone.root);
+            var localNodes = rootApi.childNodes;
+            while (localNodes.length) {
+                rootApi.removeChild(localNodes[0]);
+            }
+        }
+
+        for (var i = 0; i < childLightNodes.length; i++) {
+            var child = childLightNodes[i];
+            clone.appendChild(cloneLightDom(child));
+        }
+
+        return clone;
+    }
+
+    function removeAll(el, selector) {
+        var nodesToRemove = el.querySelectorAll(selector);
+        for (var i = 0; i < nodesToRemove.length; i++) {
+            el.removeChild(nodesToRemove[i]);
+        }
     }
 
     function waitFor(condition, action) {
@@ -161,7 +170,7 @@
             }
             this.selectedElement && this.selectedElement.classList.remove("html-editor-selected");
             this.selectedElement = findClosest(el, isSelectable );
-            this.selectedElement && this.selectedElement.classList.add("html-editor-selected")
+            this.selectedElement && this.selectedElement.classList.add("html-editor-selected");
             this._showEditor(this.selectedElement);
         },
 
@@ -176,7 +185,6 @@
         _fileDataChanged: function (data) {
             var comp = this;
             var iframe = this.$.editorFrame;
-            this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
 
             iframe.contentWindow.document.open();
             iframe.contentWindow.document.write(data);
@@ -191,14 +199,13 @@
             }
 
             iframe.onload = function() {
-                iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css"}));
-                iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js"}));
-                iframe.contentWindow.document.head.appendChild(createEl('style', {}, ".html-editor-selected { border: 2px dashed orange; }"));
+                iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css", "data-temporary": true}));
+                iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js", "data-temporary": true}));
+                iframe.contentWindow.document.head.appendChild(createEl('style', {"data-temporary": true}, ".html-editor-selected { border: 2px dashed orange; }"));
                 waitFor(dragulaLoaded, initDragula);
                 iframe.contentWindow.document.body.addEventListener('click', function(e) {
                     comp._selectElement(e.target);
                 });
-
             }
         },
 
@@ -208,16 +215,13 @@
 
         getFileData: function () {
             var iframe = this.$.editorFrame;
-            var head = this.originalHead;
-            var newHeadElements = iframe.contentWindow.document.querySelectorAll('head [data-cke-new]');
-            if (newHeadElements) {
-                for (var i = 0; i < newHeadElements.length; i++) {
-                    var elText = newHeadElements[i].outerHTML.replace(/data-cke-new(="")?/, '');
-                    head = head.replace(/<\/head>/, elText + '\n' + "</head>")
-                }
-            }
-            var body = '<body>' + this.editor.getData() + '</body>';
-            return '<html>' + head + body + '</html>';
+            var headClone = iframe.contentWindow.document.head.cloneNode(true);
+            removeAll(headClone, 'style[scope]');
+            removeAll(headClone, '[data-temporary]');
+            $(headClone).find('style:contains(body[unresolved])').remove();
+            var head = headClone.outerHTML;
+            var body = cloneLightDom(iframe.contentWindow.document.body).outerHTML;
+            return '<!DOCTYPE html>\n<html>\n' + head + '\n' + body + '\n</html>\n';
         }
     });
 </script>
