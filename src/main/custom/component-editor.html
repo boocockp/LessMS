@@ -51,6 +51,8 @@
         onChange: function(e) {
             var input = e.target;
             this.component[input.name] = input.value;
+            var attrName = _.kebabCase(input.name);
+            this.component.setAttribute(attrName, input.value);
         },
 
         ready: function() {
