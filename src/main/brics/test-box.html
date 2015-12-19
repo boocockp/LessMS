@@ -3,7 +3,11 @@
 <dom-module id="test-box">
     <template>
         <style>
+            :host {
+                display: block;
+            }
             #box {
+                margin: 10px;
                 width: 200px;
                 height: 50px;
                 border: 2px solid blue;

@@ -1,20 +1,24 @@
 <link rel="import" href="../bower/polymer/polymer.html">
+<script src="../bower/lodash/lodash.min.js"></script>
 
 <dom-module id="component-editor">
     <template>
         <style>
             #editorContainer {
-                width: 500px;
-                /*height: 500px;*/
-                padding: 20px;
-                border: 2px solid darkslategray;
+                width: 100%;
             }
 
-            label.prop-label {
-                width: 15em;
+            #editorContainer label {
+                width: 7em;
             }
         </style>
         <div id="editorContainer">
+            <template is="dom-repeat" items="{{componentProperties}}">
+                <div>
+                    <label>{{item.label}}</label>
+                    <input type="text" name="{{item.name}}" value="{{item.value}}">
+                </div>
+            </template>
         </div>
 
     </template>
@@ -25,38 +29,29 @@
         is: 'component-editor',
 
         properties: {
-            componentId: {
-                type: String,
-                observer: '_onComponentId'
+            component: {
+                type: Object,
+                observer: '_onComponent'
             }
         },
 
         listeners: {
-            click: 'onClick'
+            change: 'onChange'
         },
 
-        _onComponentId: function(id) {
-            this.component = document.getElementById(id);
-            for (p in this.component.properties) {
-                var val = this.component[p];
-                var propRow = document.createElement('div');
-                propRow.innerHTML = "<label class='prop-label'>" + p + "</label>" + "<input type='text' name='" + p + "' value='" + val + "'>";
-                this.$.editorContainer.appendChild(propRow);
-            }
-
-            var buttonRow = document.createElement('div');
-            buttonRow.innerHTML = "<button id='update'>Update</button>";
-            this.$.editorContainer.appendChild(buttonRow);
-
+        _onComponent: function(id) {
+            var self = this;
+            var idProp = {name: "id", label: "Id", value: self.component.id};
+            var polymerProperties = _.map(this.component.properties, function(value, name) {
+                return {name: name, label: _.startCase(name), value: self.component[name]}
+            });
+            this.componentProperties = [idProp].concat(polymerProperties);
         },
 
-        onClick: function(e) {
-            var button = e.target;
-            if (button.id = 'update') {
-                this.component.height = this.$.editorContainer.querySelector("input[name='" + "height" + "']").value;
-            }
+        onChange: function(e) {
+            var input = e.target;
+            this.component[input.name] = input.value;
         },
-
 
         ready: function() {
         }

@@ -1,0 +1,223 @@
+<link rel="import" href="../bower/polymer/polymer.html">
+
+<link rel="import" href="../custom/component-editor.html">
+<link rel="import" href="../brics/test-box.html">
+
+<script>
+    window.CKEDITOR_BASEPATH = "bower/ckeditor/";
+</script>
+<script src="../bower/ckeditor/ckeditor.js"></script>
+
+<dom-module id="page-editor">
+    <style>
+        #editorFrame {
+            width: 75%;
+            height: 500px;
+            float: left;
+        }
+
+        #componentEditorFrame {
+            width: 24%;
+            height: 500px;
+            float: left;
+            padding: 10px;
+            margin-left: 5px;
+            border: 1px solid lightslategray;
+        }
+
+        #topToolbar {
+            min-height: 80px;
+        }
+    </style>
+    <template>
+        <div id="topToolbar"></div>
+        <div id="componentToolbar" on-click="onComponent">
+            <button data-component="test-box">Test box</button>
+        </div>
+        <div id="actionToolbar" on-click="onAction">
+            <button data-action="remove">Delete</button>
+        </div>
+        <div>
+
+            <iframe id="editorFrame"></iframe>
+            <div id="componentEditorFrame"></div>
+        </div>
+        <div id="bottomToolbar"></div>
+    </template>
+</dom-module>
+
+<script>
+    CKEDITOR.plugins.addExternal( 'timestamp', '../../ckePlugins/timestamp/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'box', '../../ckePlugins/box/', 'plugin.js' );
+
+    function createEditor(el) {
+        el.setAttribute('contenteditable', 'true');
+        return CKEDITOR.inline(body, {
+            fullPage: true,
+            allowedContent: true,
+            extraPlugins: 'sharedspace,timestamp,box',
+            extraAllowedContent: 'test-box',
+            removePlugins: 'resize',
+            sharedSpaces: {
+                top: 'topToolbar',
+                bottom: 'bottomToolbar'
+            }
+        });
+    }
+
+    function createEl(name, attrs, content) {
+        var el = document.createElement(name);
+        for (a in attrs) {
+            if (attrs.hasOwnProperty(a)) {
+                el.setAttribute(a, attrs[a]);
+            }
+        }
+        if (content) {
+            el.innerHTML = content;
+        }
+        return el;
+    }
+
+    function hasElement(parent, name, attrs) {
+        sel = name;
+        for (a in attrs) {
+            sel += "[" + a + "='" + attrs[a] + "']";
+        }
+        return !!parent.querySelector(sel);
+    }
+
+    function createElementIfNotPresent(parent, name, attrs) {
+        if (!hasElement(parent, name, attrs)) {
+            var el = createEl(name, attrs);
+            parent.appendChild(el);
+        }
+    }
+
+    function insertAfter(existingEl, newEl) {
+        existingEl.parentNode.insertBefore(newEl, existingEl.nextSibling)
+    }
+
+    function removeElement(el) {
+        el.parentElement.removeChild(el);
+    }
+
+    function findClosest(el, condition) {
+        while (el && el.tagName != "BODY" && !condition(el)) {
+            el = el.parentNode;
+        }
+
+        return condition(el) ? el : null;
+    }
+
+    function waitFor(condition, action) {
+        if (condition()) {
+            action()
+        } else {
+            setTimeout(function() { waitFor(condition, action); }, 100);
+        }
+    }
+
+    function toArray(l) {
+        return Array.prototype.slice.call(l, 0);
+    }
+
+    Polymer({
+        is: 'page-editor',
+
+        properties: {
+            fileData: {
+                type: String,
+                observer: '_fileDataChanged'
+            }
+        },
+
+        onComponent: function(e) {
+            console.log('onComponent', e, e.target.getAttribute('data-component'));
+            var componentName = e.target.getAttribute('data-component');
+            var iframe = this.$.editorFrame;
+            createElementIfNotPresent(iframe.contentWindow.document.head, 'link', {rel: 'import', href: '/LessMS/src/main/brics/test-box.html'});
+            var componentEl = createEl(componentName);
+            if (this.selectedElement) {
+                insertAfter(this.selectedElement, componentEl);
+            } else {
+                iframe.contentWindow.document.body.appendChild(componentEl);
+            }
+
+            this._selectElement(componentEl);
+        },
+
+        onAction: function(e) {
+            console.log('onAction', e.target.getAttribute('data-action'));
+            var actionName = e.target.getAttribute('data-action');
+            if (actionName == 'remove') {
+                removeElement(this.selectedElement);
+            }
+        },
+
+        _selectElement: function(el) {
+            var iframe = this.$.editorFrame;
+            function isSelectable(el) {
+                return iframe.contentWindow.dragula.containers.indexOf(el.parentNode) != -1 || el.parentNode.tagName == 'BODY';
+            }
+            this.selectedElement && this.selectedElement.classList.remove("html-editor-selected");
+            this.selectedElement = findClosest(el, isSelectable );
+            this.selectedElement && this.selectedElement.classList.add("html-editor-selected")
+            this._showEditor(this.selectedElement);
+        },
+
+        _showEditor: function(el) {
+            var compEdContainer = this.$.componentEditorFrame;
+            compEdContainer.innerHTML = '';
+            var compEd = createEl('component-editor' );
+            compEd.component = el;
+            compEdContainer.appendChild(compEd);
+        },
+
+        _fileDataChanged: function (data) {
+            var comp = this;
+            var iframe = this.$.editorFrame;
+            this.originalHead = data.match(/<head>[\s\S]*<\/head>/)[0] || '<head></head>';
+
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(data);
+            iframe.contentWindow.document.close();
+
+            function dragulaLoaded() { return iframe.contentWindow && iframe.contentWindow.dragula; }
+            function initDragula() {
+                var iframeBody = iframe.contentWindow.document.body;
+                var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]'));
+                var boxesInIframe = toArray(iframe.contentWindow.document.querySelectorAll('container-box'));
+                iframe.contentWindow.dragula = iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody));
+            }
+
+            iframe.onload = function() {
+                iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css"}));
+                iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js"}));
+                iframe.contentWindow.document.head.appendChild(createEl('style', {}, ".html-editor-selected { border: 2px dashed orange; }"));
+                waitFor(dragulaLoaded, initDragula);
+                iframe.contentWindow.document.body.addEventListener('click', function(e) {
+                    comp._selectElement(e.target);
+                });
+
+            }
+        },
+
+        ready: function () {
+        },
+
+
+        getFileData: function () {
+            var iframe = this.$.editorFrame;
+            var head = this.originalHead;
+            var newHeadElements = iframe.contentWindow.document.querySelectorAll('head [data-cke-new]');
+            if (newHeadElements) {
+                for (var i = 0; i < newHeadElements.length; i++) {
+                    var elText = newHeadElements[i].outerHTML.replace(/data-cke-new(="")?/, '');
+                    head = head.replace(/<\/head>/, elText + '\n' + "</head>")
+                }
+            }
+            var body = '<body>' + this.editor.getData() + '</body>';
+            return '<html>' + head + body + '</html>';
+        }
+    });
+</script>

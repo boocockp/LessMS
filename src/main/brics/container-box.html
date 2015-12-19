@@ -24,15 +24,18 @@
         properties: {
             height: {
                 type: Number,
-                observer: '_onHeight'
+                observer: '_onHeight',
+                value: 150
             },
             width: {
                 type: Number,
-                observer: '_onWidth'
+                observer: '_onWidth',
+                value: 400
             },
             borderColor: {
                 type: String,
-                observer: '_onBorderColor'
+                observer: '_onBorderColor',
+                value: 'green'
             }
         },
 
@@ -41,15 +44,15 @@
         },
 
         _onHeight: function(value) {
-            this.$.box.style.height = value + "px";
+            this.style.height = value + "px";
         },
 
         _onWidth: function(value) {
-            this.$.box.style.width = value + "px";
+            this.style.width = value + "px";
         },
 
         _onBorderColor: function(value) {
-            this.$.box.style.borderColor = value;
+            this.style.borderColor = value;
         }
     });
 
