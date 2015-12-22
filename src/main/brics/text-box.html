@@ -1,15 +1,25 @@
 <link rel="import" href="../bower/polymer/polymer.html">
 
+<script>
+    window.CKEDITOR_BASEPATH = "bower/ckeditor/";
+</script>
+<script src="../bower/ckeditor/ckeditor.js"></script>
+
 <dom-module id="text-box">
     <template>
         <style>
-            #box {
-                width: 200px;
-                height: 50px;
-                border: 2px solid #5d0972;
+            :host {
+                display: block;
+                width: 100%;
+                /*min-height: 20px;*/
+                border: 1px solid #dfdfdf;
+            }
+
+            #editorElement {
+                min-height: 20px;
             }
         </style>
-        <div id="box" contenteditable>
+        <div id="editorElement" contenteditable="true">
             <content></content>
         </div>
 
@@ -28,15 +38,16 @@
             width: {
                 type: Number,
                 observer: '_onWidth'
-            },
-            borderColor: {
-                type: String,
-                observer: '_onBorderColor'
             }
         },
 
 
         ready: function() {
+            this.editor = CKEDITOR.inline(this.$.editorElement,
+                    {
+                        allowedContent: true,
+                        startupFocus: true
+                    });
         },
 
         _onHeight: function(value) {
@@ -45,13 +56,7 @@
 
         _onWidth: function(value) {
             this.$.box.style.width = value + "px";
-        },
-
-        _onBorderColor: function(value) {
-            this.$.box.style.borderColor = value;
         }
     });
-
-
 
 </script>

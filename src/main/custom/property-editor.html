@@ -8,11 +8,17 @@
                 width: 100%;
             }
 
+            #editorContainer .name{
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
             #editorContainer label {
                 width: 7em;
             }
         </style>
         <div id="editorContainer">
+            <p class="name">{{componentName}}</p>
             <template is="dom-repeat" items="{{componentProperties}}">
                 <div>
                     <label>{{item.label}}</label>
@@ -46,6 +52,7 @@
                 return {name: name, label: _.startCase(name), value: self.component[name]}
             });
             this.componentProperties = [idProp].concat(polymerProperties);
+            this.componentName = _.startCase(this.component.tagName.toLowerCase());
         },
 
         onChange: function(e) {

@@ -1,12 +1,6 @@
 <link rel="import" href="../bower/polymer/polymer.html">
 
 <link rel="import" href="property-editor.html">
-<link rel="import" href="../brics/test-box.html">
-
-<script>
-    window.CKEDITOR_BASEPATH = "bower/ckeditor/";
-</script>
-<script src="../bower/ckeditor/ckeditor.js"></script>
 
 <dom-module id="page-editor">
     <style>
@@ -32,6 +26,7 @@
     <template>
         <div id="topToolbar"></div>
         <div id="componentToolbar" on-click="onComponent">
+            <button data-component="text-box">Text</button>
             <button data-component="test-box">Test box</button>
         </div>
         <div id="actionToolbar" on-click="onAction">
@@ -48,7 +43,11 @@
 
 <script>
     function createEl(name, attrs, content) {
-        var el = document.createElement(name);
+        return createElInDoc(window.document, name. attrs, content);
+    }
+
+    function createElInDoc(doc, name, attrs, content) {
+        var el = doc.createElement(name);
         for (a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 el.setAttribute(a, attrs[a]);
@@ -70,7 +69,7 @@
 
     function createElementIfNotPresent(parent, name, attrs) {
         if (!hasElement(parent, name, attrs)) {
-            var el = createEl(name, attrs);
+            var el = createElInDoc(parent.ownerDocument, name, attrs);
             parent.appendChild(el);
         }
     }
@@ -144,12 +143,13 @@
             console.log('onComponent', e, e.target.getAttribute('data-component'));
             var componentName = e.target.getAttribute('data-component');
             var iframe = this.$.editorFrame;
-            createElementIfNotPresent(iframe.contentWindow.document.head, 'link', {rel: 'import', href: '/LessMS/src/main/brics/test-box.html'});
-            var componentEl = createEl(componentName);
+            var pageDoc = iframe.contentWindow.document;
+            createElementIfNotPresent(pageDoc.head, 'link', {rel: 'import', href: '/LessMS/src/main/brics/' + componentName + '.html'});
+            var componentEl = createElInDoc(pageDoc, componentName);
             if (this.selectedElement) {
                 insertAfter(this.selectedElement, componentEl);
             } else {
-                iframe.contentWindow.document.body.appendChild(componentEl);
+                pageDoc.body.appendChild(componentEl);
             }
 
             this._selectElement(componentEl);
@@ -166,7 +166,7 @@
         _selectElement: function(el) {
             var iframe = this.$.editorFrame;
             function isSelectable(el) {
-                return iframe.contentWindow.dragula.containers.indexOf(el.parentNode) != -1 || el.parentNode.tagName == 'BODY';
+                return iframe.contentWindow.dragulaInstance.containers.indexOf(el.parentNode) != -1 || el.parentNode.tagName == 'BODY';
             }
             this.selectedElement && this.selectedElement.classList.remove("html-editor-selected");
             this.selectedElement = findClosest(el, isSelectable );
@@ -195,16 +195,20 @@
                 var iframeBody = iframe.contentWindow.document.body;
                 var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]'));
                 var boxesInIframe = toArray(iframe.contentWindow.document.querySelectorAll('container-box'));
-                iframe.contentWindow.dragula = iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody));
+                iframe.contentWindow.dragulaInstance = iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody), {
+                    ignoreInputTextSelection: true
+                });
             }
 
             iframe.onload = function() {
-                iframe.contentWindow.document.head.appendChild(createEl('link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css", "data-temporary": true}));
-                iframe.contentWindow.document.head.appendChild(createEl('script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula.patched.js", "data-temporary": true}));
-                iframe.contentWindow.document.head.appendChild(createEl('style', {"data-temporary": true}, ".html-editor-selected { border: 2px dashed orange; }"));
+                var pageDoc = iframe.contentWindow.document;
+                pageDoc.head.appendChild(createElInDoc(pageDoc, 'link', { rel: "stylesheet", href: "/LessMS/src/main/bower/dragula.js/dist/dragula.css", "data-temporary": true}));
+                pageDoc.head.appendChild(createElInDoc(pageDoc, 'script', {src: "/LessMS/src/main/bower/dragula.js/dist/dragula_patched.js", "data-temporary": true}));
+                pageDoc.head.appendChild(createElInDoc(pageDoc, 'style', {"data-temporary": true}, ".html-editor-selected { border: 2px dashed orange; }"));
                 waitFor(dragulaLoaded, initDragula);
-                iframe.contentWindow.document.body.addEventListener('click', function(e) {
+                pageDoc.body.addEventListener('click', function(e) {
                     comp._selectElement(e.target);
+                    return true;
                 });
             }
         },

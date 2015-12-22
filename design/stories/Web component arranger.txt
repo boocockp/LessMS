@@ -18,6 +18,8 @@ Requirements
     - Components can be nested
     - Components can be dragged around
 - Have text and worksheet components
+- Can insert plain html elements
+- Can configure plain html elements
 - Can have plain text pages by inserting one rich text component
 - If component is resizable, can drag to set its size
 - CKEditor can work inside components but can't put components into CKE
@@ -42,7 +44,8 @@ To do
 
 Technical
 ---------
-- To distinguish elements to save: elements introduced by user are tagged with attribute - remove others - but if nested?
+- Need to add container elements to dragula when they are inserted
+- May need to use a getStaticHTML method to component to use if present
 
 Libraries
 ---------
