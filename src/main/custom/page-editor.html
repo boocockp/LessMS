@@ -169,9 +169,15 @@
                 return iframe.contentWindow.dragulaInstance.containers.indexOf(el.parentNode) != -1 || el.parentNode.tagName == 'BODY';
             }
             this.selectedElement && this.selectedElement.classList.remove("html-editor-selected");
-            this.selectedElement = findClosest(el, isSelectable );
-            this.selectedElement && this.selectedElement.classList.add("html-editor-selected");
-            this._showEditor(this.selectedElement);
+            var sel = this.selectedElement = findClosest(el, isSelectable );
+            if (sel) {
+                sel.classList.add("html-editor-selected");
+                var activeEl = sel.ownerDocument.activeElement;
+                if (!sel.contains(activeEl)) {
+                    activeEl.blur();
+                }
+            }
+            this._showEditor(sel);
         },
 
         _showEditor: function(el) {
