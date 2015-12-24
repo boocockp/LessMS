@@ -43,7 +43,7 @@
 
 <script>
     function createEl(name, attrs, content) {
-        return createElInDoc(window.document, name. attrs, content);
+        return createElInDoc(window.document, name, attrs, content);
     }
 
     function createElInDoc(doc, name, attrs, content) {
@@ -90,8 +90,29 @@
         return condition(el) ? el : null;
     }
 
+    function cloneDisabled(el) {
+        var clone;
+        if (el.getAttribute) {
+            var oldDisabled = el.getAttribute('disabled');
+            el.setAttribute('disabled', true);
+            clone = el.cloneNode(false);
+            if (oldDisabled) {
+                el.setAttribute('disabled', oldDisabled);
+                clone.setAttribute('disabled', oldDisabled);
+            } else {
+                el.removeAttribute('disabled');
+                clone.removeAttribute('disabled');
+            }
+        } else {
+            clone = el.cloneNode(false);
+        }
+
+        return clone;
+
+    }
+
     function cloneLightDom(el) {
-        var clone = el.cloneNode(false);
+        var clone = cloneDisabled(el);
         var childLightNodes = (el.getContentChildNodes)? el.getContentChildNodes() : el.childNodes;
 
         if (clone.root) {
@@ -183,9 +204,11 @@
         _showEditor: function(el) {
             var compEdContainer = this.$.componentEditorFrame;
             compEdContainer.innerHTML = '';
-            var compEd = createEl('property-editor' );
-            compEd.component = el;
-            compEdContainer.appendChild(compEd);
+            if (el) {
+                var compEd = createEl('property-editor' );
+                compEd.component = el;
+                compEdContainer.appendChild(compEd);
+            }
         },
 
         _fileDataChanged: function (data) {
@@ -202,8 +225,13 @@
                 var containersInIframe = toArray(iframe.contentWindow.document.querySelectorAll('[data-drag-container]'));
                 var boxesInIframe = toArray(iframe.contentWindow.document.querySelectorAll('container-box'));
                 iframe.contentWindow.dragulaInstance = iframe.contentWindow.dragula(containersInIframe.concat(boxesInIframe).concat(iframeBody), {
-                    ignoreInputTextSelection: true
+                    ignoreInputTextSelection: true,
+                    createMirror: function(el) {
+                        var result = cloneLightDom(el);
+                        return result;
+                    }
                 });
+
             }
 
             iframe.onload = function() {
@@ -228,9 +256,15 @@
             var headClone = iframe.contentWindow.document.head.cloneNode(true);
             removeAll(headClone, 'style[scope]');
             removeAll(headClone, '[data-temporary]');
+            removeAll(headClone, '[data-cke-temp]');
             $(headClone).find('style:contains(body[unresolved])').remove();
+            $(headClone).find('style:contains(.cke)').remove();
+            $(headClone).find("script[src*='ckeditor']").remove();
+            $(headClone).find("link[href*='ckeditor']").remove();
             var head = headClone.outerHTML;
-            var body = cloneLightDom(iframe.contentWindow.document.body).outerHTML;
+            var bodyClone = cloneLightDom(iframe.contentWindow.document.body);
+            removeAll(bodyClone, '#cke_editorElement');
+            var body = bodyClone.outerHTML;
             return '<!DOCTYPE html>\n<html>\n' + head + '\n' + body + '\n</html>\n';
         }
     });

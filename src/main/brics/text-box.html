@@ -13,16 +13,18 @@
                 width: 100%;
                 /*min-height: 20px;*/
                 border: 1px solid #dfdfdf;
+                padding: 10px;
+                background-color: lightgrey;
             }
 
             #editorElement {
                 min-height: 20px;
+                background-color: white;
             }
         </style>
         <div id="editorElement" contenteditable="true">
             <content></content>
         </div>
-
     </template>
 </dom-module>
 
@@ -42,20 +44,24 @@
         },
 
 
-        ready: function() {
-            this.editor = CKEDITOR.inline(this.$.editorElement,
-                    {
-                        allowedContent: true,
-                        startupFocus: true
-                    });
+        ready: function () {
+            var disabled = (this.getAttribute('disabled') === 'true');
+            console.log('ready', disabled);
+            if (!disabled) {
+                this.editor = CKEDITOR.inline(this.$.editorElement,
+                        {
+                            allowedContent: true,
+                            startupFocus: false
+                        });
+            }
         },
 
-        _onHeight: function(value) {
-            this.$.box.style.height = value + "px";
+        _onHeight: function (value) {
+            this.style.height = value + "px";
         },
 
-        _onWidth: function(value) {
-            this.$.box.style.width = value + "px";
+        _onWidth: function (value) {
+            this.style.width = value + "px";
         }
     });
 
